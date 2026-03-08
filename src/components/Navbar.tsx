@@ -1,6 +1,39 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import autobitLogo from "@/assets/autobit-logo.png";
+
+const sfProDisplay = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+const sfProText = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif";
+
+const dropdownLinkStyle: React.CSSProperties = {
+  fontFamily: sfProDisplay,
+  fontSize: '28px',
+  fontWeight: 600,
+  letterSpacing: '-0.3px',
+  color: '#f5f5f7',
+  lineHeight: 1.2,
+  transition: 'color 0.2s',
+};
+
+const subLabelStyle: React.CSSProperties = {
+  fontFamily: sfProText,
+  fontSize: '12px',
+  fontWeight: 400,
+  color: '#6e6e73',
+  letterSpacing: '0.5px',
+  textTransform: 'uppercase',
+  marginBottom: '16px',
+  display: 'block',
+};
+
+const navItemStyle: React.CSSProperties = {
+  fontFamily: sfProText,
+  fontSize: '12px',
+  fontWeight: 400,
+  letterSpacing: '-0.01em',
+  color: 'rgba(255,255,255,0.85)',
+};
 
 const servicesLinks = [
   { label: "Workflow Automation", desc: "Zapier, Make, n8n pipelines", href: "/services#automation" },
@@ -64,10 +97,8 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         <div className="section-container flex items-center justify-between w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 0L11.5 6.5H18L12.75 10.5L14.5 18L9 13.5L3.5 18L5.25 10.5L0 6.5H6.5L9 0Z" fill="white"/>
-            </svg>
-            <span style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif", fontSize: '18px', fontWeight: 600, letterSpacing: '0.08em', color: '#ffffff' }}>AUTOBIT</span>
+            <img src={autobitLogo} alt="AUTOBIT" width={18} height={18} className="block" style={{ filter: 'brightness(10)' }} />
+            <span style={{ fontFamily: sfProDisplay, fontSize: '19px', fontWeight: 700, letterSpacing: '0.06em', color: '#ffffff' }}>AUTOBIT</span>
           </Link>
 
           {/* Center links — desktop */}
@@ -81,7 +112,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
                 <Link
                   to={item.href}
                   className="nav-link-item rounded px-2 py-1 flex items-center gap-1.5"
-                  style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif", fontSize: '12px', fontWeight: 400, letterSpacing: '-0.01em', color: 'rgba(255,255,255,0.85)' }}
+                  style={navItemStyle}
                 >
                   {item.label}
                   {item.badge && (
@@ -100,7 +131,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
             <a
               href="mailto:autobitofficial.ph@gmail.com"
               className="flex items-center gap-1.5 hover:text-primary transition-colors"
-              style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif", fontSize: '12px', fontWeight: 400, letterSpacing: '-0.01em', color: 'rgba(255,255,255,0.85)' }}
+              style={navItemStyle}
             >
               Start a project <ArrowRight size={16} />
             </a>
@@ -140,29 +171,41 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
           pointerEvents: activeDropdown === "Services" ? 'auto' : 'none',
         }}
       >
-        <div className="section-container py-8 grid grid-cols-3 gap-12">
+        <div className="section-container py-10 grid grid-cols-3 gap-12">
           <div>
-            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">What we build</h4>
+            <span style={subLabelStyle}>What we build</span>
             {servicesLinks.map((l) => (
-              <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                <span className="block text-xs text-ab-text-muted">{l.desc}</span>
+              <Link key={l.label} to={l.href} className="block py-3 group">
+                <span
+                  className="inline-block"
+                  style={dropdownLinkStyle}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
+                >
+                  {l.label}
+                </span>
               </Link>
             ))}
           </div>
           <div>
-            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">Specialized</h4>
+            <span style={subLabelStyle}>Specialized</span>
             {specializedLinks.map((l) => (
-              <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                <span className="block text-xs text-ab-text-muted">{l.desc}</span>
+              <Link key={l.label} to={l.href} className="block py-3 group">
+                <span
+                  className="inline-block"
+                  style={dropdownLinkStyle}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
+                >
+                  {l.label}
+                </span>
               </Link>
             ))}
           </div>
           <div className="bg-ab-card rounded-md p-5">
-            <span className="text-xs text-ab-text-muted">Latest build</span>
+            <span className="text-xs" style={{ color: '#6e6e73' }}>Latest build</span>
             <h5 className="text-foreground font-semibold mt-1">AXONIS Platform</h5>
-            <p className="text-xs text-ab-text-muted mt-1">Open-core AI safety OS for critical infrastructure.</p>
+            <p className="text-xs mt-1" style={{ color: '#6e6e73' }}>Open-core AI safety OS for critical infrastructure.</p>
             <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">Active Development</span>
           </div>
         </div>
@@ -182,23 +225,27 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
           pointerEvents: activeDropdown === "Projects" ? 'auto' : 'none',
         }}
       >
-        <div className="section-container py-8 grid grid-cols-2 gap-16">
+        <div className="section-container py-10 grid grid-cols-2 gap-16">
           <div>
-            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">All projects</h4>
+            <span style={subLabelStyle}>All projects</span>
             {projectLinks.map((l) => (
-              <Link key={l.label} to={l.href} className="flex items-center justify-between py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                <div>
-                  <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                  <span className="block text-xs text-ab-text-muted">{l.desc}</span>
-                </div>
+              <Link key={l.label} to={l.href} className="flex items-center justify-between py-3 group">
+                <span
+                  className="inline-block"
+                  style={dropdownLinkStyle}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
+                >
+                  {l.label}
+                </span>
                 {l.badge && <span className="text-[10px] bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">{l.badge}</span>}
               </Link>
             ))}
           </div>
           <div className="bg-ab-card rounded-md p-5">
-            <span className="text-xs text-ab-text-muted">Flagship</span>
+            <span className="text-xs" style={{ color: '#6e6e73' }}>Flagship</span>
             <h5 className="text-foreground font-semibold mt-1">EARLYNX</h5>
-            <p className="text-xs text-ab-text-muted mt-2">Nationally awarded AI diagnostic prototype. Patent held. National competition winner.</p>
+            <p className="text-xs mt-2" style={{ color: '#6e6e73' }}>Nationally awarded AI diagnostic prototype. Patent held. National competition winner.</p>
             <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">National Winner</span>
           </div>
         </div>
@@ -215,10 +262,11 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
               key={item.label}
               to={item.href}
               onClick={() => setMobileOpen(false)}
-              className="text-[28px] font-semibold text-foreground py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-2"
+              className="py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-2"
+              style={{ ...dropdownLinkStyle }}
             >
               {item.label}
-              {item.badge && <span className="text-xs font-normal text-foreground/40">{item.badge}</span>}
+              {item.badge && <span className="text-xs font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>{item.badge}</span>}
             </Link>
           ))}
           <a

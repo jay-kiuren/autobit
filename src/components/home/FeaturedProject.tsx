@@ -7,9 +7,10 @@ interface FeaturedProjectProps {
   ctaPrimary: { text: string; href: string };
   ctaSecondary?: { text: string; href: string };
   badge?: string;
+  image?: string;
 }
 
-const FeaturedProject = ({ eyebrow, heading, subheading, ctaPrimary, ctaSecondary, badge }: FeaturedProjectProps) => (
+const FeaturedProject = ({ eyebrow, heading, subheading, ctaPrimary, ctaSecondary, badge, image }: FeaturedProjectProps) => (
   <section className="min-h-[580px] bg-background flex items-center">
     <div className="section-container py-20 text-center w-full">
       <ScrollReveal>
@@ -41,7 +42,19 @@ const FeaturedProject = ({ eyebrow, heading, subheading, ctaPrimary, ctaSecondar
         </div>
       </ScrollReveal>
       <ScrollReveal delay={0.32}>
-        <div className="mx-auto mt-10 max-w-[900px] min-h-[320px] rounded-lg bg-[#0a0a0a] border border-border" />
+        <div className="relative mx-auto mt-10 max-w-[900px] min-h-[320px] rounded-lg border border-border overflow-hidden">
+          {image ? (
+            <img
+              src={image}
+              alt={eyebrow}
+              className="absolute inset-0 w-full h-full object-cover rounded-lg"
+              style={{ filter: 'brightness(0.65)' }}
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full min-h-[320px] bg-[#0a0a0a]" />
+          )}
+        </div>
       </ScrollReveal>
     </div>
   </section>

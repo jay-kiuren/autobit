@@ -36,6 +36,7 @@ const Index = () => {
           subheading="Open-core. Decentralized. Built for the real world."
           ctaPrimary={{ text: "Learn more", href: "/projects#axonis" }}
           ctaSecondary={{ text: "View on GitHub →", href: "https://github.com/gnobob/AXONIS-Platform" }}
+          image="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80"
         />
         <ServicesGrid />
         <ServicesScrollRow />
@@ -46,6 +47,7 @@ const Index = () => {
           ctaPrimary={{ text: "Learn more", href: "/projects#earlynx" }}
           ctaSecondary={{ text: "See all projects →", href: "/projects" }}
           badge="National Winner"
+          image="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80"
         />
         <CaseStudies />
         <ProcessSection />
