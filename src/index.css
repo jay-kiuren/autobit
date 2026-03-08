@@ -126,8 +126,8 @@
   }
 
   .mega-blur {
-    background: hsla(0, 0%, 4%, 0.96);
-    backdrop-filter: blur(40px);
+    background: hsl(var(--bg-nav));
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(40px);
   }
 

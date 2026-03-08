@@ -117,7 +117,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         style={{
           top: 44,
           opacity: isDropdownOpen ? 1 : 0,
-          transition: 'opacity 0.28s cubic-bezier(0.4,0,0.2,1)',
+          transition: 'opacity 0.38s cubic-bezier(0.25,0.1,0.25,1)',
         }}
       />
 
