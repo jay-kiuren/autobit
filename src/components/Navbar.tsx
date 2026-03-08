@@ -64,7 +64,10 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         <div className="section-container flex items-center justify-between w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-[17px] font-bold tracking-[1px] text-foreground">AUTOBIT</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 0L11.5 6.5H18L12.75 10.5L14.5 18L9 13.5L3.5 18L5.25 10.5L0 6.5H6.5L9 0Z" fill="white"/>
+            </svg>
+            <span style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif", fontSize: '18px', fontWeight: 600, letterSpacing: '0.08em', color: '#ffffff' }}>AUTOBIT</span>
           </Link>
 
           {/* Center links — desktop */}
