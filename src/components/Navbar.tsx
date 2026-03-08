@@ -60,7 +60,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[1000] nav-blur border-b border-border h-11 flex items-center">
+      <nav className={`fixed top-0 left-0 right-0 z-[1000] nav-blur h-11 flex items-center transition-[border] duration-300 ${isDropdownOpen ? 'border-b border-transparent' : 'border-b border-border'}`}>
         <div className="section-container flex items-center justify-between w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
