@@ -96,9 +96,9 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
       <nav className={`fixed top-0 left-0 right-0 z-[1000] nav-blur h-11 flex items-center transition-[border] duration-300 ${isDropdownOpen ? 'border-b border-transparent' : 'border-b border-border'}`}>
         <div className="section-container flex items-center justify-between w-full">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <img src={autobitLogo} alt="AUTOBIT" width={18} height={18} className="block" style={{ filter: 'brightness(10)' }} />
-            <span style={{ fontFamily: sfProDisplay, fontSize: '19px', fontWeight: 700, letterSpacing: '0.06em', color: '#ffffff' }}>AUTOBIT</span>
+          <Link to="/" className="flex items-center gap-2" style={{ background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>
+            <img src={autobitIcon} alt="" width={20} height={20} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block', background: 'none', border: 'none', padding: 0 }} />
+            <span style={{ fontFamily: sfProDisplay, fontSize: '17px', fontWeight: 600, letterSpacing: '0.04em', color: '#ffffff', background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>AUTOBIT</span>
           </Link>
 
           {/* Center links — desktop */}

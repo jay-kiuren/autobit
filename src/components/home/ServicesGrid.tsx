@@ -1,5 +1,12 @@
 import ScrollReveal from "../ScrollReveal";
 
+const cardElevation: React.CSSProperties = {
+  background: '#161617',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.4), 0 32px 56px rgba(0,0,0,0.3)',
+  transform: 'translateZ(0)',
+  transition: 'all 0.38s cubic-bezier(0.25,0.1,0.25,1)',
+};
+
 const cards = [
   {
     eyebrow: "Workflow Automation",
@@ -20,12 +27,17 @@ const ServicesGrid = () => (
     <div className="section-container py-5 grid grid-cols-1 md:grid-cols-2 gap-5">
       {cards.map((card, i) => (
         <ScrollReveal key={card.eyebrow} delay={i * 0.08}>
-          <div className="relative rounded-lg min-h-[400px] flex flex-col justify-end card-hover-effect border border-border cursor-pointer overflow-hidden">
+          <div
+            className="relative rounded-lg min-h-[400px] flex flex-col justify-end cursor-pointer overflow-hidden group"
+            style={cardElevation}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px) translateZ(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.6), 0 20px 48px rgba(0,0,0,0.5), 0 40px 72px rgba(0,0,0,0.35)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateZ(0)'; e.currentTarget.style.boxShadow = cardElevation.boxShadow as string; }}
+          >
             <img
               src={card.image}
               alt={card.eyebrow}
               className="absolute inset-0 w-full h-full object-cover rounded-lg"
-              style={{ filter: 'brightness(0.65)' }}
+              style={{ filter: 'brightness(0.72) saturate(0.85)' }}
               loading="lazy"
             />
             <div className="relative z-[1] p-10">

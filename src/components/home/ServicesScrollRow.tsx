@@ -1,5 +1,12 @@
 import ScrollReveal from "../ScrollReveal";
 
+const cardElevation: React.CSSProperties = {
+  background: '#161617',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.4), 0 32px 56px rgba(0,0,0,0.3)',
+  transform: 'translateZ(0)',
+  transition: 'all 0.38s cubic-bezier(0.25,0.1,0.25,1)',
+};
+
 const cards = [
   { eyebrow: "Web Applications", heading: "Dashboards, CRMs,\nand SaaS tools.", price: "$1,500+", image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" },
   { eyebrow: "Business Systems", heading: "One system.\nYour entire operation.", price: "$3,000+", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" },
@@ -16,18 +23,22 @@ const ServicesScrollRow = () => (
       <div className="flex gap-5 overflow-x-auto scrollbar-hidden snap-x snap-mandatory pb-4">
         {cards.map((card, i) => (
           <ScrollReveal key={card.eyebrow} delay={i * 0.08} className="min-w-[320px] md:min-w-[380px] snap-start">
-            <div className="relative rounded-lg min-h-[460px] flex flex-col border border-border card-hover-effect cursor-pointer overflow-hidden">
-              {/* Visual area with image */}
+            <div
+              className="relative rounded-lg min-h-[460px] flex flex-col cursor-pointer overflow-hidden group"
+              style={cardElevation}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px) translateZ(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.6), 0 20px 48px rgba(0,0,0,0.5), 0 40px 72px rgba(0,0,0,0.35)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateZ(0)'; e.currentTarget.style.boxShadow = cardElevation.boxShadow as string; }}
+            >
               <div className="relative flex-1 min-h-[200px]">
                 <img
                   src={card.image}
                   alt={card.eyebrow}
                   className="absolute inset-0 w-full h-full object-cover"
-                  style={{ filter: 'brightness(0.65)', borderRadius: 'inherit' }}
+                  style={{ filter: 'brightness(0.72) saturate(0.85)', borderRadius: 'inherit' }}
                   loading="lazy"
                 />
               </div>
-              <div className="relative z-[1] p-8 bg-ab-card">
+              <div className="relative z-[1] p-8" style={{ background: '#161617' }}>
                 <span className="text-eyebrow text-sm">{card.eyebrow}</span>
                 <h3 className="text-[21px] font-semibold text-foreground leading-[1.2] tracking-[-0.3px] mt-2 whitespace-pre-line">{card.heading}</h3>
                 <p className="text-[17px] text-foreground mt-2">{card.price}</p>
