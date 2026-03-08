@@ -1,92 +1,184 @@
-import { useEffect } from "react";
-import ScrollReveal from "../ScrollReveal";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const HeroSection = () => {
+  const [index, setIndex] = useState(0);
+
+  const words = useMemo(() => ["next.", "possible.", "real.", "yours.", "coming."], []);
+
   useEffect(() => {
-    const el = document.getElementById('hero-bg');
-    if (!el) return;
-    let raf: number;
-    import('three').then((T) => {
-      const renderer = new T.WebGLRenderer({ alpha: true, antialias: false });
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-      renderer.setSize(el.clientWidth, el.clientHeight);
-      Object.assign(renderer.domElement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', zIndex:'0' });
-      el.appendChild(renderer.domElement);
-      const scene = new T.Scene();
-      const cam = new T.OrthographicCamera(-1,1,1,-1,0,1);
-      const uni = { uTime: { value: 0 }, uRes: { value: new T.Vector2(el.clientWidth, el.clientHeight) } };
-      const mat = new T.ShaderMaterial({
-        transparent: true, uniforms: uni,
-        vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.);}`,
-        fragmentShader: `
-          uniform float uTime; uniform vec2 uRes; varying vec2 vUv;
-          void main(){
-            vec2 p=(vUv*2.-1.)*vec2(uRes.x/uRes.y,1.);
-            float t=uTime*.1;
-            vec2 q=p/(.4+.15*dot(p,p));
-            q+=.12*cos(t)-3.;
-            vec3 c=vec3(0.);
-            for(int i=0;i<3;i++){
-              vec2 r=sin(1.3*(q.yx*.85)+1.6*cos(q*.85));
-              float m=length(r+sin(4.*r.y*.85-2.5*t+float(i))/4.);
-              c[i]=1.-exp(-4./exp(5.*m));
-            }
-            c=clamp(c*.10,0.,1.);
-            float a=max(max(c.r,c.g),c.b);
-            gl_FragColor=vec4(a<.001?vec3(0.):c/a*a,a*.65);
-          }`
-      });
-      scene.add(new T.Mesh(new T.PlaneGeometry(2,2), mat));
-      const tick = () => { mat.uniforms.uTime.value += .016; renderer.render(scene, cam); raf = requestAnimationFrame(tick); };
-      tick();
-      const onResize = () => { renderer.setSize(el.clientWidth, el.clientHeight); uni.uRes.value.set(el.clientWidth, el.clientHeight); };
-      window.addEventListener('resize', onResize);
-    });
-    return () => { cancelAnimationFrame(raf); };
-  }, []);
+    const t = setTimeout(() => setIndex((i) => (i + 1) % words.length), 2000);
+    return () => clearTimeout(t);
+  }, [index, words]);
 
   return (
     <section
-      id="hero-bg"
-      className="min-h-screen bg-background pt-[88px] pb-10"
-      style={{ position: 'relative', overflow: 'hidden' }}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "120px 40px 80px",
+        background: "#000000",
+        position: "relative",
+        overflow: "hidden",
+      }}
     >
-      <div className="section-container text-center" style={{ position: 'relative', zIndex: 1 }}>
-        <ScrollReveal>
-          <span className="text-eyebrow block mb-2">Start Something™</span>
-        </ScrollReveal>
-        <ScrollReveal delay={0.08}>
-          <h1 className="text-[clamp(32px,5vw,48px)] font-bold tracking-[-1px] leading-[1.1] text-foreground max-w-[800px] mx-auto">
-            AI systems engineered for what's next.
-          </h1>
-        </ScrollReveal>
-        <ScrollReveal delay={0.16}>
-          <p className="text-[clamp(17px,2.5vw,21px)] font-normal text-ab-text-secondary mt-2 max-w-[700px] mx-auto">
-            AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
-          </p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.24}>
-          <div className="flex flex-col sm:flex-row gap-5 justify-center mt-6">
-            <a
-              href="mailto:autobitofficial.ph@gmail.com"
-              className="inline-flex items-center justify-center h-11 px-8 bg-primary text-primary-foreground rounded-full text-[17px] font-semibold hover:bg-ab-link-hover hover:text-background transition-all duration-200"
+      {/* Glass pill badge */}
+      <a
+        href="mailto:autobitofficial.ph@gmail.com"
+        style={{
+          marginBottom: "24px",
+          display: "flex",
+          width: "fit-content",
+          alignItems: "center",
+          gap: "8px",
+          borderRadius: "9999px",
+          border: "1px solid rgba(255,255,255,0.1)",
+          background: "rgba(255,255,255,0.05)",
+          backdropFilter: "blur(12px)",
+          padding: "6px 16px",
+          fontSize: "12px",
+          color: "rgba(255,255,255,0.6)",
+          transition: "all 0.3s ease",
+          textDecoration: "none",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+        }}
+      >
+        <span
+          style={{
+            height: "6px",
+            width: "6px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.4)",
+          }}
+          className="animate-pulse"
+        />
+        Start Something™
+      </a>
+
+      {/* Animated headline */}
+      <h1
+        style={{
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+          fontSize: "clamp(40px, 6vw, 72px)",
+          fontWeight: 700,
+          letterSpacing: "-0.03em",
+          lineHeight: 1.08,
+          color: "#ffffff",
+          textAlign: "center",
+          maxWidth: "820px",
+          margin: "0 auto",
+        }}
+      >
+        AI systems engineered for what's{" "}
+        <span
+          style={{
+            display: "inline-block",
+            position: "relative",
+            minWidth: "180px",
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={words[index]}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.38, ease: [0.25, 0.1, 0.25, 1] }}
+              style={{ display: "inline-block", color: "#ffffff" }}
             >
-              Start a project
-            </a>
-            <a
-              href="/projects"
-              className="inline-flex items-center justify-center text-[17px] text-primary hover:text-ab-link-hover transition-colors"
-            >
-              See our work →
-            </a>
-          </div>
-        </ScrollReveal>
-        <ScrollReveal delay={0.32}>
-          <div className="mx-auto mt-10 max-w-[800px] min-h-[400px] rounded-lg bg-ab-card border border-border flex items-center justify-center">
-            <span className="text-ab-text-muted text-sm" />
-          </div>
-        </ScrollReveal>
+              {words[index]}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </h1>
+
+      {/* Subheading */}
+      <p
+        style={{
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+          fontSize: "19px",
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.55)",
+          textAlign: "center",
+          maxWidth: "520px",
+          margin: "20px auto 0",
+          lineHeight: 1.5,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
+      </p>
+
+      {/* CTA buttons */}
+      <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "32px" }}>
+        <a
+          href="mailto:autobitofficial.ph@gmail.com"
+          style={{
+            background: "#2997ff",
+            color: "#ffffff",
+            padding: "12px 28px",
+            borderRadius: "980px",
+            fontSize: "15px",
+            fontWeight: 600,
+            textDecoration: "none",
+            transition: "all 0.2s ease",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = "0.9";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
+        >
+          Start a project
+        </a>
+        <a
+          href="/projects"
+          style={{
+            background: "transparent",
+            color: "#2997ff",
+            padding: "12px 28px",
+            borderRadius: "980px",
+            fontSize: "15px",
+            fontWeight: 600,
+            textDecoration: "none",
+            transition: "all 0.2s ease",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "rgba(41,151,255,0.8)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "#2997ff";
+          }}
+        >
+          See our work →
+        </a>
       </div>
+
+      {/* Trust line */}
+      <p
+        style={{
+          fontSize: "12px",
+          color: "rgba(255,255,255,0.25)",
+          textAlign: "center",
+          marginTop: "20px",
+          letterSpacing: "0.01em",
+        }}
+      >
+        50% deposit to start · Balance on delivery · No retainers
+      </p>
     </section>
   );
 };
