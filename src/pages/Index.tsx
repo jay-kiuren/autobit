@@ -36,6 +36,7 @@ const Index = () => {
           subheading="Open-core. Decentralized. Built for the real world."
           ctaPrimary={{ text: "Learn more", href: "/projects#axonis" }}
           ctaSecondary={{ text: "View on GitHub →", href: "https://github.com/gnobob/AXONIS-Platform" }}
+          image="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80"
         />
         <ServicesGrid />
         <ServicesScrollRow />
