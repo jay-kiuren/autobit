@@ -30,11 +30,10 @@ const footerColumns = [
       { text: "Team", href: "/team" },
       { text: "Process", href: "/process" },
       { text: "Pricing", href: "/pricing" },
-      { text: "Platform", href: "/platform" },
     ],
   },
   {
-    heading: "Platform",
+    heading: "Open Source",
     links: [
       { text: "AXONIS on GitHub", href: "https://github.com/gnobob/AXONIS-Platform", external: true },
       { text: "Documentation", href: "/docs" },
