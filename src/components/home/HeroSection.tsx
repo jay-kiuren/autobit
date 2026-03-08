@@ -1,8 +1,24 @@
 import ScrollReveal from "../ScrollReveal";
+import ColorBends from "../ColorBends";
 
 const HeroSection = () => (
-  <section className="min-h-[600px] bg-background pt-[88px] pb-10">
-    <div className="section-container text-center">
+  <section className="min-h-[600px] bg-background pt-[88px] pb-10 relative overflow-hidden">
+    {/* Living dark texture background */}
+    <div className="absolute inset-0 z-0 pointer-events-none">
+      <ColorBends
+        colors={["#1a1a1a", "#2a2a2a", "#0a0a0a", "#111111"]}
+        speed={0.15}
+        rotation={45}
+        transparent={true}
+        warpStrength={0.8}
+        frequency={0.9}
+        mouseInfluence={0.4}
+        parallax={0.3}
+        noise={0.04}
+      />
+    </div>
+
+    <div className="section-container text-center relative z-[1]">
       <ScrollReveal>
         <span className="text-eyebrow block mb-2">Start Something™</span>
       </ScrollReveal>

@@ -153,4 +153,23 @@
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
+
+  /* Nav link hover: subtle bg pill, zero border/outline */
+  .nav-link-item {
+    transition: background-color 0.2s ease;
+    border: none;
+    outline: none;
+  }
+  .nav-link-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+  .nav-link-item:focus,
+  .nav-link-item:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border: none;
+  }
 }

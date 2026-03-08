@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -31,21 +31,32 @@ const navItems = [
   { label: "Pricing", href: "/pricing", type: "link", badge: "Coming soon" },
 ];
 
-const Navbar = () => {
+export const useNavDropdownActive = () => {
+  const [active, setActive] = useState(false);
+  return { active, setActive };
+};
+
+const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => void }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const openDropdown = (label: string) => {
+  const openDropdown = useCallback((label: string) => {
     clearTimeout(timeoutRef.current);
     setActiveDropdown(label);
-  };
+  }, []);
 
-  const closeDropdown = () => {
+  const closeDropdown = useCallback(() => {
     timeoutRef.current = setTimeout(() => setActiveDropdown(null), 150);
-  };
+  }, []);
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
+
+  useEffect(() => {
+    onDropdownChange?.(!!activeDropdown);
+  }, [activeDropdown, onDropdownChange]);
+
+  const isDropdownOpen = !!activeDropdown;
 
   return (
     <>
@@ -66,7 +77,7 @@ const Navbar = () => {
               >
                 <Link
                   to={item.href}
-                  className="text-xs font-normal text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded px-2 py-1 transition-colors duration-200 flex items-center gap-1.5"
+                  className="nav-link-item text-xs font-normal text-foreground rounded px-2 py-1 flex items-center gap-1.5"
                 >
                   {item.label}
                   {item.badge && (
@@ -101,78 +112,88 @@ const Navbar = () => {
       </nav>
 
       {/* Mega dropdown overlay */}
-      {activeDropdown && (
-        <div
-          className="fixed inset-0 bg-[rgba(0,0,0,0.48)] z-[998] pointer-events-none transition-opacity duration-300"
-          style={{ top: 44 }}
-        />
-      )}
+      <div
+        className="fixed inset-0 bg-[rgba(0,0,0,0.48)] z-[998] pointer-events-none"
+        style={{
+          top: 44,
+          opacity: isDropdownOpen ? 1 : 0,
+          transition: 'opacity 0.28s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      />
 
       {/* Services mega dropdown */}
-      {activeDropdown === "Services" && (
-        <div
-          className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
-          onMouseEnter={() => openDropdown("Services")}
-          onMouseLeave={closeDropdown}
-        >
-          <div className="section-container py-8 grid grid-cols-3 gap-12">
-            <div>
-              <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">What we build</h4>
-              {servicesLinks.map((l) => (
-                <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                  <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                  <span className="block text-xs text-ab-text-muted">{l.desc}</span>
-                </Link>
-              ))}
-            </div>
-            <div>
-              <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">Specialized</h4>
-              {specializedLinks.map((l) => (
-                <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                  <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                  <span className="block text-xs text-ab-text-muted">{l.desc}</span>
-                </Link>
-              ))}
-            </div>
-            <div className="bg-ab-card rounded-md p-5">
-              <span className="text-xs text-ab-text-muted">Latest build</span>
-              <h5 className="text-foreground font-semibold mt-1">AXONIS Platform</h5>
-              <p className="text-xs text-ab-text-muted mt-1">Open-core AI safety OS for critical infrastructure.</p>
-              <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">Active Development</span>
-            </div>
+      <div
+        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
+        onMouseEnter={() => openDropdown("Services")}
+        onMouseLeave={closeDropdown}
+        style={{
+          opacity: activeDropdown === "Services" ? 1 : 0,
+          transform: activeDropdown === "Services" ? 'translateY(0)' : 'translateY(-6px)',
+          transition: 'opacity 0.28s cubic-bezier(0.4,0,0.2,1), transform 0.28s cubic-bezier(0.4,0,0.2,1)',
+          pointerEvents: activeDropdown === "Services" ? 'auto' : 'none',
+        }}
+      >
+        <div className="section-container py-8 grid grid-cols-3 gap-12">
+          <div>
+            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">What we build</h4>
+            {servicesLinks.map((l) => (
+              <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
+                <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
+                <span className="block text-xs text-ab-text-muted">{l.desc}</span>
+              </Link>
+            ))}
+          </div>
+          <div>
+            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">Specialized</h4>
+            {specializedLinks.map((l) => (
+              <Link key={l.label} to={l.href} className="block py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
+                <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
+                <span className="block text-xs text-ab-text-muted">{l.desc}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="bg-ab-card rounded-md p-5">
+            <span className="text-xs text-ab-text-muted">Latest build</span>
+            <h5 className="text-foreground font-semibold mt-1">AXONIS Platform</h5>
+            <p className="text-xs text-ab-text-muted mt-1">Open-core AI safety OS for critical infrastructure.</p>
+            <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">Active Development</span>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Projects mega dropdown */}
-      {activeDropdown === "Projects" && (
-        <div
-          className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
-          onMouseEnter={() => openDropdown("Projects")}
-          onMouseLeave={closeDropdown}
-        >
-          <div className="section-container py-8 grid grid-cols-2 gap-16">
-            <div>
-              <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">All projects</h4>
-              {projectLinks.map((l) => (
-                <Link key={l.label} to={l.href} className="flex items-center justify-between py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
-                  <div>
-                    <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
-                    <span className="block text-xs text-ab-text-muted">{l.desc}</span>
-                  </div>
-                  {l.badge && <span className="text-[10px] bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">{l.badge}</span>}
-                </Link>
-              ))}
-            </div>
-            <div className="bg-ab-card rounded-md p-5">
-              <span className="text-xs text-ab-text-muted">Flagship</span>
-              <h5 className="text-foreground font-semibold mt-1">EARLYNX</h5>
-              <p className="text-xs text-ab-text-muted mt-2">Nationally awarded AI diagnostic prototype. Patent held. National competition winner.</p>
-              <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">National Winner</span>
-            </div>
+      <div
+        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
+        onMouseEnter={() => openDropdown("Projects")}
+        onMouseLeave={closeDropdown}
+        style={{
+          opacity: activeDropdown === "Projects" ? 1 : 0,
+          transform: activeDropdown === "Projects" ? 'translateY(0)' : 'translateY(-6px)',
+          transition: 'opacity 0.28s cubic-bezier(0.4,0,0.2,1), transform 0.28s cubic-bezier(0.4,0,0.2,1)',
+          pointerEvents: activeDropdown === "Projects" ? 'auto' : 'none',
+        }}
+      >
+        <div className="section-container py-8 grid grid-cols-2 gap-16">
+          <div>
+            <h4 className="text-xs font-semibold tracking-[0.5px] uppercase text-ab-text-muted mb-3">All projects</h4>
+            {projectLinks.map((l) => (
+              <Link key={l.label} to={l.href} className="flex items-center justify-between py-2.5 border-b border-[rgba(255,255,255,0.05)] group">
+                <div>
+                  <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-all duration-200 group-hover:translate-x-1 inline-block">{l.label}</span>
+                  <span className="block text-xs text-ab-text-muted">{l.desc}</span>
+                </div>
+                {l.badge && <span className="text-[10px] bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">{l.badge}</span>}
+              </Link>
+            ))}
+          </div>
+          <div className="bg-ab-card rounded-md p-5">
+            <span className="text-xs text-ab-text-muted">Flagship</span>
+            <h5 className="text-foreground font-semibold mt-1">EARLYNX</h5>
+            <p className="text-xs text-ab-text-muted mt-2">Nationally awarded AI diagnostic prototype. Patent held. National competition winner.</p>
+            <span className="inline-block mt-3 text-xs bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">National Winner</span>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Mobile menu */}
       {mobileOpen && (

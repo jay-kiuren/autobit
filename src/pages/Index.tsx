@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
@@ -10,36 +11,50 @@ import ProcessSection from "@/components/home/ProcessSection";
 import Testimonials from "@/components/home/Testimonials";
 import FinalCTA from "@/components/home/FinalCTA";
 
-const Index = () => (
-  <>
-    <Navbar />
-    <main>
-      <HeroSection />
-      <StatsBar />
-      <FeaturedProject
-        eyebrow="New · AXONIS Platform"
-        heading={"The AI safety OS for\ncritical infrastructure."}
-        subheading="Open-core. Decentralized. Built for the real world."
-        ctaPrimary={{ text: "Learn more", href: "/projects#axonis" }}
-        ctaSecondary={{ text: "View on GitHub →", href: "https://github.com/gnobob/AXONIS-Platform" }}
-      />
-      <ServicesGrid />
-      <ServicesScrollRow />
-      <FeaturedProject
-        eyebrow="EARLYNX — Patented"
-        heading={"AI medical screening.\nNationally awarded."}
-        subheading="Non-invasive AI diagnostic device. Patent held. National competition winner."
-        ctaPrimary={{ text: "Learn more", href: "/projects#earlynx" }}
-        ctaSecondary={{ text: "See all projects →", href: "/projects" }}
-        badge="National Winner"
-      />
-      <CaseStudies />
-      <ProcessSection />
-      <Testimonials />
-      <FinalCTA />
-    </main>
-    <Footer />
-  </>
-);
+const Index = () => {
+  const [navDropdownActive, setNavDropdownActive] = useState(false);
+
+  const handleDropdownChange = useCallback((active: boolean) => {
+    setNavDropdownActive(active);
+  }, []);
+
+  return (
+    <>
+      <Navbar onDropdownChange={handleDropdownChange} />
+      <main
+        style={{
+          filter: navDropdownActive ? 'blur(8px)' : 'none',
+          opacity: navDropdownActive ? 0.45 : 1,
+          transition: 'filter 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      >
+        <HeroSection />
+        <StatsBar />
+        <FeaturedProject
+          eyebrow="New · AXONIS Platform"
+          heading={"The AI safety OS for\ncritical infrastructure."}
+          subheading="Open-core. Decentralized. Built for the real world."
+          ctaPrimary={{ text: "Learn more", href: "/projects#axonis" }}
+          ctaSecondary={{ text: "View on GitHub →", href: "https://github.com/gnobob/AXONIS-Platform" }}
+        />
+        <ServicesGrid />
+        <ServicesScrollRow />
+        <FeaturedProject
+          eyebrow="EARLYNX — Patented"
+          heading={"AI medical screening.\nNationally awarded."}
+          subheading="Non-invasive AI diagnostic device. Patent held. National competition winner."
+          ctaPrimary={{ text: "Learn more", href: "/projects#earlynx" }}
+          ctaSecondary={{ text: "See all projects →", href: "/projects" }}
+          badge="National Winner"
+        />
+        <CaseStudies />
+        <ProcessSection />
+        <Testimonials />
+        <FinalCTA />
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 export default Index;
