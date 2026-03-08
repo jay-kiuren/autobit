@@ -40,7 +40,7 @@ const ServicesScrollRow = () => (
                   loading="lazy"
                 />
               </div>
-              <div className="relative z-[1] p-8" style={{ background: '#161617' }}>
+              <div className="relative z-[1] p-8" style={{ background: '#1c1c1e' }}>
                 <span className="text-eyebrow text-sm">{card.eyebrow}</span>
                 <h3 className="text-[21px] font-semibold text-foreground leading-[1.2] tracking-[-0.3px] mt-2 whitespace-pre-line">{card.heading}</h3>
                 <p className="text-[17px] text-foreground mt-2">{card.price}</p>

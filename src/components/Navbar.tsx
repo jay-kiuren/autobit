@@ -98,7 +98,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>
             <img src={autobitIcon} alt="" width={20} height={20} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block', background: 'none', border: 'none', padding: 0 }} />
-            <span style={{ fontFamily: sfProDisplay, fontSize: '17px', fontWeight: 600, letterSpacing: '0.04em', color: '#ffffff', background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>AUTOBIT</span>
+            <span style={{ fontFamily: sfProDisplay, fontSize: '13px', fontWeight: 700, letterSpacing: '0.12em', color: '#ffffff', textTransform: 'uppercase' }}>AUTOBIT</span>
           </Link>
 
           {/* Center links — desktop */}
