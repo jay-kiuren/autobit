@@ -70,7 +70,7 @@ const HeroSection = () => {
           fontSize: "clamp(42px, 6vw, 76px)",
           fontWeight: 700,
           letterSpacing: "-0.03em",
-          lineHeight: 1.08,
+          lineHeight: 1.06,
           color: "#ffffff",
           textAlign: "center",
           maxWidth: "820px",
