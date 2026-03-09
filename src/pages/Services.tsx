@@ -3,38 +3,225 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 
-const cardElevation: React.CSSProperties = {
-  background: '#1c1c1e',
-  border: '1px solid rgba(255,255,255,0.00)',
-  borderTop: '1px solid rgba(255,255,255,0.10)',
-  boxShadow: '0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08)',
-  transform: 'translateZ(0)',
-  transition: 'all 0.38s cubic-bezier(0.25,0.1,0.25,1)',
-};
-
-const hoverIn = (e: React.MouseEvent<HTMLDivElement>) => {
-  e.currentTarget.style.borderTop = '1px solid rgba(255,255,255,0.18)';
-  e.currentTarget.style.boxShadow = '0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.12)';
-  e.currentTarget.style.transform = 'translateY(-4px)';
-};
-const hoverOut = (e: React.MouseEvent<HTMLDivElement>) => {
-  e.currentTarget.style.borderTop = '1px solid rgba(255,255,255,0.10)';
-  e.currentTarget.style.boxShadow = cardElevation.boxShadow as string;
-  e.currentTarget.style.transform = 'translateZ(0)';
-};
-
 const services = [
-  { id: "automation", eyebrow: "Workflow Automation", heading: "Eliminate manual work.", desc: "Zapier, Make, n8n pipelines. We design and deploy automation systems that remove repetitive tasks from your operation.", price: "From $800 · 2–5 days", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" },
-  { id: "ai-agents", eyebrow: "AI Agents", heading: "Custom AI that works 24/7.", desc: "Purpose-built AI agents for customer support, lead qualification, data processing, and internal operations.", price: "From $1,200 · 5–10 days", image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80" },
-  { id: "web-apps", eyebrow: "Web Applications", heading: "Dashboards, CRMs, and SaaS tools.", desc: "React, Firebase, Vercel. Full-stack web applications built for speed, scale, and clean UX.", price: "From $1,500 · 7–14 days", image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" },
-  { id: "systems", eyebrow: "Business Systems", heading: "One system. Your entire operation.", desc: "End-to-end operational software — inventory, HR, finance, scheduling — unified in one platform.", price: "From $3,000 · 14–30 days", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" },
-  { id: "robotics", eyebrow: "Robotics & Physical AI", heading: "Edge AI. Industrial-grade.", desc: "PLC integration, sensor fusion, computer vision, and embedded AI for physical systems and industrial environments.", price: "From $3,000 · 14–30 days", image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80" },
-  { id: "mobile", eyebrow: "Mobile Applications", heading: "iOS + Android. Shipped fast.", desc: "React Native mobile apps — cross-platform, performant, and production-ready.", price: "From $2,000 · 10–21 days", image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" },
+  {
+    id: "automation",
+    eyebrow: "Workflow Automation",
+    heading: "Eliminate manual work.",
+    desc: "Zapier, Make, n8n pipelines that remove repetitive tasks from your operation.",
+    price: "From $800",
+    timeline: "2–5 days",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85",
+    featured: true,
+  },
+  {
+    id: "ai-agents",
+    eyebrow: "AI Agents",
+    heading: "Custom AI that works 24/7.",
+    desc: "Purpose-built agents for support, lead qualification, and internal ops.",
+    price: "From $1,200",
+    timeline: "5–10 days",
+    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=900&q=85",
+  },
+  {
+    id: "web-apps",
+    eyebrow: "Web Applications",
+    heading: "Dashboards, CRMs, and SaaS tools.",
+    desc: "React, Firebase, Vercel. Full-stack apps built for speed, scale, and clean UX.",
+    price: "From $1,500",
+    timeline: "7–14 days",
+    image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&q=85",
+  },
+  {
+    id: "systems",
+    eyebrow: "Business Systems",
+    heading: "One system. Your entire operation.",
+    desc: "Inventory, HR, finance, scheduling — unified in one platform.",
+    price: "From $3,000",
+    timeline: "14–30 days",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=85",
+    wide: true,
+  },
+  {
+    id: "robotics",
+    eyebrow: "Robotics & Physical AI",
+    heading: "Edge AI. Industrial-grade.",
+    desc: "PLC integration, computer vision, and embedded AI for physical systems.",
+    price: "From $3,000",
+    timeline: "14–30 days",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=900&q=85",
+  },
+  {
+    id: "mobile",
+    eyebrow: "Mobile Applications",
+    heading: "iOS + Android. Shipped fast.",
+    desc: "React Native — cross-platform, performant, and production-ready.",
+    price: "From $2,000",
+    timeline: "10–21 days",
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=85",
+  },
 ];
+
+// Shared card styles
+const cardBase: React.CSSProperties = {
+  position: 'relative',
+  overflow: 'hidden',
+  borderRadius: '20px',
+  cursor: 'pointer',
+  background: '#111',
+  transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
+};
+
+const ServiceCard = ({ s, height = 420 }: { s: typeof services[0]; height?: number }) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      id={s.id}
+      style={{
+        ...cardBase,
+        height,
+        transform: hovered ? 'scale(1.018)' : 'scale(1)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Background image */}
+      <img
+        src={s.image}
+        alt={s.eyebrow}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          filter: `brightness(${hovered ? 0.45 : 0.38}) saturate(0.7)`,
+          transition: 'filter 0.5s cubic-bezier(0.23,1,0.32,1), transform 0.6s cubic-bezier(0.23,1,0.32,1)',
+          transform: hovered ? 'scale(1.06)' : 'scale(1)',
+        }}
+        loading="lazy"
+      />
+
+      {/* Gradient overlay — heavier at bottom */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.08) 100%)',
+      }} />
+
+      {/* Content */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: '32px',
+      }}>
+        {/* Eyebrow pill */}
+        <span style={{
+          display: 'inline-block',
+          width: 'fit-content',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.55)',
+          marginBottom: '10px',
+        }}>
+          {s.eyebrow}
+        </span>
+
+        <h3 style={{
+          fontSize: s.featured ? 'clamp(24px,3vw,34px)' : '22px',
+          fontWeight: 700,
+          letterSpacing: '-0.5px',
+          lineHeight: 1.15,
+          color: '#fff',
+          margin: 0,
+        }}>
+          {s.heading}
+        </h3>
+
+        {/* Description — fades in on hover */}
+        <p style={{
+          fontSize: '15px',
+          lineHeight: 1.55,
+          color: 'rgba(255,255,255,0.72)',
+          marginTop: '10px',
+          maxWidth: '480px',
+          opacity: hovered ? 1 : 0,
+          transform: hovered ? 'translateY(0)' : 'translateY(6px)',
+          transition: 'opacity 0.38s ease, transform 0.38s ease',
+        }}>
+          {s.desc}
+        </p>
+
+        {/* Price + CTA row */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '18px',
+          flexWrap: 'wrap',
+          gap: '12px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#fff',
+            }}>
+              {s.price}
+            </span>
+            <span style={{
+              fontSize: '13px',
+              color: 'rgba(255,255,255,0.42)',
+              fontWeight: 400,
+            }}>
+              · {s.timeline}
+            </span>
+          </div>
+          <a
+            href="mailto:autobitofficial.ph@gmail.com"
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.85)',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              borderBottom: '1px solid rgba(255,255,255,0.25)',
+              paddingBottom: '1px',
+              transition: 'color 0.2s, border-color 0.2s',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLAnchorElement).style.color = '#fff';
+              (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.7)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.85)';
+              (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.25)';
+            }}
+          >
+            Get a quote →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Services = () => {
   const [navDropdownActive, setNavDropdownActive] = useState(false);
   const handleDropdownChange = useCallback((active: boolean) => setNavDropdownActive(active), []);
+
+  const [featured, ...rest] = services;
+  const row1 = rest.slice(0, 2);       // AI Agents, Web Apps
+  const wide = rest.find(s => s.wide); // Business Systems
+  const row2 = rest.filter(s => !s.wide && rest.indexOf(s) >= 2); // Robotics, Mobile
 
   return (
     <>
@@ -46,50 +233,68 @@ const Services = () => {
           transition: 'filter 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s cubic-bezier(0.4,0,0.2,1)',
         }}
       >
-        <section className="bg-background pt-28 pb-20">
+        <section className="bg-background pt-28 pb-24">
           <div className="section-container">
+
+            {/* Header */}
             <ScrollReveal>
               <span className="text-eyebrow block mb-2">What we do</span>
-              <h1 className="text-[clamp(32px,5vw,48px)] font-bold tracking-[-1px] leading-[1.1] text-foreground">
+              <h1 style={{
+                fontSize: 'clamp(36px,5vw,52px)',
+                fontWeight: 700,
+                letterSpacing: '-1.5px',
+                lineHeight: 1.08,
+                color: 'var(--foreground)',
+                margin: 0,
+              }}>
                 Services
               </h1>
-              <p className="text-body mt-3 max-w-[600px]">
-                Engineering services from automation to full-stack systems. Fixed pricing. Fast delivery.
+              <p className="text-body mt-3" style={{ maxWidth: 520 }}>
+                Engineering services from automation to full-stack systems.<br />Fixed pricing. Fast delivery.
               </p>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-              {services.map((s, i) => (
-                <ScrollReveal key={s.id} delay={i * 0.08}>
-                  <div
-                    id={s.id}
-                    className="rounded-lg overflow-hidden cursor-pointer group flex flex-col"
-                    style={cardElevation}
-                    onMouseEnter={hoverIn}
-                    onMouseLeave={hoverOut}
-                  >
-                    <div className="relative min-h-[200px]">
-                      <img
-                        src={s.image}
-                        alt={s.eyebrow}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        style={{ filter: 'brightness(0.72) saturate(0.85)' }}
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="p-8" style={{ background: '#1c1c1e' }}>
-                      <span className="text-eyebrow text-sm">{s.eyebrow}</span>
-                      <h3 className="text-[21px] font-semibold text-foreground leading-[1.2] tracking-[-0.3px] mt-2">{s.heading}</h3>
-                      <p className="text-body text-sm mt-2">{s.desc}</p>
-                      <p className="text-foreground text-[17px] mt-3">{s.price}</p>
-                      <div className="flex gap-4 mt-4">
-                        <span className="text-link-blue text-[17px] cursor-pointer">Learn more</span>
-                        <a href="mailto:autobitofficial.ph@gmail.com" className="text-link-blue text-[17px] cursor-pointer">Get a quote →</a>
-                      </div>
-                    </div>
-                  </div>
+            {/* Bento grid */}
+            <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              {/* Row 0: Featured full-width */}
+              <ScrollReveal delay={0.05}>
+                <ServiceCard s={featured} height={480} />
+              </ScrollReveal>
+
+              {/* Row 1: 2-col */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: 16,
+              }}>
+                {row1.map((s, i) => (
+                  <ScrollReveal key={s.id} delay={0.1 + i * 0.07}>
+                    <ServiceCard s={s} height={380} />
+                  </ScrollReveal>
+                ))}
+              </div>
+
+              {/* Row 2: Wide card (Business Systems) */}
+              {wide && (
+                <ScrollReveal delay={0.18}>
+                  <ServiceCard s={wide} height={360} />
                 </ScrollReveal>
-              ))}
+              )}
+
+              {/* Row 3: 2-col */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: 16,
+              }}>
+                {row2.map((s, i) => (
+                  <ScrollReveal key={s.id} delay={0.22 + i * 0.07}>
+                    <ServiceCard s={s} height={360} />
+                  </ScrollReveal>
+                ))}
+              </div>
+
             </div>
           </div>
         </section>
