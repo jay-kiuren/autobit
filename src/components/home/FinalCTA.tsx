@@ -7,19 +7,15 @@ const FinalCTA = () => {
 
   return (
     <section style={{
-      width: '100%', background: '#000000', minHeight: '50vh',
+      width: '100%', background: '#000000', minHeight: '60vh',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: '100px 40px', borderTop: '1px solid rgba(255,255,255,0.06)', position: 'relative', overflow: 'hidden',
-      backgroundImage: [
-        'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(41,151,255,0.14), transparent 65%)',
-        'radial-gradient(ellipse 40% 40% at 30% 80%, rgba(41,151,255,0.06), transparent)',
-        'radial-gradient(ellipse 40% 40% at 70% 80%, rgba(41,151,255,0.06), transparent)',
-      ].join(', '),
     }}>
-      {/* Horizontal light beam */}
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 100% 80% at 50% 120%, rgba(41,151,255,0.22), transparent 60%)', pointerEvents: 'none', zIndex: 0 }} />
       <div style={{
-        position: 'absolute', left: '10%', right: '10%', top: '50%', height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(41,151,255,0.20), transparent)',
+        position: 'absolute', bottom: '35%', left: '50%', transform: 'translateX(-50%)',
+        width: '800px', height: '1px',
+        background: 'linear-gradient(to right, transparent, rgba(41,151,255,0.35), transparent)',
         pointerEvents: 'none', zIndex: 0,
       }} />
 
@@ -37,12 +33,12 @@ const FinalCTA = () => {
           onMouseEnter={() => setBtnHovered(true)}
           onMouseLeave={() => setBtnHovered(false)}
           style={{
-            background: '#2997ff', color: '#ffffff', padding: '18px 48px', borderRadius: '980px',
+            background: '#2997ff', color: '#ffffff', padding: '18px 52px', borderRadius: '980px',
             fontSize: '17px', fontWeight: 600, textDecoration: 'none', fontFamily: font,
             boxShadow: btnHovered
-              ? '0 0 60px rgba(41,151,255,0.50), 0 0 120px rgba(41,151,255,0.25)'
-              : '0 0 40px rgba(41,151,255,0.35), 0 0 80px rgba(41,151,255,0.15)',
-            transform: btnHovered ? 'scale(1.02)' : 'scale(1)',
+              ? '0 0 72px rgba(41,151,255,0.65), 0 0 140px rgba(41,151,255,0.30)'
+              : '0 0 48px rgba(41,151,255,0.45), 0 0 96px rgba(41,151,255,0.20)',
+            transform: btnHovered ? 'scale(1.03)' : 'scale(1)',
             transition: 'all 0.3s ease',
           }}
         >Start a project</a>

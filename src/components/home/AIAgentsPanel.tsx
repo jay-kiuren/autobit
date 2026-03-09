@@ -1,13 +1,14 @@
-import { Brain, Bot, Cpu, Network, Sparkles } from 'lucide-react';
+import { Brain, Bot, Cpu, Sparkles, Network, Zap } from 'lucide-react';
 
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 
-const floatingIcons = [
-  { Icon: Brain, top: '8%', left: '6%' },
-  { Icon: Bot, top: '15%', left: '90%' },
-  { Icon: Cpu, top: '70%', left: '4%' },
-  { Icon: Network, top: '80%', left: '85%' },
-  { Icon: Sparkles, top: '40%', left: '92%' },
+const scatterIcons = [
+  { Icon: Brain, top: '10%', right: '5%' },
+  { Icon: Bot, top: '60%', right: '15%' },
+  { Icon: Cpu, top: '30%', right: '25%' },
+  { Icon: Sparkles, top: '80%', right: '8%' },
+  { Icon: Network, top: '45%', right: '40%' },
+  { Icon: Zap, top: '15%', right: '45%' },
 ];
 
 const TypingDots = () => (
@@ -24,19 +25,19 @@ const TypingDots = () => (
 
 const AIAgentsPanel = () => (
   <section style={{
-    width: '100%', background: '#000000', padding: '100px 10%',
+    width: '100%', background: '#050508', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden',
   }}>
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 70% 80% at 100% 50%, rgba(130,80,255,0.12), transparent 65%)',pointerEvents:'none',zIndex:0}} />
-    {floatingIcons.map(({ Icon, top, left }, i) => (
-      <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(120,80,255,0.06)', pointerEvents: 'none', zIndex: 0 }} />
+    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 120% 80% at 110% 50%, rgba(130,80,255,0.18), transparent 55%)', pointerEvents: 'none', zIndex: 0 }} />
+    {scatterIcons.map(({ Icon, top, right }, i) => (
+      <Icon key={i} size={96} style={{ position: 'absolute', top, right, color: 'rgba(130,80,255,0.05)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
     <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
       <div style={{ width: '55%' }}>
         <div style={{
           background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
-          padding: '32px', minHeight: '420px', display: 'flex', flexDirection: 'column',
+          padding: '32px', minHeight: '480px', display: 'flex', flexDirection: 'column',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
             <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', fontWeight: 600 }}>AUTOBIT Agent</span>
@@ -45,18 +46,18 @@ const AIAgentsPanel = () => (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
             {/* User bubble */}
             <div style={{ alignSelf: 'flex-end', maxWidth: '80%' }}>
-              <div style={{ background: 'rgba(120,80,255,0.12)', borderRadius: '14px 14px 2px 14px', padding: '12px 16px' }}>
+              <div style={{ background: 'rgba(130,80,255,0.15)', borderRadius: '14px 14px 2px 14px', padding: '12px 16px' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.5 }}>Summarize last week's sales and flag anything unusual.</span>
               </div>
             </div>
-            {/* Agent bubbles with purple left border */}
+            {/* Agent bubbles */}
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '2px solid rgba(120,80,255,0.30)' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '3px solid rgba(130,80,255,0.40)' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sales were up 12% vs prior week. 3 anomalies flagged: Order #4521 unusually large, 2 refunds in Electronics, Cart abandonment spike Thursday.</span>
               </div>
             </div>
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '2px solid rgba(120,80,255,0.30)' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '3px solid rgba(130,80,255,0.40)' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sending summary to Slack and flagging in CRM now.</span>
               </div>
             </div>

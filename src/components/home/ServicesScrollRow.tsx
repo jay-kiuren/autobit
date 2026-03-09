@@ -3,7 +3,7 @@ import { Code2, Database, Globe, Smartphone, Server, Shield, Terminal, Layers } 
 
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 
-const floatingIcons = [
+const scatterIcons = [
   { Icon: Code2, top: '5%', left: '3%' },
   { Icon: Database, top: '12%', left: '88%' },
   { Icon: Globe, top: '40%', left: '95%' },
@@ -16,14 +16,12 @@ const floatingIcons = [
 
 const BrowserFrame = () => (
   <div style={{ background: '#080808', borderRadius: '8px', marginTop: '20px', border: '1px solid rgba(255,255,255,0.06)', minHeight: '160px', overflow: 'hidden' }}>
-    {/* Header bar */}
     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,60,60,0.6)' }} />
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,200,0,0.6)' }} />
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(0,200,0,0.6)' }} />
       <div style={{ flex: 1, height: 18, background: 'rgba(255,255,255,0.06)', borderRadius: 4, marginLeft: 8 }} />
     </div>
-    {/* Body: sidebar + content */}
     <div style={{ display: 'flex', height: '130px' }}>
       <div style={{ width: '25%', background: '#111', borderRight: '1px solid rgba(255,255,255,0.04)', padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
         <div style={{ height: 6, width: '80%', background: 'rgba(255,255,255,0.08)', borderRadius: 2 }} />
@@ -41,7 +39,6 @@ const BrowserFrame = () => (
 
 const DataTable = () => (
   <div style={{ marginTop: '20px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', minHeight: '160px' }}>
-    {/* Header row */}
     <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', padding: '8px 14px', gap: '16px' }}>
       <span style={{ fontFamily: font, fontSize: '10px', color: 'rgba(255,255,255,0.40)', flex: 1 }}>STATUS</span>
       <span style={{ fontFamily: font, fontSize: '10px', color: 'rgba(255,255,255,0.40)', flex: 2 }}>ITEM</span>
@@ -116,9 +113,13 @@ const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
       style={{
         gridRow: idx < 2 ? '1 / 2' : '2 / 3',
         gridColumn: idx % 2 === 0 ? '1 / 2' : '2 / 3',
-        background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
-        padding: '36px', overflow: 'hidden', position: 'relative', zIndex: 1, minHeight: idx < 2 ? '320px' : undefined,
-        transform: hovered ? 'translateY(-3px)' : 'none',
+        background: '#0a0f0d',
+        borderRadius: '16px',
+        border: hovered ? '1px solid rgba(0,210,150,0.10)' : '1px solid rgba(0,210,150,0.10)',
+        borderTop: hovered ? '1px solid rgba(0,210,150,0.45)' : '1px solid rgba(0,210,150,0.25)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+        padding: '36px', overflow: 'hidden', position: 'relative', zIndex: 1, minHeight: '300px',
+        transform: hovered ? 'translateY(-6px)' : 'none',
         transition: 'all 0.3s cubic-bezier(0.25,0.1,0.25,1)',
       }}
     >
@@ -137,13 +138,13 @@ const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
 
 const ServicesScrollRow = () => (
   <section style={{
-    width: '100%', background: '#000000', padding: '100px 10%',
+    width: '100%', background: '#02080a', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,200,150,0.06), transparent 60%), radial-gradient(ellipse 40% 40% at 0% 100%, rgba(0,200,150,0.04), transparent)',
     position: 'relative', overflow: 'hidden',
   }}>
-    {floatingIcons.map(({ Icon, top, left }, i) => (
-      <Icon key={i} size={64} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', zIndex: 0 }} />
+    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,210,150,0.12), transparent 55%)', pointerEvents: 'none', zIndex: 0 }} />
+    {scatterIcons.map(({ Icon, top, left }, i) => (
+      <Icon key={i} size={80} style={{ position: 'absolute', top, left, color: 'rgba(0,210,150,0.04)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
     <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', marginBottom: '48px', position: 'relative', zIndex: 1 }}>Every layer of your stack.</h2>
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: '16px', position: 'relative', zIndex: 1 }}>

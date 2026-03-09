@@ -10,9 +10,10 @@ const stats = [
 const StatsBar = () => (
   <section style={{
     width: '100%',
-    background: '#000000',
-    borderTop: '1px solid rgba(255,255,255,0.10)',
-    padding: '28px 10%',
+    background: '#0a0a0a',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    borderBottom: '1px solid rgba(255,255,255,0.08)',
+    padding: '32px 10%',
   }}>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((s, i) => (

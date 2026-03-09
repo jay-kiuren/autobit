@@ -15,9 +15,15 @@ const EarlynxPanel = () => (
   <section style={{
     width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.05), transparent 70%)',
-    position: 'relative', overflow: 'hidden',
+    position: 'relative', overflow: 'hidden', minHeight: '60vh',
   }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,255,255,0.06), transparent 60%)', pointerEvents: 'none', zIndex: 0 }} />
+    <div style={{
+      position: 'absolute', top: '50%', left: '50%', transform: 'translateX(-50%) translateY(-50%)',
+      width: '900px', height: '1px',
+      background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent)',
+      pointerEvents: 'none', zIndex: 0,
+    }} />
     {floatingIcons.map(({ Icon, top, left }, i) => (
       <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.04)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
@@ -40,8 +46,8 @@ const EarlynxPanel = () => (
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px' }}>
         {pills.map(p => (
           <span key={p} style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.10)',
-            borderRadius: '980px', padding: '10px 24px', fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: font,
+            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: '980px', padding: '10px 28px', fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: font,
           }}>{p}</span>
         ))}
       </div>

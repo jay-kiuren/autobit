@@ -14,7 +14,7 @@ const FlowNode = ({ label, dotColor }: { label: string; dotColor: string }) => (
   <div style={{
     display: 'flex', alignItems: 'center', gap: '10px',
     background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '980px', padding: '14px 24px', minWidth: '120px',
+    borderRadius: '980px', padding: '12px 20px', minWidth: '130px',
   }}>
     <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
     <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', whiteSpace: 'nowrap' }}>{label}</span>
@@ -27,12 +27,12 @@ const WorkflowPanel = () => (
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden',
   }}>
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 60% 80% at -10% 50%, rgba(255,255,255,0.25), transparent 55%)',pointerEvents:'none',zIndex:0}} />
+    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 120% 80% at -10% 50%, rgba(41,151,255,0.18), transparent 55%)', pointerEvents: 'none', zIndex: 0 }} />
     {floatingIcons.map(({ Icon, top, left, rotate }, i) => (
       <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(41,151,255,0.06)', pointerEvents: 'none', zIndex: 0, transform: `rotate(${rotate})` }} />
     ))}
     <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
-      <div style={{ width: '45%' }}>
+      <div style={{ width: '45%', padding: '80px 0' }}>
         <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>Workflow Automation</p>
         <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>Eliminate manual work.</h2>
         <p style={{ fontFamily: font, fontSize: '17px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.6, maxWidth: '400px', marginTop: '16px' }}>
@@ -47,11 +47,10 @@ const WorkflowPanel = () => (
       <div style={{ width: '55%' }}>
         <div style={{
           background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
-          padding: '32px', minHeight: '420px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '32px',
+          padding: '32px', minHeight: '480px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '32px',
           position: 'relative',
         }}>
-          {/* Connection line behind nodes */}
-          <div style={{ position: 'absolute', top: '50%', left: '32px', right: '32px', height: '1px', background: 'rgba(41,151,255,0.15)', zIndex: 0 }} />
+          <div style={{ position: 'absolute', top: '50%', left: '32px', right: '32px', height: '2px', background: 'linear-gradient(90deg, rgba(41,151,255,0.20), rgba(41,151,255,0.20))', zIndex: 0 }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
             <FlowNode label="Gmail" dotColor="#ff453a" />
             <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px' }}>→</span>
