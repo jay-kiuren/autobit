@@ -196,6 +196,7 @@ const HeroSection = () => {
       >
         50% deposit to start · Balance on delivery · No retainers
       </p>
+      </div>
     </section>
   );
 };
