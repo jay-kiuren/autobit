@@ -24,6 +24,9 @@ const HeroSection = () => {
         overflow: "hidden",
       }}
     >
+      {/* Top glow beam */}
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.09), transparent 60%)',pointerEvents:'none',zIndex:0}} />
+      
       {/* White atmospheric glow background */}
       <div
         style={{
