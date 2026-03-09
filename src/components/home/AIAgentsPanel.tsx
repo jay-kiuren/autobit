@@ -26,9 +26,9 @@ const AIAgentsPanel = () => (
   <section style={{
     width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 60% 70% at 100% 50%, rgba(120,80,255,0.09), transparent 70%)',
     position: 'relative', overflow: 'hidden',
   }}>
+    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 70% 80% at 100% 50%, rgba(130,80,255,0.12), transparent 65%)',pointerEvents:'none',zIndex:0}} />
     {floatingIcons.map(({ Icon, top, left }, i) => (
       <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(120,80,255,0.06)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
