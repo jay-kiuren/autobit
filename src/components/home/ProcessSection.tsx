@@ -1,4 +1,13 @@
+import { ArrowRight, CheckCircle, Clock, Star } from 'lucide-react';
+
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+
+const floatingIcons = [
+  { Icon: ArrowRight, top: '12%', left: '7%' },
+  { Icon: CheckCircle, top: '25%', left: '88%' },
+  { Icon: Clock, top: '70%', left: '5%' },
+  { Icon: Star, top: '65%', left: '92%' },
+];
 
 const steps = [
   { n: '01', title: 'Describe the problem', body: "Tell us what's broken. A message is enough." },
@@ -10,14 +19,20 @@ const steps = [
 const ProcessSection = () => (
   <section style={{
     width: '100%',
-    background: '#050505',
+    background: '#000000',
     padding: '100px 10%',
     borderTop: '1px solid rgba(255,255,255,0.06)',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04), transparent)',
+    position: 'relative',
+    overflow: 'hidden',
   }}>
-    <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', textAlign: 'center', marginBottom: '64px' }}>From problem to working system.</h2>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px' }}>
+    {/* Floating tech icons */}
+    {floatingIcons.map(({ Icon, top, left }, i) => (
+      <Icon key={i} size={32} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.04)', pointerEvents: 'none', zIndex: 0 }} />
+    ))}
+    <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', textAlign: 'center', marginBottom: '64px', position: 'relative', zIndex: 1 }}>From problem to working system.</h2>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px', position: 'relative', zIndex: 1 }}>
       {steps.map(s => (
         <div key={s.n} style={{ borderTop: '2px solid rgba(255,255,255,0.08)', paddingTop: '24px' }}>
           <span style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, color: 'rgba(255,255,255,0.06)', letterSpacing: '-2px', lineHeight: 1, display: 'block' }}>{s.n}</span>

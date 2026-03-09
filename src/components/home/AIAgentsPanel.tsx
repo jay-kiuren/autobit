@@ -1,10 +1,10 @@
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 
 const TypingDots = () => (
-  <div style={{ display: 'flex', gap: '4px', padding: '10px 14px' }}>
+  <div style={{ display: 'flex', gap: '5px', padding: '12px 16px' }}>
     {[0, 1, 2].map(i => (
       <span key={i} style={{
-        width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.30)',
+        width: '7px', height: '7px', borderRadius: '50%', background: 'rgba(255,255,255,0.30)',
         animation: `typingDot 1.4s ${i * 0.2}s infinite`,
       }} />
     ))}
@@ -15,10 +15,11 @@ const TypingDots = () => (
 const AIAgentsPanel = () => (
   <section style={{
     width: '100%',
-    background: '#050505',
+    background: '#000000',
     padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 80% 60% at 80% 50%, rgba(120,80,255,0.08), transparent)',
+    position: 'relative',
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
       {/* Left visual */}
@@ -26,30 +27,30 @@ const AIAgentsPanel = () => (
         <div style={{
           background: '#0d0d0d',
           borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.08)',
-          padding: '24px',
-          minHeight: '340px',
+          border: '1px solid rgba(255,255,255,0.06)',
+          padding: '32px',
+          minHeight: '420px',
           display: 'flex',
           flexDirection: 'column',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-            <span style={{ fontFamily: font, fontSize: '13px', color: '#ffffff' }}>AUTOBIT Agent</span>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+            <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', fontWeight: 600 }}>AUTOBIT Agent</span>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
             <div style={{ alignSelf: 'flex-end', maxWidth: '80%' }}>
-              <div style={{ background: 'rgba(41,151,255,0.15)', borderRadius: '12px 12px 2px 12px', padding: '10px 14px' }}>
-                <span style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.80)' }}>Summarize last week's sales and flag anything unusual.</span>
+              <div style={{ background: 'rgba(41,151,255,0.15)', borderRadius: '14px 14px 2px 14px', padding: '12px 16px' }}>
+                <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.5 }}>Summarize last week's sales and flag anything unusual.</span>
               </div>
             </div>
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 12px 12px 12px', padding: '10px 14px' }}>
-                <span style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.65)' }}>Sales were up 12% vs prior week. 3 anomalies flagged: Order #4521 unusually large, 2 refunds in Electronics, Cart abandonment spike Thursday.</span>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px' }}>
+                <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sales were up 12% vs prior week. 3 anomalies flagged: Order #4521 unusually large, 2 refunds in Electronics, Cart abandonment spike Thursday.</span>
               </div>
             </div>
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 12px 12px 12px', padding: '10px 14px' }}>
-                <span style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.65)' }}>Sending summary to Slack and flagging in CRM now.</span>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px' }}>
+                <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sending summary to Slack and flagging in CRM now.</span>
               </div>
             </div>
             <TypingDots />

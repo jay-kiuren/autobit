@@ -4,20 +4,20 @@ const FlowNode = ({ label, dotColor }: { label: string; dotColor: string }) => (
   <div style={{
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '10px',
     background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.10)',
+    border: '1px solid rgba(255,255,255,0.06)',
     borderRadius: '980px',
-    padding: '10px 18px',
+    padding: '12px 20px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
   }}>
-    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
-    <span style={{ fontFamily: font, fontSize: '13px', color: '#ffffff', whiteSpace: 'nowrap' }}>{label}</span>
+    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
+    <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', whiteSpace: 'nowrap' }}>{label}</span>
   </div>
 );
 
 const Arrow = () => (
-  <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '18px', lineHeight: 1 }}>→</span>
+  <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px', lineHeight: 1 }}>→</span>
 );
 
 const WorkflowPanel = () => (
@@ -26,7 +26,8 @@ const WorkflowPanel = () => (
     background: '#000000',
     padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 50%, rgba(41,151,255,0.07), transparent)',
+    position: 'relative',
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
       {/* Left text */}
@@ -47,22 +48,22 @@ const WorkflowPanel = () => (
         <div style={{
           background: '#0d0d0d',
           borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.06)',
           padding: '32px',
-          minHeight: '340px',
+          minHeight: '420px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          gap: '28px',
+          gap: '32px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <FlowNode label="Gmail" dotColor="#ff453a" />
             <Arrow />
             <FlowNode label="Filter & Route" dotColor="#ffd60a" />
             <Arrow />
             <FlowNode label="Slack Notify" dotColor="#30d158" />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <FlowNode label="CRM Update" dotColor="#bf5af2" />
             <Arrow />
             <FlowNode label="Invoice Generate" dotColor="#ff9f0a" />
@@ -70,8 +71,8 @@ const WorkflowPanel = () => (
             <FlowNode label="Send PDF" dotColor="#64d2ff" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
-            <span style={{ fontFamily: font, fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>3 automations running</span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
+            <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.25)' }}>3 automations running</span>
           </div>
         </div>
       </div>

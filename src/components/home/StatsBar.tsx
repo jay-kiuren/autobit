@@ -12,7 +12,7 @@ const StatsBar = () => (
     width: '100%',
     background: '#000000',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    padding: '20px 10%',
+    padding: '32px 10%',
   }}>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((s, i) => (

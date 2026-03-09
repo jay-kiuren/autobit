@@ -11,7 +11,7 @@ const FinalCTA = () => (
     justifyContent: 'center',
     padding: '100px 40px',
     borderTop: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(41,151,255,0.08), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(41,151,255,0.10), transparent)',
   }}>
     <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', color: '#ffffff', textAlign: 'center', maxWidth: '600px', margin: 0 }}>Ready to build something real?</h2>
     <p style={{ fontFamily: font, fontSize: '19px', color: 'rgba(255,255,255,0.45)', textAlign: 'center', marginTop: '12px' }}>Describe your problem. Scoped and priced within 24 hours.</p>

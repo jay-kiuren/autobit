@@ -1,20 +1,37 @@
+import { Terminal, Lock, Shield, Cpu, GitBranch, Server } from 'lucide-react';
+
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+
+const floatingIcons = [
+  { Icon: Terminal, top: '10%', left: '8%' },
+  { Icon: Lock, top: '20%', left: '88%' },
+  { Icon: Shield, top: '70%', left: '5%' },
+  { Icon: Cpu, top: '80%', left: '75%' },
+  { Icon: GitBranch, top: '40%', left: '12%' },
+  { Icon: Server, top: '55%', left: '90%' },
+];
 
 const AxonisPanel = () => (
   <section style={{
     width: '100%',
-    background: '#050505',
+    background: '#000000',
     padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 80% 60% at 80% 50%, rgba(48,209,88,0.06), transparent)',
+    position: 'relative',
+    overflow: 'hidden',
   }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
+    {/* Floating tech icons */}
+    {floatingIcons.map(({ Icon, top, left }, i) => (
+      <Icon key={i} size={32} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', zIndex: 0 }} />
+    ))}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
       {/* Left text */}
       <div style={{ width: '45%' }}>
         <span style={{
           display: 'inline-block',
           background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.10)',
+          border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: '980px',
           padding: '4px 14px',
           fontSize: '11px',
@@ -37,15 +54,18 @@ const AxonisPanel = () => (
         <div style={{
           background: '#0a0a0a',
           borderRadius: '12px',
-          border: '1px solid rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.06)',
           overflow: 'hidden',
+          minHeight: '420px',
+          display: 'flex',
+          flexDirection: 'column',
         }}>
-          <div style={{ background: '#111111', padding: '12px 16px', display: 'flex', gap: '6px' }}>
+          <div style={{ background: '#111111', padding: '14px 18px', display: 'flex', gap: '6px' }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,0,0,0.6)' }} />
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,200,0,0.6)' }} />
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(0,200,0,0.6)' }} />
           </div>
-          <div style={{ padding: '20px 24px', fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', lineHeight: 1.8 }}>
+          <div style={{ padding: '32px', fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', lineHeight: 2.0, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ color: 'rgba(255,255,255,0.80)' }}>$ axonis init --mode=safe</div>
             <div style={{ color: '#30d158' }}>✓ Edge node registered</div>
             <div style={{ color: '#30d158' }}>✓ Cryptographic proof verified</div>

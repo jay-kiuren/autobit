@@ -8,13 +8,13 @@ const EarlynxPanel = () => (
     background: '#000000',
     padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.04), transparent)',
   }}>
     <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
       <span style={{
         display: 'inline-block',
         background: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(255,255,255,0.10)',
+        border: '1px solid rgba(255,255,255,0.06)',
         borderRadius: '980px',
         padding: '6px 16px',
         fontSize: '12px',
@@ -37,7 +37,7 @@ const EarlynxPanel = () => (
         {pills.map(p => (
           <span key={p} style={{
             background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: '980px',
             padding: '8px 20px',
             fontSize: '12px',
