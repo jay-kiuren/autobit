@@ -1,9 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-
-// ── Data ─────────────────────────────────────────────
 
 const iotProjects = [
   {
@@ -14,9 +12,7 @@ const iotProjects = [
     badgeBlue: true,
     tags: ["Embedded AI", "Sensor Fusion", "CNN Model"],
     desc: "Non-invasive diagnostic prototype using sensor fusion to analyze saliva samples for early cancer detection. Evaluated by DOST.",
-    price: "Champion",
-    priceLabel: "Life & Science Category",
-    status: "Awarded",
+    statusLabel: "Life & Science Category",
     statusColor: "#30d158",
     image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
   },
@@ -28,28 +24,23 @@ const iotProjects = [
     badgeBlue: true,
     tags: ["Arduino Uno", "MQ137 Sensor", "DOST Verified"],
     desc: "Smart air quality filtration device for piggery environments. Congress Innovation Category champion.",
-    price: "Champion",
-    priceLabel: "Innovation Category",
-    status: "Awarded",
+    statusLabel: "Innovation Category",
     statusColor: "#30d158",
     image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
   },
+  {
+    id: "gridsonar",
+    title: "GridSonar",
+    subtitle: "Power Grid Management",
+    badge: "Patent Pending",
+    badgeBlue: false,
+    tags: ["Mesh Architecture", "Predictive AI", "Fault Detection"],
+    desc: "Self-healing mesh submetering system with real-time fault detection and predictive AI for power grid management.",
+    statusLabel: "In Market",
+    statusColor: "#2997ff",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+  },
 ];
-
-const gridsonarProject = {
-  id: "gridsonar",
-  title: "GridSonar",
-  subtitle: "Power Grid Management System",
-  badge: "Patent Pending",
-  badgeBlue: false,
-  tags: ["Real-World 3D Software", "Mesh Architecture", "Predictive AI", "Fault Detection"],
-  desc: "Self-healing mesh submetering system with real-time fault detection and predictive AI. First-of-its-kind architecture for power grid management.",
-  price: "Patent Pending",
-  priceLabel: "Real-world deployed",
-  status: "In Market",
-  statusColor: "#2997ff",
-  image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&q=80",
-};
 
 const platformProjects = [
   {
@@ -94,51 +85,131 @@ const platformProjects = [
   },
 ];
 
-// ── Reusable card components ────────────────────────
+// ── Horizontal scroll row ────────────────────────────
 
-const cardBase: React.CSSProperties = {
-  background: "#111113",
-  border: "1px solid rgba(255,255,255,0.07)",
-  borderRadius: "18px",
-  overflow: "hidden",
-  cursor: "pointer",
-  display: "flex",
-  flexDirection: "column",
-  transition: "transform 0.38s cubic-bezier(0.25,0.1,0.25,1), border-color 0.3s ease",
-};
+function ScrollRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  const rowRef = useRef<HTMLDivElement>(null);
 
-function IotCard({ p, hovered, setHovered }: { p: typeof iotProjects[0]; hovered: string | null; setHovered: (id: string | null) => void }) {
-  const isHov = hovered === p.id;
+  const scroll = (dir: "left" | "right") => {
+    if (!rowRef.current) return;
+    rowRef.current.scrollBy({ left: dir === "right" ? 320 : -320, behavior: "smooth" });
+  };
+
+  return (
+    <div style={{ marginBottom: "56px" }}>
+      {/* Row header */}
+      <div className="section-container" style={{ marginBottom: "20px" }}>
+        <ScrollReveal>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <h2 style={{
+              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+              fontSize: "clamp(18px,2.2vw,24px)", fontWeight: 600,
+              letterSpacing: "-0.02em", color: "#fff", margin: 0,
+            }}>
+              {label}
+            </h2>
+            {/* Arrow buttons */}
+            <div style={{ display: "flex", gap: "8px" }}>
+              {(["left", "right"] as const).map((dir) => (
+                <button
+                  key={dir}
+                  onClick={() => scroll(dir)}
+                  style={{
+                    width: "34px", height: "34px", borderRadius: "50%",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    color: "rgba(255,255,255,0.55)",
+                    fontSize: "14px", cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    transition: "all 0.2s ease",
+                    outline: "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+                  }}
+                >
+                  {dir === "left" ? "←" : "→"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+
+      {/* Scrollable track */}
+      <div
+        ref={rowRef}
+        style={{
+          display: "flex",
+          gap: "14px",
+          overflowX: "auto",
+          overflowY: "visible",
+          paddingLeft: "40px",
+          paddingRight: "40px",
+          paddingBottom: "12px",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <style>{`
+          div::-webkit-scrollbar { display: none; }
+        `}</style>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ── IoT card ─────────────────────────────────────────
+
+function IotCard({ p }: { p: typeof iotProjects[0] }) {
+  const [hov, setHov] = useState(false);
   return (
     <div
-      id={p.id}
-      onMouseEnter={() => setHovered(p.id)}
-      onMouseLeave={() => setHovered(null)}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
-        ...cardBase,
-        flex: "1 1 0",
-        minWidth: "260px",
-        maxWidth: "420px",
-        transform: isHov ? "translateY(-6px)" : "translateY(0)",
-        borderColor: isHov ? "rgba(255,255,255,0.13)" : "rgba(255,255,255,0.07)",
+        flexShrink: 0,
+        width: "300px",
+        background: "#111113",
+        border: `1px solid ${hov ? "rgba(255,255,255,0.13)" : "rgba(255,255,255,0.07)"}`,
+        borderRadius: "18px",
+        overflow: "hidden",
+        cursor: "pointer",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform 0.38s cubic-bezier(0.25,0.1,0.25,1), border-color 0.3s ease",
+        transform: hov ? "translateY(-6px)" : "translateY(0)",
       }}
     >
       {/* Image */}
-      <div style={{ position: "relative", height: "220px", overflow: "hidden" }}>
+      <div style={{ position: "relative", height: "200px", overflow: "hidden" }}>
         <img
           src={p.image} alt={p.title}
           style={{
             width: "100%", height: "100%", objectFit: "cover",
-            filter: "brightness(0.58) saturate(0.72)",
+            filter: "brightness(0.55) saturate(0.70)",
             transition: "transform 0.6s cubic-bezier(0.25,0.1,0.25,1)",
-            transform: isHov ? "scale(1.06)" : "scale(1)",
+            transform: hov ? "scale(1.07)" : "scale(1)",
           }}
         />
-        {/* Gift icon equivalent — badge */}
+        {/* Badge */}
         <div style={{
-          position: "absolute", bottom: "14px", right: "14px",
-          background: p.badgeBlue ? "rgba(41,151,255,0.18)" : "rgba(255,255,255,0.08)",
-          border: `1px solid ${p.badgeBlue ? "rgba(41,151,255,0.30)" : "rgba(255,255,255,0.12)"}`,
+          position: "absolute", bottom: "12px", right: "12px",
+          background: p.badgeBlue ? "rgba(41,151,255,0.18)" : "rgba(255,255,255,0.09)",
+          border: `1px solid ${p.badgeBlue ? "rgba(41,151,255,0.30)" : "rgba(255,255,255,0.13)"}`,
           backdropFilter: "blur(12px)",
           borderRadius: "9999px", padding: "5px 12px",
           fontSize: "10px", fontWeight: 600,
@@ -150,15 +221,15 @@ function IotCard({ p, hovered, setHovered }: { p: typeof iotProjects[0]; hovered
       </div>
 
       {/* Content */}
-      <div style={{ padding: "20px 22px 24px", flex: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "18px 20px 22px", flex: 1, display: "flex", flexDirection: "column" }}>
         <h3 style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "20px", fontWeight: 700, letterSpacing: "-0.02em",
-          color: "#fff", margin: "0 0 4px",
+          fontSize: "18px", fontWeight: 700, letterSpacing: "-0.02em",
+          color: "#fff", margin: "0 0 3px",
         }}>
           {p.title}
         </h3>
-        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.36)", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.34)", margin: "0 0 10px" }}>
           {p.subtitle}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "12px" }}>
@@ -166,41 +237,34 @@ function IotCard({ p, hovered, setHovered }: { p: typeof iotProjects[0]; hovered
             <span key={tag} style={{
               fontSize: "10px", padding: "3px 9px", borderRadius: "9999px",
               background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)",
-              color: "rgba(255,255,255,0.46)", letterSpacing: "0.03em",
+              color: "rgba(255,255,255,0.44)", letterSpacing: "0.03em",
             }}>{tag}</span>
           ))}
         </div>
-        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.52)", lineHeight: 1.55, margin: "0 0 auto", flex: 1 }}>
+        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.50)", lineHeight: 1.55, margin: "0 0 auto", flex: 1 }}>
           {p.desc}
         </p>
 
-        {/* Bottom — like Huawei's price + buy */}
+        {/* Bottom */}
         <div style={{
-          marginTop: "20px", paddingTop: "16px",
+          marginTop: "18px", paddingTop: "14px",
           borderTop: "1px solid rgba(255,255,255,0.06)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
           <div>
-            <div style={{
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-              fontSize: "18px", fontWeight: 700, color: p.statusColor, letterSpacing: "-0.02em",
-            }}>
-              {p.price}
-            </div>
-            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.28)", marginTop: "2px" }}>
-              {p.priceLabel}
+            <div style={{ fontSize: "13px", fontWeight: 700, color: p.statusColor, letterSpacing: "-0.01em" }}>
+              {p.statusLabel}
             </div>
           </div>
           <div style={{
-            background: isHov ? "#2997ff" : "rgba(255,255,255,0.08)",
+            background: hov ? "#2997ff" : "rgba(255,255,255,0.07)",
             border: "1px solid rgba(255,255,255,0.10)",
-            borderRadius: "9999px", padding: "8px 18px",
-            fontSize: "12px", fontWeight: 600,
-            color: isHov ? "#fff" : "rgba(255,255,255,0.55)",
+            borderRadius: "9999px", padding: "7px 16px",
+            fontSize: "11px", fontWeight: 600,
+            color: hov ? "#fff" : "rgba(255,255,255,0.50)",
             transition: "all 0.25s ease",
-            letterSpacing: "0.01em",
           }}>
-            View Project
+            View
           </div>
         </div>
       </div>
@@ -208,19 +272,26 @@ function IotCard({ p, hovered, setHovered }: { p: typeof iotProjects[0]; hovered
   );
 }
 
-function PlatformCard({ p, hovered, setHovered }: { p: typeof platformProjects[0]; hovered: string | null; setHovered: (id: string | null) => void }) {
-  const isHov = hovered === p.id;
+// ── Platform card ─────────────────────────────────────
+
+function PlatformCard({ p }: { p: typeof platformProjects[0] }) {
+  const [hov, setHov] = useState(false);
   return (
     <div
-      id={p.id}
-      onMouseEnter={() => setHovered(p.id)}
-      onMouseLeave={() => setHovered(null)}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
-        ...cardBase,
-        flex: "1 1 0",
-        minWidth: "200px",
-        transform: isHov ? "translateY(-5px)" : "translateY(0)",
-        borderColor: isHov ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
+        flexShrink: 0,
+        width: "280px",
+        background: "#111113",
+        border: `1px solid ${hov ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)"}`,
+        borderRadius: "18px",
+        overflow: "hidden",
+        cursor: "pointer",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform 0.38s cubic-bezier(0.25,0.1,0.25,1), border-color 0.3s ease",
+        transform: hov ? "translateY(-5px)" : "translateY(0)",
       }}
     >
       <div style={{ position: "relative", height: "160px", overflow: "hidden" }}>
@@ -230,24 +301,24 @@ function PlatformCard({ p, hovered, setHovered }: { p: typeof platformProjects[0
             width: "100%", height: "100%", objectFit: "cover",
             filter: "brightness(0.45) saturate(0.60)",
             transition: "transform 0.6s cubic-bezier(0.25,0.1,0.25,1)",
-            transform: isHov ? "scale(1.07)" : "scale(1)",
+            transform: hov ? "scale(1.07)" : "scale(1)",
           }}
         />
+        {/* Status badge */}
         <div style={{
           position: "absolute", top: "12px", right: "12px",
           display: "flex", alignItems: "center", gap: "5px",
+          background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
+          padding: "4px 10px", borderRadius: "9999px",
+          border: "1px solid rgba(255,255,255,0.08)",
         }}>
           <span style={{
-            width: "6px", height: "6px", borderRadius: "50%",
+            width: "5px", height: "5px", borderRadius: "50%",
             background: p.dot,
-            boxShadow: p.dot !== "rgba(255,255,255,0.22)" ? `0 0 8px ${p.dot}` : "none",
+            boxShadow: p.dot !== "rgba(255,255,255,0.22)" ? `0 0 6px ${p.dot}` : "none",
+            flexShrink: 0,
           }} />
-          <span style={{
-            fontSize: "10px", fontWeight: 600, color: p.tagColor,
-            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
-            padding: "3px 9px", borderRadius: "9999px",
-            border: "1px solid rgba(255,255,255,0.08)",
-          }}>
+          <span style={{ fontSize: "10px", fontWeight: 600, color: p.tagColor, letterSpacing: "0.02em" }}>
             {p.tag}
           </span>
         </div>
@@ -261,10 +332,10 @@ function PlatformCard({ p, hovered, setHovered }: { p: typeof platformProjects[0
         }}>
           {p.title}
         </h4>
-        <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.32)", margin: "0 0 10px" }}>
+        <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.30)", margin: "0 0 10px" }}>
           {p.subtitle}
         </p>
-        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.48)", lineHeight: 1.55, margin: 0 }}>
+        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.46)", lineHeight: 1.55, margin: 0 }}>
           {p.desc}
         </p>
       </div>
@@ -272,40 +343,10 @@ function PlatformCard({ p, hovered, setHovered }: { p: typeof platformProjects[0
   );
 }
 
-// ── Section label ───────────────────────────────────
-
-function RowLabel({ label, count }: { label: string; count: number }) {
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      marginBottom: "20px",
-    }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <h2 style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "clamp(17px,2vw,22px)", fontWeight: 600,
-          letterSpacing: "-0.02em", color: "#fff", margin: 0,
-        }}>
-          {label}
-        </h2>
-        <span style={{
-          fontSize: "11px", color: "rgba(255,255,255,0.22)",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "9999px", padding: "3px 10px",
-        }}>
-          {count} {count === 1 ? "project" : "projects"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ── Page ────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────
 
 const Projects = () => {
   const [navDropdownActive, setNavDropdownActive] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
   const handleDropdownChange = useCallback((active: boolean) => setNavDropdownActive(active), []);
 
   return (
@@ -319,14 +360,14 @@ const Projects = () => {
           background: "#000",
         }}
       >
-        {/* ── Header ─────────────────────────────── */}
-        <section style={{ paddingTop: "112px" }}>
+
+        {/* Header */}
+        <section style={{ paddingTop: "112px", paddingBottom: "52px" }}>
           <div className="section-container">
             <ScrollReveal>
               <div style={{
                 display: "flex", alignItems: "flex-end",
-                justifyContent: "space-between", flexWrap: "wrap",
-                gap: "16px", paddingBottom: "40px",
+                justifyContent: "space-between", flexWrap: "wrap", gap: "16px",
               }}>
                 <div>
                   <span style={{
@@ -352,174 +393,21 @@ const Projects = () => {
                 </p>
               </div>
             </ScrollReveal>
-            <div style={{ height: "1px", background: "rgba(255,255,255,0.07)" }} />
+            <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", marginTop: "40px" }} />
           </div>
         </section>
 
-        {/* ── ROW 1: IoT & Hardware ───────────────── */}
-        <section style={{ paddingTop: "52px" }}>
-          <div className="section-container">
-            <ScrollReveal>
-              <RowLabel label="IoT & Hardware" count={iotProjects.length} />
-            </ScrollReveal>
-            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              {iotProjects.map((p, i) => (
-                <ScrollReveal key={p.id} delay={i * 0.08}>
-                  <IotCard p={p} hovered={hovered} setHovered={setHovered} />
-                </ScrollReveal>
-              ))}
-              {/* Filler CTA card */}
-              <ScrollReveal delay={0.16}>
-                <div style={{
-                  ...cardBase,
-                  flex: "1 1 0",
-                  minWidth: "220px",
-                  maxWidth: "320px",
-                  minHeight: "360px",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px dashed rgba(255,255,255,0.09)",
-                  padding: "40px 28px",
-                  textAlign: "center",
-                }}>
-                  <div style={{
-                    width: "44px", height: "44px", borderRadius: "50%",
-                    background: "rgba(41,151,255,0.12)",
-                    border: "1px solid rgba(41,151,255,0.22)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "20px", marginBottom: "16px",
-                  }}>
-                    +
-                  </div>
-                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.30)", lineHeight: 1.6, margin: "0 0 16px" }}>
-                    Have an IoT or hardware project in mind?
-                  </p>
-                  <a href="mailto:autobitofficial.ph@gmail.com" style={{
-                    fontSize: "12px", color: "#2997ff", textDecoration: "none",
-                    fontWeight: 600, letterSpacing: "0.01em",
-                  }}>
-                    Start a project →
-                  </a>
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </section>
+        {/* Row 1 — IoT & Hardware */}
+        <ScrollRow label="IoT & Hardware">
+          {iotProjects.map((p) => <IotCard key={p.id} p={p} />)}
+        </ScrollRow>
 
-        {/* ── ROW 2: GridSonar (standalone) ──────── */}
-        <section style={{ paddingTop: "56px" }}>
-          <div className="section-container">
-            <ScrollReveal>
-              <RowLabel label="GridSonar" count={1} />
-            </ScrollReveal>
-            <ScrollReveal delay={0.06}>
-              <div
-                id={gridsonarProject.id}
-                onMouseEnter={() => setHovered(gridsonarProject.id)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  ...cardBase,
-                  flexDirection: "row",
-                  minHeight: "260px",
-                  transform: hovered === gridsonarProject.id ? "translateY(-5px)" : "translateY(0)",
-                  borderColor: hovered === gridsonarProject.id ? "rgba(255,255,255,0.13)" : "rgba(255,255,255,0.07)",
-                }}
-              >
-                {/* Left: image */}
-                <div style={{ position: "relative", width: "45%", minWidth: "240px", overflow: "hidden", flexShrink: 0 }}>
-                  <img
-                    src={gridsonarProject.image} alt={gridsonarProject.title}
-                    style={{
-                      width: "100%", height: "100%", objectFit: "cover",
-                      filter: "brightness(0.52) saturate(0.68)",
-                      transition: "transform 0.6s cubic-bezier(0.25,0.1,0.25,1)",
-                      transform: hovered === gridsonarProject.id ? "scale(1.05)" : "scale(1)",
-                    }}
-                  />
-                  {/* Patent badge on image */}
-                  <div style={{
-                    position: "absolute", bottom: "16px", left: "16px",
-                    background: "rgba(255,255,255,0.07)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    backdropFilter: "blur(12px)",
-                    borderRadius: "9999px", padding: "6px 14px",
-                    fontSize: "11px", fontWeight: 600,
-                    color: "rgba(255,255,255,0.55)", letterSpacing: "0.02em",
-                  }}>
-                    {gridsonarProject.badge}
-                  </div>
-                </div>
+        {/* Row 2 — Platforms & Software */}
+        <ScrollRow label="Platforms & Software">
+          {platformProjects.map((p) => <PlatformCard key={p.id} p={p} />)}
+        </ScrollRow>
 
-                {/* Right: content */}
-                <div style={{ padding: "32px 36px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
-                    {gridsonarProject.tags.map(tag => (
-                      <span key={tag} style={{
-                        fontSize: "10px", padding: "3px 10px", borderRadius: "9999px",
-                        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)",
-                        color: "rgba(255,255,255,0.46)", letterSpacing: "0.03em",
-                      }}>{tag}</span>
-                    ))}
-                  </div>
-                  <h3 style={{
-                    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                    fontSize: "clamp(24px,3vw,36px)", fontWeight: 700,
-                    letterSpacing: "-0.03em", color: "#fff", margin: "0 0 6px",
-                  }}>
-                    {gridsonarProject.title}
-                  </h3>
-                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.36)", margin: "0 0 14px" }}>
-                    {gridsonarProject.subtitle}
-                  </p>
-                  <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.60)", lineHeight: 1.6, margin: "0 0 28px", maxWidth: "480px" }}>
-                    {gridsonarProject.desc}
-                  </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                    <div>
-                      <div style={{
-                        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                        fontSize: "18px", fontWeight: 700, color: gridsonarProject.statusColor, letterSpacing: "-0.02em",
-                      }}>
-                        {gridsonarProject.status}
-                      </div>
-                      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.28)", marginTop: "2px" }}>
-                        {gridsonarProject.priceLabel}
-                      </div>
-                    </div>
-                    <div style={{
-                      background: hovered === gridsonarProject.id ? "#2997ff" : "rgba(255,255,255,0.08)",
-                      border: "1px solid rgba(255,255,255,0.10)",
-                      borderRadius: "9999px", padding: "9px 22px",
-                      fontSize: "13px", fontWeight: 600,
-                      color: hovered === gridsonarProject.id ? "#fff" : "rgba(255,255,255,0.55)",
-                      transition: "all 0.25s ease", cursor: "pointer",
-                    }}>
-                      View Project
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
-
-        {/* ── ROW 3: Platforms & Software ────────── */}
-        <section style={{ paddingTop: "56px", paddingBottom: "80px" }}>
-          <div className="section-container">
-            <ScrollReveal>
-              <RowLabel label="Platforms & Software" count={platformProjects.length} />
-            </ScrollReveal>
-            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              {platformProjects.map((p, i) => (
-                <ScrollReveal key={p.id} delay={i * 0.07}>
-                  <PlatformCard p={p} hovered={hovered} setHovered={setHovered} />
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
+        <div style={{ paddingBottom: "60px" }} />
       </main>
       <Footer />
     </>
