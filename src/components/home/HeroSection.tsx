@@ -67,7 +67,7 @@ const HeroSection = () => {
       <h1
         style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "clamp(40px, 6vw, 72px)",
+          fontSize: "clamp(42px, 6vw, 76px)",
           fontWeight: 700,
           letterSpacing: "-0.03em",
           lineHeight: 1.08,
