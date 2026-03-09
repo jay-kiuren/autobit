@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Silk from "@/components/Silk";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
     []
@@ -14,97 +14,39 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, [index, words]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let t = 0;
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const orbs = [
-      { x: 0.50, y: 0.05, r: 0.60, color: "rgba(255,255,255,0.042)", sx: 0.00007, sy: 0.00004 },
-      { x: 0.20, y: 0.65, r: 0.38, color: "rgba(255,255,255,0.022)", sx: -0.00005, sy: 0.00006 },
-      { x: 0.80, y: 0.40, r: 0.32, color: "rgba(255,255,255,0.018)", sx: 0.00006, sy: -0.00005 },
-      { x: 0.50, y: 0.95, r: 0.45, color: "rgba(41,151,255,0.028)",  sx: -0.00004, sy: -0.00003 },
-      { x: 0.10, y: 0.20, r: 0.28, color: "rgba(255,255,255,0.015)", sx: 0.00008, sy: 0.00007 },
-    ];
-
-    const draw = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      orbs.forEach((orb) => {
-        const cx = (Math.sin(t * orb.sx * 1000 + orb.x * 10) * 0.18 + orb.x) * w;
-        const cy = (Math.cos(t * orb.sy * 1000 + orb.y * 10) * 0.18 + orb.y) * h;
-        const radius = orb.r * Math.max(w, h);
-        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        grad.addColorStop(0, orb.color);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-      });
-
-      t += 1;
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "120px 40px 80px",
-        background: "#000000",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
+    <section style={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "120px 40px 80px",
+      background: "#000000",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+
+      {/* Silk WebGL background */}
+      <Silk
+        speed={0.5}
+        scale={1}
+        color="#888888"
+        noiseIntensity={1.5}
+        rotation={0}
+        mouseInfluence={0.5}
       />
 
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 1,
-          opacity: 0.45,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")`,
-          pointerEvents: "none",
-        }}
-      />
+      {/* Dark overlay so text stays readable */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "rgba(0,0,0,0.35)",
+        zIndex: 1,
+        pointerEvents: "none",
+      }} />
 
+      {/* Content */}
       <div style={{ position: "relative", zIndex: 2, textAlign: "center", width: "100%", maxWidth: "900px" }}>
 
         <a
@@ -136,44 +78,35 @@ const HeroSection = () => {
             e.currentTarget.style.color = "rgba(255,255,255,0.50)";
           }}
         >
-          <span
-            style={{
-              height: "6px",
-              width: "6px",
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.45)",
-              display: "inline-block",
-              animation: "badgePulse 2.5s ease-in-out infinite",
-            }}
-          />
+          <span style={{
+            height: "6px", width: "6px", borderRadius: "50%",
+            background: "rgba(255,255,255,0.45)", display: "inline-block",
+            animation: "badgePulse 2.5s ease-in-out infinite",
+          }} />
           Start Something™
         </a>
 
-        <h1
-          style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-            fontSize: "clamp(44px, 6.5vw, 84px)",
-            fontWeight: 700,
-            letterSpacing: "-0.035em",
-            lineHeight: 1.04,
-            color: "#ffffff",
-            textAlign: "center",
-            margin: "0 auto",
-          }}
-        >
+        <h1 style={{
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+          fontSize: "clamp(44px, 6.5vw, 84px)",
+          fontWeight: 700,
+          letterSpacing: "-0.035em",
+          lineHeight: 1.04,
+          color: "#ffffff",
+          textAlign: "center",
+          margin: "0 auto",
+        }}>
           Systems engineered for
         </h1>
 
-        <div
-          style={{
-            height: "clamp(54px, 8vw, 100px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-            marginTop: "2px",
-          }}
-        >
+        <div style={{
+          height: "clamp(54px, 8vw, 100px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          marginTop: "2px",
+        }}>
           <AnimatePresence mode="wait">
             <motion.span
               key={words[index]}
@@ -197,19 +130,17 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
 
-        <p
-          style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            fontSize: "clamp(15px, 1.6vw, 18px)",
-            fontWeight: 400,
-            color: "rgba(255,255,255,0.40)",
-            textAlign: "center",
-            maxWidth: "480px",
-            margin: "24px auto 0",
-            lineHeight: 1.6,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <p style={{
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+          fontSize: "clamp(15px, 1.6vw, 18px)",
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.40)",
+          textAlign: "center",
+          maxWidth: "480px",
+          margin: "24px auto 0",
+          lineHeight: 1.6,
+          letterSpacing: "-0.01em",
+        }}>
           AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
         </p>
 
@@ -217,111 +148,69 @@ const HeroSection = () => {
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff",
-              color: "#ffffff",
-              padding: "14px 32px",
-              borderRadius: "980px",
-              fontSize: "15px",
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "all 0.25s ease",
+              background: "#2997ff", color: "#ffffff", padding: "14px 32px",
+              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
+              textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-              boxShadow: "0 0 28px rgba(41,151,255,0.22)",
+              boxShadow: "0 0 28px rgba(41,151,255,0.25)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 52px rgba(41,151,255,0.48)";
+              e.currentTarget.style.boxShadow = "0 0 52px rgba(41,151,255,0.50)";
               e.currentTarget.style.transform = "scale(1.025)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 28px rgba(41,151,255,0.22)";
+              e.currentTarget.style.boxShadow = "0 0 28px rgba(41,151,255,0.25)";
               e.currentTarget.style.transform = "scale(1)";
             }}
-          >
-            Start a project
-          </a>
+          >Start a project</a>
           <a
             href="/projects"
             style={{
-              background: "transparent",
-              color: "#2997ff",
-              padding: "14px 32px",
-              borderRadius: "980px",
-              fontSize: "15px",
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "all 0.25s ease",
+              background: "transparent", color: "#2997ff", padding: "14px 32px",
+              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
+              textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
             }}
             onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(41,151,255,0.70)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = "#2997ff"; }}
-          >
-            See our work →
-          </a>
+          >See our work →</a>
         </div>
 
-        <p
-          style={{
-            fontSize: "11px",
-            color: "rgba(255,255,255,0.18)",
-            textAlign: "center",
-            marginTop: "18px",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-          }}
-        >
+        <p style={{
+          fontSize: "11px", color: "rgba(255,255,255,0.18)",
+          textAlign: "center", marginTop: "18px",
+          letterSpacing: "0.04em", textTransform: "uppercase",
+        }}>
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            marginTop: "64px",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "16px",
-            overflow: "hidden",
-            background: "rgba(255,255,255,0.02)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-          }}
-        >
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
+          marginTop: "64px",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: "16px", overflow: "hidden",
+          background: "rgba(0,0,0,0.40)",
+          backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        }}>
           {[
             { value: "2–5d", label: "Average delivery" },
             { value: "$800+", label: "Starting price" },
             { value: "Patented", label: "Award-winning builds" },
             { value: "50%", label: "Deposit to start" },
           ].map((stat, i) => (
-            <div
-              key={i}
-              style={{
-                padding: "24px 16px",
-                textAlign: "center",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                  fontSize: "clamp(20px, 2.2vw, 30px)",
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  color: "#ffffff",
-                  lineHeight: 1,
-                }}
-              >
-                {stat.value}
-              </div>
-              <div
-                style={{
-                  fontSize: "10px",
-                  color: "rgba(255,255,255,0.28)",
-                  marginTop: "6px",
-                  letterSpacing: "0.07em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {stat.label}
-              </div>
+            <div key={i} style={{
+              padding: "24px 16px", textAlign: "center",
+              borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
+            }}>
+              <div style={{
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                fontSize: "clamp(20px, 2.2vw, 30px)", fontWeight: 700,
+                letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1,
+              }}>{stat.value}</div>
+              <div style={{
+                fontSize: "10px", color: "rgba(255,255,255,0.28)",
+                marginTop: "6px", letterSpacing: "0.07em", textTransform: "uppercase",
+              }}>{stat.label}</div>
             </div>
           ))}
         </div>
