@@ -1,31 +1,53 @@
-import ScrollReveal from "../ScrollReveal";
+const font = '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif';
+const textFont = '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
 
 const FinalCTA = () => (
-  <section className="bg-background border-t border-border">
-    <div className="section-container py-[120px] text-center">
-      <ScrollReveal>
-        <h2 className="text-[clamp(32px,5vw,48px)] font-bold tracking-[-1px] text-foreground">Ready to build something real?</h2>
-      </ScrollReveal>
-      <ScrollReveal delay={0.08}>
-        <p className="text-[21px] text-ab-text-secondary mt-2">Describe your problem. Scoped and priced within 24 hours.</p>
-      </ScrollReveal>
-      <ScrollReveal delay={0.16}>
-        <div className="flex flex-col sm:flex-row gap-5 justify-center mt-8">
-          <a
-            href="mailto:autobitofficial.ph@gmail.com"
-            className="inline-flex items-center justify-center h-11 px-8 bg-primary text-primary-foreground rounded-full text-[17px] font-semibold hover:bg-ab-link-hover hover:text-background transition-all duration-200"
-          >
-            Start a project
-          </a>
-          <a href="/projects" className="inline-flex items-center justify-center text-[17px] text-primary hover:text-ab-link-hover transition-colors">
-            View our work →
-          </a>
-        </div>
-      </ScrollReveal>
-      <ScrollReveal delay={0.24}>
-        <p className="text-xs text-ab-text-muted mt-5">50% deposit to start · Balance on delivery · No retainers</p>
-      </ScrollReveal>
+  <section style={{
+    width: '100%',
+    minHeight: '60vh',
+    background: '#000000',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '100px 40px',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+  }}>
+    <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', color: '#ffffff', textAlign: 'center', maxWidth: '700px', margin: 0 }}>
+      Ready to build something real?
+    </h2>
+    <p style={{ fontFamily: textFont, fontSize: '21px', color: 'rgba(255,255,255,0.50)', marginTop: '12px', textAlign: 'center' }}>
+      Describe your problem. Scoped and priced within 24 hours.
+    </p>
+    <div style={{ display: 'flex', gap: '16px', marginTop: '40px' }}>
+      <a href="mailto:autobitofficial.ph@gmail.com" style={{
+        background: '#2997ff',
+        color: '#ffffff',
+        padding: '16px 40px',
+        borderRadius: '980px',
+        fontSize: '17px',
+        fontWeight: 600,
+        textDecoration: 'none',
+        fontFamily: textFont,
+      }}>
+        Start a project
+      </a>
+      <a href="/projects" style={{
+        background: 'transparent',
+        color: '#2997ff',
+        padding: '16px 40px',
+        borderRadius: '980px',
+        fontSize: '17px',
+        fontWeight: 600,
+        textDecoration: 'none',
+        fontFamily: textFont,
+      }}>
+        View our work →
+      </a>
     </div>
+    <p style={{ fontFamily: textFont, fontSize: '12px', color: 'rgba(255,255,255,0.20)', marginTop: '24px', letterSpacing: '0.02em', textAlign: 'center' }}>
+      50% deposit to start · Balance on delivery · No retainers · Response within 24h
+    </p>
   </section>
 );
 
