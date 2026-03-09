@@ -1,4 +1,14 @@
+import { Brain, Bot, Cpu, Network, Sparkles } from 'lucide-react';
+
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+
+const floatingIcons = [
+  { Icon: Brain, top: '8%', left: '6%' },
+  { Icon: Bot, top: '15%', left: '90%' },
+  { Icon: Cpu, top: '70%', left: '4%' },
+  { Icon: Network, top: '80%', left: '85%' },
+  { Icon: Sparkles, top: '40%', left: '92%' },
+];
 
 const TypingDots = () => (
   <div style={{ display: 'flex', gap: '5px', padding: '12px 16px' }}>
@@ -14,42 +24,39 @@ const TypingDots = () => (
 
 const AIAgentsPanel = () => (
   <section style={{
-    width: '100%',
-    background: '#000000',
-    padding: '100px 10%',
+    width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 60% at 80% 50%, rgba(120,80,255,0.08), transparent)',
-    position: 'relative',
+    backgroundImage: 'radial-gradient(ellipse 60% 70% at 100% 50%, rgba(120,80,255,0.09), transparent 70%)',
+    position: 'relative', overflow: 'hidden',
   }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-      {/* Left visual */}
+    {floatingIcons.map(({ Icon, top, left }, i) => (
+      <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(120,80,255,0.06)', pointerEvents: 'none', zIndex: 0 }} />
+    ))}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
       <div style={{ width: '55%' }}>
         <div style={{
-          background: '#0d0d0d',
-          borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.06)',
-          padding: '32px',
-          minHeight: '420px',
-          display: 'flex',
-          flexDirection: 'column',
+          background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
+          padding: '32px', minHeight: '420px', display: 'flex', flexDirection: 'column',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
             <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', fontWeight: 600 }}>AUTOBIT Agent</span>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
+            {/* User bubble */}
             <div style={{ alignSelf: 'flex-end', maxWidth: '80%' }}>
-              <div style={{ background: 'rgba(41,151,255,0.15)', borderRadius: '14px 14px 2px 14px', padding: '12px 16px' }}>
+              <div style={{ background: 'rgba(120,80,255,0.12)', borderRadius: '14px 14px 2px 14px', padding: '12px 16px' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.5 }}>Summarize last week's sales and flag anything unusual.</span>
               </div>
             </div>
+            {/* Agent bubbles with purple left border */}
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '2px solid rgba(120,80,255,0.30)' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sales were up 12% vs prior week. 3 anomalies flagged: Order #4521 unusually large, 2 refunds in Electronics, Cart abandonment spike Thursday.</span>
               </div>
             </div>
             <div style={{ alignSelf: 'flex-start', maxWidth: '85%' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '2px 14px 14px 14px', padding: '12px 16px', borderLeft: '2px solid rgba(120,80,255,0.30)' }}>
                 <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 }}>Sending summary to Slack and flagging in CRM now.</span>
               </div>
             </div>
@@ -57,7 +64,6 @@ const AIAgentsPanel = () => (
           </div>
         </div>
       </div>
-      {/* Right text */}
       <div style={{ width: '45%' }}>
         <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>AI Agents</p>
         <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>Custom AI that<br />works 24/7.</h2>

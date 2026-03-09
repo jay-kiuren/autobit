@@ -1,26 +1,30 @@
+import { Plus, Activity, Heart, Microscope } from 'lucide-react';
+
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 
 const pills = ['CNN Model', 'DOST Verified', 'Patent Held'];
 
+const floatingIcons = [
+  { Icon: Plus, top: '12%', left: '8%' },
+  { Icon: Activity, top: '20%', left: '88%' },
+  { Icon: Heart, top: '70%', left: '6%' },
+  { Icon: Microscope, top: '65%', left: '90%' },
+];
+
 const EarlynxPanel = () => (
   <section style={{
-    width: '100%',
-    background: '#000000',
-    padding: '100px 10%',
+    width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.04), transparent)',
+    backgroundImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.05), transparent 70%)',
+    position: 'relative', overflow: 'hidden',
   }}>
-    <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
+    {floatingIcons.map(({ Icon, top, left }, i) => (
+      <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.04)', pointerEvents: 'none', zIndex: 0 }} />
+    ))}
+    <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
       <span style={{
-        display: 'inline-block',
-        background: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: '980px',
-        padding: '6px 16px',
-        fontSize: '12px',
-        color: 'rgba(255,255,255,0.60)',
-        fontFamily: font,
-        marginBottom: '20px',
+        display: 'inline-block', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '980px', padding: '6px 16px', fontSize: '12px', color: 'rgba(255,255,255,0.60)', fontFamily: font, marginBottom: '20px',
       }}>National Winner · Patent Held</span>
       <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>EARLYNX — Medical AI</p>
       <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>
@@ -36,13 +40,8 @@ const EarlynxPanel = () => (
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px' }}>
         {pills.map(p => (
           <span key={p} style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: '980px',
-            padding: '8px 20px',
-            fontSize: '12px',
-            color: 'rgba(255,255,255,0.40)',
-            fontFamily: font,
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.10)',
+            borderRadius: '980px', padding: '10px 24px', fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: font,
           }}>{p}</span>
         ))}
       </div>
