@@ -26,6 +26,18 @@ const HeroSection = () => {
         overflow: "hidden",
       }}
     >
+      <ColorBends
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}
+        colors={["#1a1a1a", "#222222", "#0d0d0d"]}
+        speed={0.15}
+        rotation={45}
+        transparent={true}
+        warpStrength={0.8}
+        frequency={0.9}
+        mouseInfluence={0.4}
+        parallax={0.3}
+        noise={0.04}
+      />
       {/* Glass pill badge */}
       <a
         href="mailto:autobitofficial.ph@gmail.com"
