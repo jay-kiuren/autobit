@@ -3,10 +3,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
 import StatsBar from "@/components/home/StatsBar";
-import AxonisPanel from "@/components/home/AxonisPanel";
 import WorkflowPanel from "@/components/home/WorkflowPanel";
 import AIAgentsPanel from "@/components/home/AIAgentsPanel";
 import ServicesScrollRow from "@/components/home/ServicesScrollRow";
+import AxonisPanel from "@/components/home/AxonisPanel";
 import EarlynxPanel from "@/components/home/EarlynxPanel";
 import ProcessSection from "@/components/home/ProcessSection";
 import FinalCTA from "@/components/home/FinalCTA";
@@ -30,10 +30,10 @@ const Index = () => {
       >
         <HeroSection />
         <StatsBar />
-        <AxonisPanel />
         <WorkflowPanel />
         <AIAgentsPanel />
         <ServicesScrollRow />
+        <AxonisPanel />
         <EarlynxPanel />
         <ProcessSection />
         <FinalCTA />
