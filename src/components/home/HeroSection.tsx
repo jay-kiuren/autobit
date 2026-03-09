@@ -73,7 +73,7 @@ const HeroSection = () => {
           lineHeight: 1.06,
           color: "#ffffff",
           textAlign: "center",
-          maxWidth: "820px",
+          maxWidth: "860px",
           margin: "0 auto",
         }}
       >
