@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
     []
@@ -13,6 +13,60 @@ const HeroSection = () => {
     const t = setTimeout(() => setIndex((i) => (i + 1) % words.length), 2200);
     return () => clearTimeout(t);
   }, [index, words]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let t = 0;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const orbs = [
+      { x: 0.50, y: 0.05, r: 0.60, color: "rgba(255,255,255,0.042)", sx: 0.00007, sy: 0.00004 },
+      { x: 0.20, y: 0.65, r: 0.38, color: "rgba(255,255,255,0.022)", sx: -0.00005, sy: 0.00006 },
+      { x: 0.80, y: 0.40, r: 0.32, color: "rgba(255,255,255,0.018)", sx: 0.00006, sy: -0.00005 },
+      { x: 0.50, y: 0.95, r: 0.45, color: "rgba(41,151,255,0.028)",  sx: -0.00004, sy: -0.00003 },
+      { x: 0.10, y: 0.20, r: 0.28, color: "rgba(255,255,255,0.015)", sx: 0.00008, sy: 0.00007 },
+    ];
+
+    const draw = () => {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      orbs.forEach((orb) => {
+        const cx = (Math.sin(t * orb.sx * 1000 + orb.x * 10) * 0.18 + orb.x) * w;
+        const cy = (Math.cos(t * orb.sy * 1000 + orb.y * 10) * 0.18 + orb.y) * h;
+        const radius = orb.r * Math.max(w, h);
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        grad.addColorStop(0, orb.color);
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      });
+
+      t += 1;
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   return (
     <section
@@ -28,61 +82,31 @@ const HeroSection = () => {
         overflow: "hidden",
       }}
     >
-      {/* ColorBends living background */}
-      <ColorBends
-        className="color-bends-container"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}
-        colors={["#111111", "#1a1a1a", "#0d0d0d", "#181818"]}
-        speed={0.12}
-        rotation={35}
-        transparent={true}
-        warpStrength={0.75}
-        frequency={0.85}
-        mouseInfluence={0.35}
-        parallax={0.25}
-        noise={0.035}
-      />
-
-      {/* Top radial white glow */}
-      <div
+      <canvas
+        ref={canvasRef}
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "radial-gradient(ellipse 75% 55% at 50% 0%, rgba(255,255,255,0.08), transparent 62%)",
+          width: "100%",
+          height: "100%",
+          zIndex: 0,
           pointerEvents: "none",
-          zIndex: 1,
         }}
       />
 
-      {/* Side glows */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 40% 60% at 0% 50%, rgba(255,255,255,0.025), transparent), radial-gradient(ellipse 40% 60% at 100% 50%, rgba(255,255,255,0.025), transparent)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      />
-
-      {/* Grain texture */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           zIndex: 1,
-          opacity: 0.5,
+          opacity: 0.45,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")`,
           pointerEvents: "none",
         }}
       />
 
-      {/* Content */}
       <div style={{ position: "relative", zIndex: 2, textAlign: "center", width: "100%", maxWidth: "900px" }}>
 
-        {/* Glass pill badge */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
@@ -92,24 +116,24 @@ const HeroSection = () => {
             gap: "8px",
             borderRadius: "9999px",
             border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
+            background: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
             padding: "7px 18px",
             fontSize: "12px",
             letterSpacing: "0.04em",
-            color: "rgba(255,255,255,0.55)",
+            color: "rgba(255,255,255,0.50)",
             textDecoration: "none",
             cursor: "pointer",
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.10)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.80)";
+            e.currentTarget.style.background = "rgba(255,255,255,0.09)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.75)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.50)";
           }}
         >
           <span
@@ -117,15 +141,14 @@ const HeroSection = () => {
               height: "6px",
               width: "6px",
               borderRadius: "50%",
-              background: "rgba(255,255,255,0.50)",
+              background: "rgba(255,255,255,0.45)",
               display: "inline-block",
-              animation: "pulse 2s ease-in-out infinite",
+              animation: "badgePulse 2.5s ease-in-out infinite",
             }}
           />
           Start Something™
         </a>
 
-        {/* Main headline — line 1 static */}
         <h1
           style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
@@ -141,7 +164,6 @@ const HeroSection = () => {
           Systems engineered for
         </h1>
 
-        {/* Animated cycling word — line 2 */}
         <div
           style={{
             height: "clamp(54px, 8vw, 100px)",
@@ -149,23 +171,23 @@ const HeroSection = () => {
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
-            marginTop: "4px",
+            marginTop: "2px",
           }}
         >
           <AnimatePresence mode="wait">
             <motion.span
               key={words[index]}
-              initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+              initial={{ opacity: 0, y: 36, filter: "blur(10px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -40, filter: "blur(8px)" }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              exit={{ opacity: 0, y: -36, filter: "blur(10px)" }}
+              transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
               style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
                 fontSize: "clamp(44px, 6.5vw, 84px)",
                 fontWeight: 700,
                 letterSpacing: "-0.035em",
                 lineHeight: 1.04,
-                color: "rgba(255,255,255,0.55)",
+                color: "rgba(255,255,255,0.42)",
                 display: "block",
                 textAlign: "center",
               }}
@@ -175,24 +197,22 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
 
-        {/* Subheading */}
         <p
           style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            fontSize: "clamp(16px, 1.8vw, 19px)",
+            fontSize: "clamp(15px, 1.6vw, 18px)",
             fontWeight: 400,
-            color: "rgba(255,255,255,0.45)",
+            color: "rgba(255,255,255,0.40)",
             textAlign: "center",
-            maxWidth: "500px",
+            maxWidth: "480px",
             margin: "24px auto 0",
-            lineHeight: 1.55,
+            lineHeight: 1.6,
             letterSpacing: "-0.01em",
           }}
         >
           AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
         </p>
 
-        {/* CTA buttons */}
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", marginTop: "36px", flexWrap: "wrap" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
@@ -206,14 +226,14 @@ const HeroSection = () => {
               textDecoration: "none",
               transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-              boxShadow: "0 0 32px rgba(41,151,255,0.25)",
+              boxShadow: "0 0 28px rgba(41,151,255,0.22)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 48px rgba(41,151,255,0.45)";
-              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.boxShadow = "0 0 52px rgba(41,151,255,0.48)";
+              e.currentTarget.style.transform = "scale(1.025)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 32px rgba(41,151,255,0.25)";
+              e.currentTarget.style.boxShadow = "0 0 28px rgba(41,151,255,0.22)";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >
@@ -232,43 +252,37 @@ const HeroSection = () => {
               transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "rgba(41,151,255,0.75)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#2997ff";
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(41,151,255,0.70)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#2997ff"; }}
           >
             See our work →
           </a>
         </div>
 
-        {/* Trust line */}
         <p
           style={{
-            fontSize: "12px",
-            color: "rgba(255,255,255,0.20)",
+            fontSize: "11px",
+            color: "rgba(255,255,255,0.18)",
             textAlign: "center",
-            marginTop: "20px",
-            letterSpacing: "0.03em",
+            marginTop: "18px",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
           }}
         >
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        {/* Stats row inside hero — bottom */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "0",
-            marginTop: "72px",
+            marginTop: "64px",
             border: "1px solid rgba(255,255,255,0.07)",
             borderRadius: "16px",
             overflow: "hidden",
             background: "rgba(255,255,255,0.02)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
         >
           {[
@@ -280,7 +294,7 @@ const HeroSection = () => {
             <div
               key={i}
               style={{
-                padding: "24px 20px",
+                padding: "24px 16px",
                 textAlign: "center",
                 borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
               }}
@@ -288,7 +302,7 @@ const HeroSection = () => {
               <div
                 style={{
                   fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                  fontSize: "clamp(22px, 2.5vw, 32px)",
+                  fontSize: "clamp(20px, 2.2vw, 30px)",
                   fontWeight: 700,
                   letterSpacing: "-0.03em",
                   color: "#ffffff",
@@ -299,12 +313,11 @@ const HeroSection = () => {
               </div>
               <div
                 style={{
-                  fontSize: "11px",
-                  color: "rgba(255,255,255,0.30)",
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.28)",
                   marginTop: "6px",
-                  letterSpacing: "0.06em",
+                  letterSpacing: "0.07em",
                   textTransform: "uppercase",
-                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
                 }}
               >
                 {stat.label}
@@ -315,9 +328,9 @@ const HeroSection = () => {
       </div>
 
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
+        @keyframes badgePulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.35; transform: scale(0.85); }
         }
       `}</style>
     </section>
