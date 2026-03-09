@@ -1,36 +1,37 @@
+import { Zap, ArrowRight, RefreshCw, GitMerge, Filter } from 'lucide-react';
+
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+
+const floatingIcons = [
+  { Icon: Zap, top: '10%', left: '85%', rotate: '-15deg' },
+  { Icon: ArrowRight, top: '80%', left: '8%', rotate: '10deg' },
+  { Icon: RefreshCw, top: '50%', left: '90%', rotate: '20deg' },
+  { Icon: GitMerge, top: '8%', left: '45%', rotate: '-10deg' },
+  { Icon: Filter, top: '75%', left: '88%', rotate: '15deg' },
+];
 
 const FlowNode = ({ label, dotColor }: { label: string; dotColor: string }) => (
   <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '980px',
-    padding: '12px 20px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+    display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.06)',
+    borderRadius: '980px', padding: '14px 24px', minWidth: '120px',
   }}>
     <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
     <span style={{ fontFamily: font, fontSize: '14px', color: '#ffffff', whiteSpace: 'nowrap' }}>{label}</span>
   </div>
 );
 
-const Arrow = () => (
-  <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px', lineHeight: 1 }}>→</span>
-);
-
 const WorkflowPanel = () => (
   <section style={{
-    width: '100%',
-    background: '#000000',
-    padding: '100px 10%',
+    width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 50%, rgba(41,151,255,0.07), transparent)',
-    position: 'relative',
+    backgroundImage: 'radial-gradient(ellipse 60% 70% at 0% 50%, rgba(41,151,255,0.09), transparent 70%)',
+    position: 'relative', overflow: 'hidden',
   }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-      {/* Left text */}
+    {floatingIcons.map(({ Icon, top, left, rotate }, i) => (
+      <Icon key={i} size={48} style={{ position: 'absolute', top, left, color: 'rgba(41,151,255,0.06)', pointerEvents: 'none', zIndex: 0, transform: `rotate(${rotate})` }} />
+    ))}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
       <div style={{ width: '45%' }}>
         <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>Workflow Automation</p>
         <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>Eliminate manual work.</h2>
@@ -43,34 +44,29 @@ const WorkflowPanel = () => (
           <a href="/services#automation" style={{ background: 'transparent', color: '#2997ff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>Learn more →</a>
         </div>
       </div>
-      {/* Right visual */}
       <div style={{ width: '55%' }}>
         <div style={{
-          background: '#0d0d0d',
-          borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.06)',
-          padding: '32px',
-          minHeight: '420px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gap: '32px',
+          background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
+          padding: '32px', minHeight: '420px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '32px',
+          position: 'relative',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          {/* Connection line behind nodes */}
+          <div style={{ position: 'absolute', top: '50%', left: '32px', right: '32px', height: '1px', background: 'rgba(41,151,255,0.15)', zIndex: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
             <FlowNode label="Gmail" dotColor="#ff453a" />
-            <Arrow />
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px' }}>→</span>
             <FlowNode label="Filter & Route" dotColor="#ffd60a" />
-            <Arrow />
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px' }}>→</span>
             <FlowNode label="Slack Notify" dotColor="#30d158" />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
             <FlowNode label="CRM Update" dotColor="#bf5af2" />
-            <Arrow />
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px' }}>→</span>
             <FlowNode label="Invoice Generate" dotColor="#ff9f0a" />
-            <Arrow />
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '20px' }}>→</span>
             <FlowNode label="Send PDF" dotColor="#64d2ff" />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative', zIndex: 1 }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#30d158', animation: 'pulse 2s infinite' }} />
             <span style={{ fontFamily: font, fontSize: '14px', color: 'rgba(255,255,255,0.25)' }}>3 automations running</span>
           </div>

@@ -1,68 +1,100 @@
 import { useState } from 'react';
-import { Code2, Database, Cpu, Globe, Smartphone, Zap, Bot, Shield } from 'lucide-react';
+import { Code2, Database, Globe, Smartphone, Server, Shield, Terminal, Layers } from 'lucide-react';
 
 const font = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 
 const floatingIcons = [
-  { Icon: Code2, top: '8%', left: '5%' },
-  { Icon: Database, top: '15%', left: '85%' },
-  { Icon: Cpu, top: '45%', left: '92%' },
-  { Icon: Globe, top: '75%', left: '10%' },
-  { Icon: Smartphone, top: '60%', left: '80%' },
-  { Icon: Zap, top: '25%', left: '50%' },
-  { Icon: Bot, top: '85%', left: '45%' },
-  { Icon: Shield, top: '35%', left: '15%' },
+  { Icon: Code2, top: '5%', left: '3%' },
+  { Icon: Database, top: '12%', left: '88%' },
+  { Icon: Globe, top: '40%', left: '95%' },
+  { Icon: Smartphone, top: '75%', left: '7%' },
+  { Icon: Server, top: '60%', left: '92%' },
+  { Icon: Shield, top: '30%', left: '2%' },
+  { Icon: Terminal, top: '85%', left: '50%' },
+  { Icon: Layers, top: '20%', left: '55%' },
 ];
 
 const BrowserFrame = () => (
-  <div style={{ background: '#080808', borderRadius: '8px', marginTop: '20px', padding: '16px 20px', border: '1px solid rgba(255,255,255,0.06)' }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px' }}>
+  <div style={{ background: '#080808', borderRadius: '8px', marginTop: '20px', border: '1px solid rgba(255,255,255,0.06)', minHeight: '160px', overflow: 'hidden' }}>
+    {/* Header bar */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,60,60,0.6)' }} />
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,200,0,0.6)' }} />
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(0,200,0,0.6)' }} />
-      <div style={{ flex: 1, height: 20, background: 'rgba(255,255,255,0.06)', borderRadius: 4, marginLeft: 8 }} />
+      <div style={{ flex: 1, height: 18, background: 'rgba(255,255,255,0.06)', borderRadius: 4, marginLeft: 8 }} />
     </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ height: 10, width: '80%', background: 'rgba(255,255,255,0.06)', borderRadius: 3 }} />
-      <div style={{ height: 10, width: '55%', background: 'rgba(255,255,255,0.06)', borderRadius: 3 }} />
-      <div style={{ height: 10, width: '70%', background: 'rgba(255,255,255,0.06)', borderRadius: 3 }} />
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <div style={{ width: 48, height: 28, background: 'rgba(41,151,255,0.2)', borderRadius: 4 }} />
-        <div style={{ width: 48, height: 28, background: 'rgba(48,209,88,0.2)', borderRadius: 4 }} />
+    {/* Body: sidebar + content */}
+    <div style={{ display: 'flex', height: '130px' }}>
+      <div style={{ width: '25%', background: '#111', borderRight: '1px solid rgba(255,255,255,0.04)', padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ height: 6, width: '80%', background: 'rgba(255,255,255,0.08)', borderRadius: 2 }} />
+        <div style={{ height: 6, width: '60%', background: 'rgba(255,255,255,0.04)', borderRadius: 2 }} />
+        <div style={{ height: 6, width: '70%', background: 'rgba(255,255,255,0.04)', borderRadius: 2 }} />
+      </div>
+      <div style={{ width: '75%', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ height: 8, width: '85%', background: 'rgba(255,255,255,0.08)', borderRadius: 3 }} />
+        <div style={{ height: 8, width: '60%', background: 'rgba(255,255,255,0.04)', borderRadius: 3 }} />
+        <div style={{ height: 8, width: '75%', background: 'rgba(255,255,255,0.04)', borderRadius: 3 }} />
       </div>
     </div>
   </div>
 );
 
 const DataTable = () => (
-  <div style={{ marginTop: '20px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
-    {['Revenue — $42,800', 'Orders — 1,204', 'Refunds — 18', 'Active Users — 3,891'].map((row, i) => (
-      <div key={row} style={{ padding: '10px 16px', fontSize: 14, fontFamily: font, color: 'rgba(255,255,255,0.45)', background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>{row}</div>
-    ))}
-  </div>
-);
-
-const SensorGrid = () => (
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 20 }}>
+  <div style={{ marginTop: '20px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', minHeight: '160px' }}>
+    {/* Header row */}
+    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', padding: '8px 14px', gap: '16px' }}>
+      <span style={{ fontFamily: font, fontSize: '10px', color: 'rgba(255,255,255,0.40)', flex: 1 }}>STATUS</span>
+      <span style={{ fontFamily: font, fontSize: '10px', color: 'rgba(255,255,255,0.40)', flex: 2 }}>ITEM</span>
+      <span style={{ fontFamily: font, fontSize: '10px', color: 'rgba(255,255,255,0.40)', flex: 1 }}>VALUE</span>
+    </div>
     {[
-      { l: 'Sensor 1', s: 'OK', c: '#30d158' },
-      { l: 'Motor A', s: 'Active', c: '#ffd60a' },
-      { l: 'Temp', s: '72°C', c: '#ff9f0a' },
-      { l: 'Pressure', s: 'Normal', c: '#30d158' },
-    ].map(x => (
-      <div key={x.l} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ width: 8, height: 8, borderRadius: '50%', background: x.c }} />
-        <span style={{ fontFamily: font, fontSize: 14, color: 'rgba(255,255,255,0.50)' }}>{x.l}: {x.s}</span>
+      { status: '#30d158', item: 'Revenue', val: '$42,800' },
+      { status: '#30d158', item: 'Orders', val: '1,204' },
+      { status: '#ff9f0a', item: 'Refunds', val: '18' },
+      { status: '#30d158', item: 'Active Users', val: '3,891' },
+    ].map((row, i) => (
+      <div key={row.item} style={{ display: 'flex', padding: '10px 14px', gap: '16px', background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent', alignItems: 'center' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: row.status }} />
+        </div>
+        <div style={{ flex: 2 }}>
+          <div style={{ height: 6, width: '70%', background: 'rgba(255,255,255,0.08)', borderRadius: 2 }} />
+        </div>
+        <span style={{ flex: 1, fontFamily: font, fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>{row.val}</span>
       </div>
     ))}
   </div>
 );
 
+const SensorGrid = () => {
+  const sensors = [
+    { l: 'Sensor 1', c: '#30d158' }, { l: 'Motor A', c: '#30d158' }, { l: 'Temp', c: '#ffd60a' },
+    { l: 'PLC', c: '#30d158' }, { l: 'Edge', c: '#30d158' }, { l: 'Feed', c: '#ffd60a' },
+    { l: 'Input', c: '#30d158' }, { l: 'Output', c: '#30d158' }, { l: 'Status', c: '#30d158' },
+  ];
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 20, minHeight: '160px' }}>
+      {sensors.map(x => (
+        <div key={x.l} style={{
+          width: '60px', height: '60px', border: '1px solid rgba(0,200,150,0.15)', borderRadius: 8,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: x.c }} />
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', color: 'rgba(255,255,255,0.50)' }}>{x.l}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const PhoneFrame = () => (
-  <div style={{ width: 140, height: 240, border: '2px solid rgba(255,255,255,0.12)', borderRadius: 24, margin: '20px auto 0', padding: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
-    <div style={{ height: 14, width: '60%', background: 'rgba(255,255,255,0.08)', borderRadius: 4 }} />
-    <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', borderRadius: 10 }} />
-    <div style={{ height: 14, width: '40%', background: 'rgba(41,151,255,0.2)', borderRadius: 4, alignSelf: 'center' }} />
+  <div style={{
+    width: 80, height: 140, border: '2px solid rgba(255,255,255,0.10)', borderRadius: 24,
+    margin: '20px auto 0', padding: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, justifyContent: 'center',
+  }}>
+    <div style={{ height: 6, width: '70%', background: 'rgba(255,255,255,0.08)', borderRadius: 3 }} />
+    <div style={{ height: 6, width: '50%', background: 'rgba(255,255,255,0.04)', borderRadius: 3 }} />
+    <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', marginTop: 4 }} />
   </div>
 );
 
@@ -77,23 +109,15 @@ const cards: CardData[] = [
 
 const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
   const [hovered, setHovered] = useState(false);
-  const gridRow = idx < 2 ? '1 / 2' : '2 / 3';
-  const gridCol = idx % 2 === 0 ? '1 / 2' : '2 / 3';
-
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        gridRow,
-        gridColumn: gridCol,
-        background: '#0d0d0d',
-        borderRadius: '16px',
-        border: '1px solid rgba(255,255,255,0.06)',
-        padding: '32px',
-        overflow: 'hidden',
-        position: 'relative',
-        zIndex: 1,
+        gridRow: idx < 2 ? '1 / 2' : '2 / 3',
+        gridColumn: idx % 2 === 0 ? '1 / 2' : '2 / 3',
+        background: '#0d0d0d', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)',
+        padding: '36px', overflow: 'hidden', position: 'relative', zIndex: 1, minHeight: idx < 2 ? '320px' : undefined,
         transform: hovered ? 'translateY(-3px)' : 'none',
         transition: 'all 0.3s cubic-bezier(0.25,0.1,0.25,1)',
       }}
@@ -113,17 +137,13 @@ const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
 
 const ServicesScrollRow = () => (
   <section style={{
-    width: '100%',
-    background: '#000000',
-    padding: '100px 10%',
+    width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    backgroundImage: 'radial-gradient(ellipse 100% 50% at 50% 0%, rgba(0,200,150,0.05), transparent)',
-    position: 'relative',
-    overflow: 'hidden',
+    backgroundImage: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,200,150,0.06), transparent 60%), radial-gradient(ellipse 40% 40% at 0% 100%, rgba(0,200,150,0.04), transparent)',
+    position: 'relative', overflow: 'hidden',
   }}>
-    {/* Floating tech icons */}
     {floatingIcons.map(({ Icon, top, left }, i) => (
-      <Icon key={i} size={32} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.04)', pointerEvents: 'none', zIndex: 0 }} />
+      <Icon key={i} size={64} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
     <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', marginBottom: '48px', position: 'relative', zIndex: 1 }}>Every layer of your stack.</h2>
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: '16px', position: 'relative', zIndex: 1 }}>

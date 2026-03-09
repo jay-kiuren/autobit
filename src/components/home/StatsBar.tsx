@@ -11,8 +11,8 @@ const StatsBar = () => (
   <section style={{
     width: '100%',
     background: '#000000',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
-    padding: '32px 10%',
+    borderTop: '1px solid rgba(255,255,255,0.10)',
+    padding: '28px 10%',
   }}>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((s, i) => (
@@ -20,8 +20,8 @@ const StatsBar = () => (
           textAlign: 'center',
           borderRight: i < stats.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
         }}>
-          <div style={{ fontFamily: font, fontSize: '32px', fontWeight: 700, letterSpacing: '-1px', color: '#ffffff' }}>{s.value}</div>
-          <div style={{ fontFamily: font, fontSize: '11px', fontWeight: 400, color: 'rgba(255,255,255,0.30)', marginTop: '4px', letterSpacing: '0.06em', textTransform: 'uppercase' as const }}>{s.label}</div>
+          <div style={{ fontFamily: font, fontSize: '36px', fontWeight: 700, letterSpacing: '-1px', color: '#ffffff' }}>{s.value}</div>
+          <div style={{ fontFamily: font, fontSize: '11px', fontWeight: 400, color: 'rgba(255,255,255,0.35)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>{s.label}</div>
         </div>
       ))}
     </div>
