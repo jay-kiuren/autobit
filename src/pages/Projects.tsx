@@ -150,6 +150,7 @@ function ScrollRow({
       {/* Scrollable track */}
       <div
         ref={rowRef}
+        className="scrollbar-hidden"
         style={{
           display: "flex",
           gap: "14px",
@@ -158,14 +159,9 @@ function ScrollRow({
           paddingLeft: "40px",
           paddingRight: "40px",
           paddingBottom: "12px",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
           WebkitOverflowScrolling: "touch",
         }}
       >
-        <style>{`
-          div::-webkit-scrollbar { display: none; }
-        `}</style>
         {children}
       </div>
     </div>
