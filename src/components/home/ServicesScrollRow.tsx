@@ -104,30 +104,29 @@ const cards: CardData[] = [
   { eyebrow: 'Mobile Applications', title: 'iOS + Android. Shipped fast.', price: 'From $2,000+', visual: <PhoneFrame /> },
 ];
 
-const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
+const ServiceCard = ({ card }: { card: CardData }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        gridRow: idx < 2 ? '1 / 2' : '2 / 3',
-        gridColumn: idx % 2 === 0 ? '1 / 2' : '2 / 3',
         background: '#0a0f0d',
         borderRadius: '16px',
-        border: hovered ? '1px solid rgba(0,210,150,0.10)' : '1px solid rgba(0,210,150,0.10)',
+        border: '1px solid rgba(0,210,150,0.10)',
         borderTop: hovered ? '1px solid rgba(0,210,150,0.45)' : '1px solid rgba(0,210,150,0.25)',
         boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
         padding: '36px', overflow: 'hidden', position: 'relative', zIndex: 1, minHeight: '300px',
         transform: hovered ? 'translateY(-6px)' : 'none',
         transition: 'all 0.3s cubic-bezier(0.25,0.1,0.25,1)',
+        willChange: 'transform',
       }}
     >
       <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.30)', letterSpacing: '0.08em' }}>{card.eyebrow}</p>
       <h3 style={{ fontFamily: font, fontSize: '24px', fontWeight: 700, color: '#ffffff', marginTop: '8px', letterSpacing: '-0.5px' }}>{card.title}</h3>
       {card.body && <p style={{ fontFamily: font, fontSize: '15px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5, marginTop: '8px' }}>{card.body}</p>}
       <p style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.25)', marginTop: '12px' }}>{card.price}</p>
-      <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
+      <div style={{ display: 'flex', gap: '16px', marginTop: '16px', flexWrap: 'wrap' }}>
         <a href="/services" style={{ fontFamily: font, fontSize: '13px', color: '#2997ff', textDecoration: 'none' }}>Learn more</a>
         <a href="mailto:autobitofficial.ph@gmail.com" style={{ fontFamily: font, fontSize: '13px', color: '#2997ff', textDecoration: 'none' }}>Get a quote →</a>
       </div>
@@ -137,19 +136,27 @@ const ServiceCard = ({ card, idx }: { card: CardData; idx: number }) => {
 };
 
 const ServicesScrollRow = () => (
-  <section style={{
+  <section className="services-section" style={{
     width: '100%', background: '#02080a', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden',
+    contain: 'layout',
   }}>
     <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,210,150,0.12), transparent 55%)', pointerEvents: 'none', zIndex: 0 }} />
     {scatterIcons.map(({ Icon, top, left }, i) => (
       <Icon key={i} size={80} style={{ position: 'absolute', top, left, color: 'rgba(0,210,150,0.04)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
-    <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', marginBottom: '48px', position: 'relative', zIndex: 1 }}>Every layer of your stack.</h2>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: '16px', position: 'relative', zIndex: 1 }}>
-      {cards.map((card, i) => <ServiceCard key={card.eyebrow} card={card} idx={i} />)}
+    <h2 className="services-heading" style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', marginBottom: '48px', position: 'relative', zIndex: 1 }}>Every layer of your stack.</h2>
+    <div className="services-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', position: 'relative', zIndex: 1 }}>
+      {cards.map((card) => <ServiceCard key={card.eyebrow} card={card} />)}
     </div>
+    <style>{`
+      @media (max-width: 767px) {
+        .services-section { padding: 48px 24px !important; }
+        .services-grid { grid-template-columns: 1fr !important; }
+        .services-heading { font-size: 32px !important; }
+      }
+    `}</style>
   </section>
 );
 

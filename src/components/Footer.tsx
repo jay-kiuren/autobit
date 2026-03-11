@@ -27,7 +27,7 @@ const footerColumns = [
     heading: "Company",
     links: [
       { text: "About", href: "/about" },
-      { text: "Team", href: "/team" },
+      { text: "News", href: "/news" },
       { text: "Process", href: "/process" },
       { text: "Pricing", href: "/pricing" },
     ],
@@ -53,7 +53,7 @@ const socials = [
 const Footer = () => (
   <footer className="bg-ab-tertiary border-t border-border">
     <div className="section-container pt-[52px] pb-6">
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
+      <div className="footer-columns grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
         {footerColumns.map((col) => (
           <div key={col.heading}>
             <h6 className="text-xs font-semibold text-ab-text-muted mb-3">{col.heading}</h6>
@@ -104,7 +104,7 @@ const Footer = () => (
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-border mt-10 pt-5 flex justify-between items-center">
+      <div className="border-t border-border mt-10 pt-5 flex flex-col sm:flex-row justify-between items-center gap-2">
         <span className="text-xs text-ab-text-muted">© 2025 AUTOBIT. All rights reserved.</span>
         <span className="text-xs text-ab-text-muted">Start Something™</span>
       </div>

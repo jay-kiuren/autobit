@@ -17,17 +17,18 @@ const steps = [
 ];
 
 const ProcessSection = () => (
-  <section style={{
+  <section className="process-section" style={{
     width: '100%', background: '#080808', padding: '100px 10%',
     borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden',
+    contain: 'layout',
   }}>
     <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 100% 40% at 50% 0%, rgba(255,255,255,0.04), transparent 50%)', pointerEvents: 'none', zIndex: 0 }} />
     {floatingIcons.map(({ Icon, top, left }, i) => (
       <Icon key={i} size={32} style={{ position: 'absolute', top, left, color: 'rgba(255,255,255,0.04)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
-    <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', textAlign: 'center', marginBottom: '64px', position: 'relative', zIndex: 1 }}>From problem to working system.</h2>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px', position: 'relative', zIndex: 1 }}>
+    <h2 className="process-heading" style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', color: '#ffffff', textAlign: 'center', marginBottom: '64px', position: 'relative', zIndex: 1 }}>From problem to working system.</h2>
+    <div className="process-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px', position: 'relative', zIndex: 1 }}>
       {steps.map(s => (
         <div key={s.n} style={{ borderTop: '2px solid rgba(255,255,255,0.08)', paddingTop: '24px' }}>
           <span style={{ fontFamily: font, fontSize: '80px', fontWeight: 800, color: 'rgba(255,255,255,0.04)', letterSpacing: '-2px', lineHeight: 1, display: 'block' }}>{s.n}</span>
@@ -36,6 +37,13 @@ const ProcessSection = () => (
         </div>
       ))}
     </div>
+    <style>{`
+      @media (max-width: 767px) {
+        .process-section { padding: 48px 24px !important; }
+        .process-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+        .process-heading { font-size: 32px !important; }
+      }
+    `}</style>
   </section>
 );
 

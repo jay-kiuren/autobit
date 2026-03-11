@@ -12,32 +12,33 @@ const scatterIcons = [
 ];
 
 const AxonisPanel = () => (
-  <section style={{
+  <section className="axonis-section" style={{
     width: '100%', background: '#020a04', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden',
+    contain: 'layout',
   }}>
     <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 120% 80% at 110% 50%, rgba(48,209,88,0.15), transparent 55%)', pointerEvents: 'none', zIndex: 0 }} />
     {scatterIcons.map(({ Icon, top, left }, i) => (
       <Icon key={i} size={80} style={{ position: 'absolute', top, left, color: 'rgba(48,209,88,0.05)', pointerEvents: 'none', zIndex: 0 }} />
     ))}
-    <div style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
-      <div style={{ width: '45%' }}>
+    <div className="axonis-inner" style={{ display: 'flex', alignItems: 'center', gap: '40px', position: 'relative', zIndex: 1 }}>
+      <div className="axonis-text" style={{ width: '45%' }}>
         <span style={{
           display: 'inline-block', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: '980px', padding: '4px 14px', fontSize: '11px', color: 'rgba(255,255,255,0.60)', fontFamily: font, marginBottom: '20px',
         }}>Open Source</span>
         <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>AXONIS Platform</p>
-        <h2 style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', lineHeight: 1.1, color: '#ffffff', margin: 0 }}>The AI safety OS for critical infrastructure.</h2>
+        <h2 className="axonis-heading" style={{ fontFamily: font, fontSize: '48px', fontWeight: 700, letterSpacing: '-1.5px', lineHeight: 1.1, color: '#ffffff', margin: 0 }}>The AI safety OS for critical infrastructure.</h2>
         <p style={{ fontFamily: font, fontSize: '17px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.6, marginTop: '16px' }}>
           Open-core decentralized safety layer for industrial AI. Edge inference, cryptographic proof, privacy-first.
         </p>
-        <div style={{ display: 'flex', gap: '12px', marginTop: '28px' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '28px', flexWrap: 'wrap' }}>
           <a href="/projects#axonis" style={{ background: '#2997ff', color: '#ffffff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>Learn more</a>
           <a href="https://github.com/gnobob/AXONIS-Platform" target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', color: '#2997ff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>View on GitHub →</a>
         </div>
       </div>
-      <div style={{ width: '55%' }}>
+      <div className="axonis-visual" style={{ width: '55%' }}>
         <div style={{
           background: '#040d05', borderRadius: '12px', border: '1px solid rgba(48,209,88,0.15)',
           overflow: 'hidden', minHeight: '480px', display: 'flex', flexDirection: 'column',
@@ -67,6 +68,15 @@ const AxonisPanel = () => (
         </div>
       </div>
     </div>
+    <style>{`
+      @media (max-width: 767px) {
+        .axonis-section { padding: 48px 24px !important; }
+        .axonis-inner { flex-direction: column !important; }
+        .axonis-text { width: 100% !important; }
+        .axonis-visual { width: 100% !important; }
+        .axonis-heading { font-size: 32px !important; }
+      }
+    `}</style>
   </section>
 );
 
