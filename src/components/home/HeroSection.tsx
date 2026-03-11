@@ -36,33 +36,32 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* ColorBends — scaled up so edges never show, fades in smoothly */}
+      {/* ColorBends — NOT transparent so no alpha edge cut */}
       <div style={{
         position: "absolute",
-        inset: "-20%",
+        inset: 0,
         zIndex: 0,
         opacity: bgReady ? 1 : 0,
         transition: "opacity 2s ease",
       }}>
         <ColorBends
-          colors={["#242424", "#242424", "#242424"]}
+          colors={["#1c1c1c", "#2e2e2e", "#424242", "#2e2e2e", "#1c1c1c"]}
           rotation={0}
           speed={0.11}
-          scale={0.6}
+          scale={0.7}
           frequency={1}
           warpStrength={1}
           mouseInfluence={0.06}
           parallax={0.5}
           noise={0}
-          transparent
           autoRotate={0}
         />
       </div>
 
-      {/* Dark overlay */}
+      {/* Overlay — not too dark, not too bright */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "rgba(0,0,0,0.70)",
+        background: "rgba(0,0,0,0.58)",
         zIndex: 1, pointerEvents: "none",
       }} />
 
