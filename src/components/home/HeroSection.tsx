@@ -29,7 +29,7 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      <Silk speed={0.5} scale={1} color="#888888" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
+      <Silk speed={0.5} scale={1} color="#ffffff" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
 
       <div style={{
         position: "absolute", inset: 0,
@@ -76,7 +76,7 @@ const HeroSection = () => {
           Start Something™
         </a>
 
-        {/* Headline + cycling word — grouped so gap applies between them and sibling elements */}
+        {/* Headline + cycling word */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
           <h1 style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
