@@ -36,7 +36,6 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* ColorBends — NOT transparent so no alpha edge cut */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -58,7 +57,6 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Overlay — not too dark, not too bright */}
       <div style={{
         position: "absolute", inset: 0,
         background: "rgba(0,0,0,0.58)",
@@ -72,33 +70,34 @@ const HeroSection = () => {
         gap: "clamp(10px, 1.8vh, 22px)",
       }}>
 
-        {/* Badge */}
+        {/* Badge — glassy, no border, subtle inner highlight */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
             borderRadius: "9999px",
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.05)",
-            backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+            border: "none",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 16px rgba(0,0,0,0.25)",
             padding: "7px 18px",
             fontSize: "12px", letterSpacing: "0.04em",
-            color: "rgba(255,255,255,0.50)",
+            color: "rgba(255,255,255,0.60)",
             textDecoration: "none", cursor: "pointer",
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.09)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.75)";
+            e.currentTarget.style.background = "rgba(255,255,255,0.13)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.85)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.50)";
+            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.60)";
           }}
         >
           <span style={{
             height: "6px", width: "6px", borderRadius: "50%",
-            background: "rgba(255,255,255,0.45)", display: "inline-block",
+            background: "rgba(255,255,255,0.55)", display: "inline-block",
             animation: "badgePulse 2.5s ease-in-out infinite",
           }} />
           Start Something™
