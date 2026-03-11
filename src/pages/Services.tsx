@@ -25,7 +25,7 @@ const AutomationArt = ({ active }: { active: boolean }) => (
     {[0,1,2].map(i => (
       <motion.g key={i}
         initial={{ x: -60, opacity: 0 }}
-        animate={active ? { x: [−60, 95], opacity: [0, 1, 1, 0] } : { x: -60, opacity: 0 }}
+        animate={active ? { x: [-60, 95], opacity: [0, 1, 1, 0] } : { x: -60, opacity: 0 }}
         transition={{ duration: 1.8, delay: i * 0.55, repeat: Infinity, repeatDelay: 0.8, ease: "easeInOut" }}
       >
         <rect x={0} y={70 + i * 18 - 18} width={32} height={20} rx={3} fill="#1c1c1e" stroke="#2997ff" strokeWidth={1} />
