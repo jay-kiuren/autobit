@@ -37,23 +37,15 @@ const HeroSection = () => {
       }}
     >
       <div style={{
-        position: "absolute",
-        inset: 0,
-        zIndex: 0,
+        position: "absolute", inset: 0, zIndex: 0,
         opacity: bgReady ? 1 : 0,
         transition: "opacity 2s ease",
       }}>
         <ColorBends
           colors={["#1c1c1c", "#2e2e2e", "#424242", "#2e2e2e", "#1c1c1c"]}
-          rotation={0}
-          speed={0.11}
-          scale={0.7}
-          frequency={1}
-          warpStrength={1}
-          mouseInfluence={0.06}
-          parallax={0.5}
-          noise={0}
-          autoRotate={0}
+          rotation={0} speed={0.11} scale={0.7} frequency={1}
+          warpStrength={1} mouseInfluence={0.06} parallax={0.5}
+          noise={0} autoRotate={0}
         />
       </div>
 
@@ -67,7 +59,6 @@ const HeroSection = () => {
         position: "relative", zIndex: 2,
         textAlign: "center", width: "100%", maxWidth: "860px",
         display: "flex", flexDirection: "column", alignItems: "center",
-        gap: "clamp(10px, 1.8vh, 22px)",
       }}>
 
         {/* Badge */}
@@ -75,8 +66,7 @@ const HeroSection = () => {
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
-            borderRadius: "9999px",
-            border: "none",
+            borderRadius: "9999px", border: "none",
             background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 16px rgba(0,0,0,0.25)",
@@ -85,6 +75,7 @@ const HeroSection = () => {
             color: "rgba(255,255,255,0.60)",
             textDecoration: "none", cursor: "pointer",
             transition: "all 0.3s ease",
+            marginBottom: "28px",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = "rgba(255,255,255,0.13)";
@@ -103,8 +94,8 @@ const HeroSection = () => {
           Start Something™
         </a>
 
-        {/* Headline + cycling word */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
+        {/* Headline + cycling word — tightest group, zero gap between lines */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
           <h1 style={{
             fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
             fontSize: "clamp(32px, 6vw, 72px)",
@@ -148,14 +139,14 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Subheading */}
+        {/* Subheading — more space from headline, less from CTAs */}
         <p style={{
           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
           fontSize: "clamp(15px, 1.5vw, 19px)",
           fontWeight: 400,
           color: "rgba(255,255,255,0.72)",
           maxWidth: "520px",
-          margin: 0,
+          margin: "0 0 32px 0",
           lineHeight: 1.5,
           letterSpacing: "-0.015em",
         }}>
@@ -163,18 +154,14 @@ const HeroSection = () => {
         </p>
 
         {/* CTAs */}
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "4px" }}>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff",
-              color: "#ffffff",
-              padding: "12px 26px",
-              borderRadius: "980px",
-              fontSize: "15px",
-              fontWeight: 500,
-              textDecoration: "none",
-              transition: "all 0.2s ease",
+              background: "#2997ff", color: "#ffffff",
+              padding: "12px 26px", borderRadius: "980px",
+              fontSize: "15px", fontWeight: 500,
+              textDecoration: "none", transition: "all 0.2s ease",
               fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "-0.01em",
             }}
@@ -191,49 +178,44 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "transparent",
-              color: "#ffffff",
-              padding: "12px 26px",
-              borderRadius: "980px",
-              fontSize: "15px",
-              fontWeight: 500,
-              textDecoration: "none",
-              transition: "all 0.2s ease",
+              background: "transparent", color: "#ffffff",
+              padding: "12px 26px", borderRadius: "980px",
+              fontSize: "15px", fontWeight: 500,
+              textDecoration: "none", transition: "all 0.2s ease",
               fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "-0.01em",
               border: "1px solid rgba(255,255,255,0.28)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.55)";
+              e.currentTarget.style.color = "#2997ff";
+              e.currentTarget.style.borderColor = "#2997ff";
               e.currentTarget.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#ffffff";
               e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >See our work</a>
         </div>
 
-        {/* Trust line */}
+        {/* Trust line — close to CTAs, feels like a footnote to the action */}
         <p style={{
           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-          fontSize: "13px",
-          fontWeight: 400,
-          color: "rgba(255,255,255,0.38)",
-          letterSpacing: "0em",
-          margin: 0,
+          fontSize: "13px", fontWeight: 400,
+          color: "rgba(255,255,255,0.35)",
+          letterSpacing: "0em", margin: "0 0 40px 0",
         }}>
           Trusted by founders and teams across Southeast Asia.
         </p>
 
-        {/* Stats grid */}
+        {/* Stats grid — most distant from headline, its own visual block */}
         <div
           className="hero-stats-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
             width: "100%",
-            marginTop: "4px",
             border: "1px solid rgba(255,255,255,0.07)",
             borderRadius: "16px", overflow: "hidden",
             background: "rgba(0,0,0,0.40)",
