@@ -40,9 +40,9 @@ const HeroSection = () => {
 
       <div style={{
         position: "relative", zIndex: 2,
-        textAlign: "center", width: "100%", maxWidth: "860px",
+        textAlign: "center", width: "100%", maxWidth: "900px",
         display: "flex", flexDirection: "column", alignItems: "center",
-        gap: "clamp(8px, 1.4vh, 18px)",
+        gap: "clamp(10px, 1.6vh, 20px)",
       }}>
 
         {/* Badge */}
@@ -81,7 +81,7 @@ const HeroSection = () => {
         <div>
           <h1 style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-            fontSize: "clamp(28px, 5vw, 66px)",
+            fontSize: "clamp(34px, 6.5vw, 82px)",
             fontWeight: 700,
             letterSpacing: "-0.035em",
             lineHeight: 1.06,
@@ -94,7 +94,7 @@ const HeroSection = () => {
           </h1>
 
           <div style={{
-            height: "clamp(36px, 6.5vh, 78px)",
+            height: "clamp(42px, 7.5vh, 90px)",
             display: "flex", alignItems: "center", justifyContent: "center",
             overflow: "hidden",
           }}>
@@ -107,7 +107,7 @@ const HeroSection = () => {
                 transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
                 style={{
                   fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                  fontSize: "clamp(28px, 5vw, 66px)",
+                  fontSize: "clamp(34px, 6.5vw, 82px)",
                   fontWeight: 700,
                   letterSpacing: "-0.035em",
                   lineHeight: 1.06,
@@ -125,10 +125,10 @@ const HeroSection = () => {
         {/* Subheading */}
         <p style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "clamp(13px, 1.2vw, 16px)",
+          fontSize: "clamp(14px, 1.35vw, 18px)",
           fontWeight: 400,
           color: "rgba(255,255,255,0.40)",
-          maxWidth: "440px",
+          maxWidth: "460px",
           margin: 0,
           lineHeight: 1.55,
           letterSpacing: "-0.01em",
@@ -141,8 +141,8 @@ const HeroSection = () => {
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff", color: "#ffffff", padding: "12px 28px",
-              borderRadius: "980px", fontSize: "14px", fontWeight: 600,
+              background: "#2997ff", color: "#ffffff", padding: "13px 30px",
+              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
               boxShadow: "0 0 28px rgba(41,151,255,0.25)",
@@ -159,8 +159,8 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "transparent", color: "#2997ff", padding: "12px 28px",
-              borderRadius: "980px", fontSize: "14px", fontWeight: 600,
+              background: "transparent", color: "#2997ff", padding: "13px 30px",
+              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
             }}
@@ -177,7 +177,7 @@ const HeroSection = () => {
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        {/* Stats grid — always 4 columns, always inside hero */}
+        {/* Stats grid */}
         <div
           style={{
             display: "grid",
@@ -196,13 +196,13 @@ const HeroSection = () => {
             { value: "50%",      label: "Deposit to start" },
           ].map((stat, i) => (
             <div key={i} style={{
-              padding: "clamp(12px, 1.8vh, 18px) 12px",
+              padding: "clamp(14px, 2vh, 20px) 12px",
               textAlign: "center",
               borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
             }}>
               <div style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(15px, 1.6vw, 24px)", fontWeight: 700,
+                fontSize: "clamp(16px, 1.8vw, 26px)", fontWeight: 700,
                 letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1,
                 WebkitFontSmoothing: "antialiased",
               }}>{stat.value}</div>
