@@ -16,9 +16,8 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, [index, words]);
 
-  // Fade in background after a short delay so it doesn't look cut on first render
   useEffect(() => {
-    const t = setTimeout(() => setBgReady(true), 300);
+    const t = setTimeout(() => setBgReady(true), 200);
     return () => clearTimeout(t);
   }, []);
 
@@ -37,22 +36,22 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* ColorBends — fades in after init so no jarring cut on load */}
+      {/* ColorBends — scaled up so edges never show, fades in smoothly */}
       <div style={{
         position: "absolute",
-        inset: 0,
+        inset: "-20%",
         zIndex: 0,
         opacity: bgReady ? 1 : 0,
-        transition: "opacity 1.8s ease",
+        transition: "opacity 2s ease",
       }}>
         <ColorBends
-          colors={["#1a1a1a", "#383838", "#595959", "#383838", "#1a1a1a"]}
+          colors={["#242424", "#242424", "#242424"]}
           rotation={0}
           speed={0.11}
-          scale={1}
+          scale={0.6}
           frequency={1}
           warpStrength={1}
-          mouseInfluence={0.08}
+          mouseInfluence={0.06}
           parallax={0.5}
           noise={0}
           transparent
@@ -60,10 +59,10 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Dark overlay — keeps it premium not too bright */}
+      {/* Dark overlay */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "rgba(0,0,0,0.62)",
+        background: "rgba(0,0,0,0.70)",
         zIndex: 1, pointerEvents: "none",
       }} />
 
