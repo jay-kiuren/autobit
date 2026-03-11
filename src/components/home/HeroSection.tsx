@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Silk from "@/components/Silk";
+import ColorBends from "@/components/ui/ColorBends";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
@@ -29,11 +29,31 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      <Silk speed={0.5} scale={1} color="#ffffff" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
+      {/* ColorBends background */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 0,
+      }}>
+        <ColorBends
+          colors={["#2a2a2a", "#444444", "#606060", "#444444", "#2a2a2a"]}
+          rotation={0}
+          speed={0.11}
+          scale={1}
+          frequency={1}
+          warpStrength={1}
+          mouseInfluence={0.08}
+          parallax={0.5}
+          noise={0}
+          transparent
+          autoRotate={0}
+        />
+      </div>
 
+      {/* Dark overlay — makes it 50% darker so it stays premium not flashy */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "rgba(0,0,0,0.35)",
+        background: "rgba(0,0,0,0.55)",
         zIndex: 1, pointerEvents: "none",
       }} />
 
