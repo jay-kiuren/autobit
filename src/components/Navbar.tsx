@@ -88,7 +88,6 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
     onDropdownChange?.(!!activeDropdown);
   }, [activeDropdown, onDropdownChange]);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = 'hidden';
@@ -104,26 +103,28 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[1000] nav-blur h-11 flex items-center transition-[border] duration-300 ${isDropdownOpen ? 'border-b border-transparent' : 'border-b border-border'}`}>
         <div className="section-container flex items-center justify-between w-full">
+
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>
-            <img src={autobitIcon} alt="" width={20} height={20} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block', background: 'none', border: 'none', padding: 0 }} />
+            <img
+              src={autobitIcon}
+              alt=""
+              width={18}
+              height={18}
+              style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }}
+            />
             <span style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              fontSize: '16px',
-              fontWeight: 900,
-              letterSpacing: '0.06em',
+              fontSize: '13px',
+              fontWeight: 600,
+              letterSpacing: '0.12em',
               color: '#ffffff',
               textTransform: 'uppercase',
               WebkitFontSmoothing: 'antialiased',
-              WebkitTextStroke: '0.3px #ffffff',
-              background: 'none',
-              border: 'none',
-              outline: 'none',
-              boxShadow: 'none',
-              padding: 0,
-              margin: 0,
+              MozOsxFontSmoothing: 'grayscale',
+              // No WebkitTextStroke — causes bold rendering on Windows ClearType
               lineHeight: 1,
-              display: 'inline-block'
+              display: 'inline-block',
             }}>AUTOBIT</span>
           </Link>
 
