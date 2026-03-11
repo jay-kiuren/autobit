@@ -17,7 +17,7 @@ const iotProjects = [
     statusLabel: "Life & Science Category",
     statusColor: "#30d158",
     accentRgb: "48, 209, 88",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
+    image: "/images/earlynx.png",
   },
   {
     id: "air-filtration",
@@ -30,7 +30,7 @@ const iotProjects = [
     statusLabel: "Innovation Category",
     statusColor: "#30d158",
     accentRgb: "48, 209, 88",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
+    image: "/images/airfilter.png",
   },
   {
     id: "gridsonar",
