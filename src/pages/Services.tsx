@@ -49,6 +49,176 @@ const IconSmartphone = ({ size=20, color="#fff" }) => (
   </svg>
 );
 
+// ─── Per-panel unique frame decorations ───────────────────────────────────────
+
+// Panel 0 — Automation (blue): Blueprint grid + L-bracket corners
+const FrameDecoBlueprint = ({ accent }: { accent: string }) => (
+  <>
+    {/* Blueprint dot grid */}
+    <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",opacity:0.18}} preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="bp-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.8" fill={accent}/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#bp-dots)"/>
+    </svg>
+    {/* Corner L-brackets */}
+    {[["0,0","18,0 0,0 0,18"],["calc(100% - 0px),0","calc(100% - 18px),0 calc(100%),0 calc(100%),18px"],
+      ["0,calc(100%)","18px,calc(100%) 0,calc(100%) 0,calc(100% - 18px)"],
+      ["calc(100%),calc(100%)","calc(100% - 18px),calc(100%) calc(100%),calc(100%) calc(100%),calc(100% - 18px)"]
+    ].map((_,i)=>(
+      <div key={i} style={{position:"absolute",width:20,height:20,
+        top:i>=2?"auto":8, bottom:i>=2?8:"auto",
+        left:i%2===0?8:"auto", right:i%2===1?8:"auto",
+        border:`1.5px solid ${accent}`,
+        borderRight:i%2===1?`1.5px solid ${accent}`:"none",
+        borderLeft:i%2===0?`1.5px solid ${accent}`:"none",
+        borderTop:i<2?`1.5px solid ${accent}`:"none",
+        borderBottom:i>=2?`1.5px solid ${accent}`:"none",
+        opacity:0.55,
+      }}/>
+    ))}
+  </>
+);
+
+// Panel 1 — AI Agents (green): Terminal top bar + scanline pulse
+const FrameDecoTerminal = ({ accent }: { accent: string }) => (
+  <>
+    <div style={{position:"absolute",top:0,left:0,right:0,height:28,
+      background:`rgba(0,0,0,0.35)`,borderBottom:`1px solid ${accent}22`,
+      display:"flex",alignItems:"center",gap:6,padding:"0 14px",
+    }}>
+      {["#ff375f","#ff9f0a",accent].map((c,i)=>(
+        <div key={i} style={{width:9,height:9,borderRadius:"50%",background:c,opacity:0.7}}/>
+      ))}
+      <span style={{fontFamily:"monospace",fontSize:9,color:`${accent}55`,marginLeft:8,letterSpacing:"0.08em"}}>
+        autobit-agent · bash
+      </span>
+    </div>
+    {/* Scanline sweep */}
+    <motion.div
+      style={{position:"absolute",left:0,right:0,height:1,
+        background:`linear-gradient(90deg,transparent,${accent}55,transparent)`,
+        pointerEvents:"none",
+      }}
+      animate={{top:["10%","95%","10%"]}}
+      transition={{duration:4,repeat:Infinity,ease:"linear"}}
+    />
+  </>
+);
+
+// Panel 2 — Web Apps (purple): Double border + noise mesh
+const FrameDecoDouble = ({ accent }: { accent: string }) => (
+  <>
+    {/* Inner inset border */}
+    <div style={{position:"absolute",inset:10,borderRadius:14,
+      border:`1px solid ${accent}18`,pointerEvents:"none",
+    }}/>
+    {/* Corner dots */}
+    {[[10,10],[null,10],[10,null],[null,null]].map(([t,l],i)=>(
+      <div key={i} style={{position:"absolute",
+        top:t??undefined, bottom:t===null?10:undefined,
+        left:l??undefined, right:l===null?10:undefined,
+        width:6,height:6,borderRadius:"50%",
+        background:accent,opacity:0.4,
+      }}/>
+    ))}
+    {/* Diagonal gradient shimmer */}
+    <div style={{position:"absolute",inset:0,pointerEvents:"none",
+      background:`linear-gradient(135deg,${accent}08 0%,transparent 40%,${accent}05 100%)`,
+      borderRadius:"inherit",
+    }}/>
+  </>
+);
+
+// Panel 3 — Business Systems (orange): Tick-mark corners + data grid
+const FrameDecoTicks = ({ accent }: { accent: string }) => (
+  <>
+    {/* Horizontal rule near top */}
+    <div style={{position:"absolute",top:38,left:16,right:16,height:1,
+      background:`linear-gradient(90deg,${accent}44,${accent}18,${accent}44)`,
+    }}/>
+    {/* Tick marks along top rule */}
+    {Array.from({length:12}).map((_,i)=>(
+      <div key={i} style={{
+        position:"absolute",top:34,
+        left:`${8+i*8}%`,
+        width:1,height:i%4===0?8:4,
+        background:`${accent}${i%4===0?"55":"28"}`,
+      }}/>
+    ))}
+    {/* Bottom rule */}
+    <div style={{position:"absolute",bottom:38,left:16,right:16,height:1,
+      background:`linear-gradient(90deg,${accent}44,${accent}18,${accent}44)`,
+    }}/>
+    {/* Side vertical accent bars */}
+    <div style={{position:"absolute",top:"15%",bottom:"15%",left:0,width:2,
+      background:`linear-gradient(to bottom,transparent,${accent}50,transparent)`,
+    }}/>
+    <div style={{position:"absolute",top:"15%",bottom:"15%",right:0,width:2,
+      background:`linear-gradient(to bottom,transparent,${accent}50,transparent)`,
+    }}/>
+  </>
+);
+
+// Panel 4 — Robotics (red): Targeting reticle corners
+const FrameDecoTargeting = ({ accent }: { accent: string }) => (
+  <>
+    {/* Targeting corner brackets — like detection boxes in the art */}
+    {[
+      {top:8,left:8},
+      {top:8,right:8},
+      {bottom:8,left:8},
+      {bottom:8,right:8},
+    ].map((pos,i)=>(<svg key={i} width={22} height={22} viewBox="0 0 22 22" fill="none"
+      style={{position:"absolute",...pos as any,opacity:0.6}}>
+      {i===0&&<><path d="M0 10 L0 0 L10 0" stroke={accent} strokeWidth={2}/></>}
+      {i===1&&<><path d="M22 10 L22 0 L12 0" stroke={accent} strokeWidth={2}/></>}
+      {i===2&&<><path d="M0 12 L0 22 L10 22" stroke={accent} strokeWidth={2}/></>}
+      {i===3&&<><path d="M22 12 L22 22 L12 22" stroke={accent} strokeWidth={2}/></>}
+    </svg>))}
+    {/* Pulsing center crosshair dot */}
+    <motion.div style={{position:"absolute",top:"50%",left:"50%",
+      width:8,height:8,borderRadius:"50%",marginTop:-4,marginLeft:-4,
+      background:accent,opacity:0.15,
+    }} animate={{scale:[1,2,1],opacity:[0.15,0,0.15]}} transition={{duration:2.5,repeat:Infinity}}/>
+    {/* Horizontal center line */}
+    <div style={{position:"absolute",top:"50%",left:0,right:0,height:1,
+      background:`linear-gradient(90deg,${accent}30,transparent 20%,transparent 80%,${accent}30)`,
+      pointerEvents:"none",
+    }}/>
+  </>
+);
+
+// Panel 5 — Mobile (cyan): Gradient mesh + subtle circuit lines
+const FrameDecoCyan = ({ accent }: { accent: string }) => (
+  <>
+    {/* Gradient mesh corners */}
+    <div style={{position:"absolute",top:0,left:0,width:120,height:120,
+      background:`radial-gradient(circle at 0% 0%,${accent}12,transparent 70%)`,
+      pointerEvents:"none",borderRadius:"inherit",
+    }}/>
+    <div style={{position:"absolute",bottom:0,right:0,width:120,height:120,
+      background:`radial-gradient(circle at 100% 100%,${accent}10,transparent 70%)`,
+      pointerEvents:"none",borderRadius:"inherit",
+    }}/>
+    {/* Circuit-line SVG decoration */}
+    <svg style={{position:"absolute",bottom:12,right:12,opacity:0.2,pointerEvents:"none"}} width={60} height={60} viewBox="0 0 60 60" fill="none">
+      <path d="M50 10 L30 10 L30 30 L10 30 L10 50" stroke={accent} strokeWidth={1.2} strokeLinecap="round"/>
+      <circle cx="30" cy="10" r="2.5" fill={accent}/>
+      <circle cx="30" cy="30" r="2.5" fill={accent}/>
+      <circle cx="10" cy="50" r="2.5" fill={accent}/>
+    </svg>
+    {/* Corner notch top-center (like mobile notch) */}
+    <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",
+      width:48,height:4,background:`${accent}20`,borderRadius:"0 0 8px 8px",
+    }}/>
+  </>
+);
+
+const frameDecos = [FrameDecoBlueprint, FrameDecoTerminal, FrameDecoDouble, FrameDecoTicks, FrameDecoTargeting, FrameDecoCyan];
+
 // ─── Illustrations ────────────────────────────────────────────────────────────
 
 const AutomationArt = ({ active, animKey }: { active: boolean; animKey: number }) => (
@@ -330,8 +500,6 @@ const Services = () => {
         /* ── Grid layouts ── */
         .svc-grid       { display:grid; grid-template-columns:1fr 1.15fr; gap:clamp(24px,4vw,56px); align-items:center; }
         .svc-grid-rev   { display:grid; grid-template-columns:1.15fr 1fr; gap:clamp(24px,4vw,56px); align-items:center; }
-        .svc-grid-tall  { display:grid; grid-template-columns:1fr; gap:clamp(20px,3vw,36px); }
-        .svc-grid-wide  { display:grid; grid-template-columns:1fr 1.4fr; gap:clamp(24px,4vw,56px); align-items:center; }
 
         /* ── Heading — fluid typography ── */
         .svc-heading {
@@ -340,18 +508,13 @@ const Services = () => {
           color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
         }
 
-        /* ── Frame card ── */
+        /* ── Frame card — base ── */
         .svc-frame {
           border-radius:clamp(16px,2vw,24px);
           border:1px solid rgba(255,255,255,0.07);
           background:rgba(255,255,255,0.016);
           padding:clamp(22px,3.2vw,44px) clamp(22px,3.2vw,44px) clamp(18px,2.4vw,32px);
           position:relative; overflow:hidden;
-        }
-        .svc-frame-stripe {
-          position:absolute; top:0; left:0; right:0; height:2px;
-          background:linear-gradient(90deg,transparent 0%,var(--accent) 30%,var(--accent) 70%,transparent 100%);
-          opacity:0.6;
         }
 
         /* ── Glass art card ── */
@@ -366,18 +529,7 @@ const Services = () => {
           position:relative; overflow:hidden;
           padding:clamp(12px,2vw,22px);
         }
-        .svc-glass-inner-tall {
-          border-radius:19px;
-          background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
-          backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-          border:1px solid rgba(255,255,255,0.06);
-          height:clamp(180px,22vw,280px);
-          display:flex; align-items:center; justify-content:center;
-          position:relative; overflow:hidden;
-          padding:clamp(10px,1.6vw,18px);
-        }
-        .svc-glass-inner::before,
-        .svc-glass-inner-tall::before {
+        .svc-glass-inner::before {
           content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
           background:linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent);
         }
@@ -411,29 +563,56 @@ const Services = () => {
           white-space:nowrap;
         }
         .svc-cta:hover { transform:scale(1.04); box-shadow:0 7px 30px rgba(41,151,255,0.55); }
-        .cta-glow-btn {
-          background:#2997ff; color:#fff;
-          padding:clamp(13px,1.2vw,17px) clamp(32px,3.5vw,52px);
-          border-radius:980px; font-size:clamp(14px,1.2vw,17px); font-weight:700;
-          text-decoration:none; display:inline-block; transition:all 0.25s ease;
-          box-shadow:0 0 0 1px rgba(41,151,255,0.4),0 0 32px rgba(41,151,255,0.35),0 0 64px rgba(41,151,255,0.15);
-          letter-spacing:-0.2px;
-        }
-        .cta-glow-btn:hover { transform:scale(1.05); box-shadow:0 0 0 1px rgba(41,151,255,0.6),0 0 48px rgba(41,151,255,0.55),0 0 96px rgba(41,151,255,0.25); }
 
         /* ── Description text ── */
         .svc-desc { font-size:clamp(13px,1.1vw,16px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
 
         /* ── Responsive breakpoints ── */
         @media(max-width:1024px){
-          .svc-grid, .svc-grid-rev, .svc-grid-wide { grid-template-columns:1fr; gap:20px; }
+          .svc-grid, .svc-grid-rev { grid-template-columns:1fr; gap:20px; }
           .svc-glass-inner { height:clamp(180px,36vw,300px); }
         }
         @media(max-width:640px){
           .svc-heading { letter-spacing:-1px; }
-          .svc-glass-inner, .svc-glass-inner-tall { height:clamp(160px,50vw,240px); }
+          .svc-glass-inner { height:clamp(160px,50vw,240px); }
           .svc-frame { border-radius:14px; }
         }
+
+        /* ── CTA section ── */
+        .cta-section-card {
+          border-radius:clamp(20px,2.5vw,32px);
+          border:1px solid rgba(41,151,255,0.18);
+          background:linear-gradient(145deg,rgba(41,151,255,0.06) 0%,rgba(0,0,0,0.5) 50%,rgba(41,151,255,0.04) 100%);
+          backdrop-filter:blur(40px);
+          position:relative; overflow:hidden;
+          padding:clamp(48px,7vw,96px) clamp(24px,6vw,80px);
+          text-align:center;
+        }
+        .cta-main-btn {
+          background:#2997ff; color:#fff;
+          padding:clamp(14px,1.4vw,18px) clamp(36px,4vw,60px);
+          border-radius:980px; font-size:clamp(15px,1.3vw,18px); font-weight:700;
+          text-decoration:none; display:inline-block; transition:all 0.28s ease;
+          box-shadow:0 0 0 1px rgba(41,151,255,0.5),0 0 40px rgba(41,151,255,0.4),0 0 80px rgba(41,151,255,0.18);
+          letter-spacing:-0.2px; position:relative; z-index:1;
+        }
+        .cta-main-btn:hover {
+          transform:scale(1.06) translateY(-2px);
+          box-shadow:0 0 0 1px rgba(41,151,255,0.7),0 0 60px rgba(41,151,255,0.6),0 0 120px rgba(41,151,255,0.28);
+        }
+        .cta-secondary-btn {
+          color:rgba(255,255,255,0.55); font-size:clamp(13px,1.1vw,15px); font-weight:500;
+          text-decoration:none; transition:color 0.2s; display:inline-flex; align-items:center; gap:5px;
+        }
+        .cta-secondary-btn:hover { color:#2997ff; }
+        .cta-stat-pill {
+          display:inline-flex; align-items:center; gap:7px;
+          background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+          border-radius:980px; padding:6px 16px;
+          font-size:clamp(11px,0.9vw,13px); color:rgba(255,255,255,0.55); font-weight:500;
+          white-space:nowrap;
+        }
+        .cta-stat-dot { width:6px; height:6px; border-radius:50%; background:#30d158; display:inline-block; }
       `}</style>
 
       <main style={{filter:navDropdownActive?"blur(8px)":"none",opacity:navDropdownActive?0.45:1,transition:"filter 0.28s ease,opacity 0.28s ease"}}>
@@ -460,8 +639,8 @@ const Services = () => {
         {/* ── Service Sections ── */}
         {services.map((s,i)=>{
           const {Art} = s;
+          const FrameDeco = frameDecos[i];
 
-          // Unique entry animation per panel
           const panelAnim = [
             { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
             { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
@@ -471,7 +650,6 @@ const Services = () => {
             { initial:{opacity:0,y:-40,scale:0.95},animate:{opacity:1,y:0,scale:1},transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
           ][i];
 
-          // Unique art entry per panel
           const artAnim = [
             { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
             { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
@@ -480,6 +658,7 @@ const Services = () => {
             { initial:{opacity:0,x:50,rotate:2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
             { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.08,ease:[0.22,1,0.36,1]} },
           ][i];
+
           const isActive  = activeIndex===i;
           const isReverse = i%2===1;
 
@@ -498,29 +677,26 @@ const Services = () => {
               </div>
 
               <div className="svc-c" style={{width:"100%",position:"relative",zIndex:1}}>
+                {/* Frame with unique per-panel decoration */}
                 <div className="svc-frame" style={{"--accent":s.accent} as React.CSSProperties}>
 
-                  {/* Top accent stripe */}
-                  <div className="svc-frame-stripe"/>
+                  {/* Unique frame decoration per panel */}
+                  <FrameDeco accent={s.accent}/>
 
-                  <div className={isReverse ? "svc-grid-rev" : "svc-grid"}>
+                  <div className={isReverse ? "svc-grid-rev" : "svc-grid"} style={{position:"relative",zIndex:1}}>
 
-                    {/* Text — unique entry */}
+                    {/* Text */}
                     <motion.div
                       style={{direction:"ltr", order: isReverse ? 2 : 1}}
                       initial={panelAnim.initial} whileInView={panelAnim.animate}
                       viewport={{once:false,amount:0.2}} transition={panelAnim.transition}>
 
-                      {/* Badge only — no icon, no counter */}
                       <div className="svc-badge" style={{background:`${s.accent}18`,color:s.accent,border:`1px solid ${s.accent}40`}}>
                         {s.badge}
                       </div>
 
                       <h2 className="svc-heading">{s.heading}</h2>
-
                       <p className="svc-desc">{s.desc}</p>
-
-                      {/* Tech stack tag */}
                       <span className="svc-tag">{s.uniqueTag}</span>
 
                       <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:8}}>
@@ -528,7 +704,7 @@ const Services = () => {
                       </div>
                     </motion.div>
 
-                    {/* Art — unique entry */}
+                    {/* Art */}
                     <motion.div
                       style={{direction:"ltr", order: isReverse ? 1 : 2}}
                       initial={artAnim.initial} whileInView={artAnim.animate}
@@ -542,7 +718,6 @@ const Services = () => {
                     </motion.div>
 
                   </div>
-
                 </div>
               </div>
 
@@ -551,30 +726,104 @@ const Services = () => {
           );
         })}
 
-        {/* ── Bottom CTA — highlighted & glowing ── */}
-        <section style={{background:"#000",borderTop:"1px solid rgba(255,255,255,0.05)",padding:"96px 0 88px",position:"relative",zIndex:20,overflow:"hidden"}}>
-          {/* Large glow behind CTA */}
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 55% 60% at 50% 55%,rgba(41,151,255,0.12) 0%,transparent 70%)",pointerEvents:"none"}}/>
-          {/* Subtle top border glow */}
-          <div style={{position:"absolute",top:0,left:"20%",right:"20%",height:"1px",background:"linear-gradient(90deg,transparent,rgba(41,151,255,0.5),transparent)"}}/>
+        {/* ── Bottom CTA — redesigned, ad-style ── */}
+        <section style={{background:"#000",padding:"80px 0 96px",position:"relative",zIndex:20,overflow:"hidden"}}>
 
-          <div className="svc-c" style={{textAlign:"center",position:"relative",zIndex:1}}>
-            <motion.div initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
-              <span style={{fontSize:"10px",fontWeight:600,letterSpacing:"0.14em",textTransform:"uppercase" as const,color:"rgba(41,151,255,0.7)",display:"block",marginBottom:16}}>
-                Get started today
-              </span>
-              <h2 style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:800,letterSpacing:"-1.5px",color:"#f5f5f7",margin:"0 0 12px",lineHeight:1.06}}>
-                Ready to build something?
-              </h2>
-              <p style={{fontSize:"clamp(13px,1.2vw,16px)",color:"rgba(255,255,255,0.32)",margin:"0 auto 36px",maxWidth:380,lineHeight:1.65}}>
-                Fixed pricing. Fast delivery. 50% to start.
-              </p>
-              <a href="mailto:autobitofficial.ph@gmail.com" className="cta-glow-btn">
-                Start a project
-              </a>
-              <p style={{fontSize:"11px",color:"rgba(255,255,255,0.18)",marginTop:16}}>
-                autobitofficial.ph@gmail.com · No retainers · Balance on delivery
-              </p>
+          {/* Ambient background glow */}
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 55% at 50% 60%,rgba(41,151,255,0.09) 0%,transparent 70%)",pointerEvents:"none"}}/>
+
+          <div className="svc-c" style={{position:"relative",zIndex:1}}>
+            <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.7}}>
+
+              {/* The main glass card */}
+              <div className="cta-section-card">
+
+                {/* Background animated rings */}
+                {[1,2,3].map(n=>(
+                  <motion.div key={n} style={{position:"absolute",
+                    top:"50%",left:"50%",
+                    width:`${n*160+120}px`,height:`${n*160+120}px`,
+                    marginTop:`-${(n*160+120)/2}px`,marginLeft:`-${(n*160+120)/2}px`,
+                    borderRadius:"50%",border:"1px solid rgba(41,151,255,0.07)",
+                    pointerEvents:"none",
+                  }}
+                  animate={{scale:[1,1.04,1],opacity:[0.5,0.15,0.5]}}
+                  transition={{duration:3+n,repeat:Infinity,delay:n*0.5,ease:"easeInOut"}}/>
+                ))}
+
+                {/* Top stripe glow */}
+                <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(41,151,255,0.6),transparent)"}}/>
+
+                {/* Floating stat pills */}
+                <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap",marginBottom:32,position:"relative",zIndex:1}}>
+                  {[
+                    {dot:"#30d158",text:"40+ projects shipped"},
+                    {dot:"#2997ff",text:"2-day avg. start time"},
+                    {dot:"#ff9f0a",text:"50% upfront · rest on delivery"},
+                  ].map((pill,i)=>(
+                    <motion.div key={i} className="cta-stat-pill"
+                      initial={{opacity:0,y:12}} whileInView={{opacity:1,y:0}}
+                      viewport={{once:true}} transition={{delay:i*0.1,duration:0.5}}>
+                      <span className="cta-stat-dot" style={{background:pill.dot}}/>
+                      {pill.text}
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Main heading */}
+                <motion.h2
+                  initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}}
+                  viewport={{once:true}} transition={{delay:0.15,duration:0.65}}
+                  style={{fontSize:"clamp(32px,5.5vw,72px)",fontWeight:800,letterSpacing:"-2.5px",
+                    lineHeight:1.02,color:"#f5f5f7",margin:"0 0 16px",position:"relative",zIndex:1}}>
+                  Ready to build{" "}
+                  <span style={{
+                    background:"linear-gradient(90deg,#2997ff,#64d2ff)",
+                    WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
+                  }}>
+                    something?
+                  </span>
+                </motion.h2>
+
+                {/* Subtext */}
+                <motion.p
+                  initial={{opacity:0}} whileInView={{opacity:1}}
+                  viewport={{once:true}} transition={{delay:0.25,duration:0.6}}
+                  style={{fontSize:"clamp(14px,1.3vw,18px)",color:"rgba(255,255,255,0.35)",
+                    margin:"0 auto 40px",maxWidth:440,lineHeight:1.65,position:"relative",zIndex:1}}>
+                  Fixed pricing. Fast delivery. 50% to start.
+                </motion.p>
+
+                {/* Buttons */}
+                <motion.div
+                  initial={{opacity:0,y:12}} whileInView={{opacity:1,y:0}}
+                  viewport={{once:true}} transition={{delay:0.35,duration:0.6}}
+                  style={{display:"flex",alignItems:"center",justifyContent:"center",
+                    gap:24,flexWrap:"wrap",position:"relative",zIndex:1}}>
+                  <a href="mailto:autobitofficial.ph@gmail.com" className="cta-main-btn">
+                    Start a project →
+                  </a>
+                  <a href="/pricing" className="cta-secondary-btn">
+                    See pricing
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </a>
+                </motion.div>
+
+                {/* Fine print */}
+                <motion.p
+                  initial={{opacity:0}} whileInView={{opacity:1}}
+                  viewport={{once:true}} transition={{delay:0.5,duration:0.5}}
+                  style={{fontSize:"11px",color:"rgba(255,255,255,0.18)",marginTop:24,position:"relative",zIndex:1}}>
+                  autobitofficial.ph@gmail.com · No retainers · Balance due only on delivery
+                </motion.p>
+
+                {/* Bottom gradient fade on card */}
+                <div style={{position:"absolute",bottom:0,left:0,right:0,height:80,
+                  background:"linear-gradient(to bottom,transparent,rgba(41,151,255,0.04))",
+                  borderRadius:"inherit",pointerEvents:"none",
+                }}/>
+              </div>
+
             </motion.div>
           </div>
         </section>
