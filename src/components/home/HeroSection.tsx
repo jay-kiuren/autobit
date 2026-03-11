@@ -1,239 +1,14 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
-// ─── Water Ripple Badge ───────────────────────────────────────────────────────
-const WaterBadge = ({ href }: { href: string }) => {
-  const containerRef = useRef<HTMLAnchorElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const bufA = useRef<Float32Array | null>(null);
-  const bufB = useRef<Float32Array | null>(null);
-  const rafRef = useRef<number>(0);
-  const mouseRef = useRef({ x: -1, y: -1, active: false });
-  const [hovered, setHovered] = useState(false);
-  const W = useRef(0);
-  const H = useRef(0);
-
-  // Initialize buffers when canvas mounts / resizes
-  const initBuffers = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    // Use logical size for simulation (performance)
-    const w = Math.floor(rect.width);
-    const h = Math.floor(rect.height);
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    W.current = w;
-    H.current = h;
-    bufA.current = new Float32Array(w * h);
-    bufB.current = new Float32Array(w * h);
-  }, []);
-
-  // Disturb water at (x, y) with given radius & strength
-  const disturb = useCallback((x: number, y: number, radius = 6, strength = 180) => {
-    const w = W.current, h = H.current;
-    if (!bufA.current || w === 0) return;
-    const ix = Math.round(x), iy = Math.round(y);
-    for (let dy = -radius; dy <= radius; dy++) {
-      for (let dx = -radius; dx <= radius; dx++) {
-        const nx = ix + dx, ny = iy + dy;
-        if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist <= radius) {
-          bufA.current[ny * w + nx] += strength * (1 - dist / radius);
-        }
-      }
-    }
-  }, []);
-
-  // Main simulation + render loop
-  const tick = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !bufA.current || !bufB.current) {
-      rafRef.current = requestAnimationFrame(tick);
-      return;
-    }
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const w = W.current, h = H.current;
-    const a = bufA.current, b = bufB.current;
-    const dpr = window.devicePixelRatio || 1;
-
-    // Continuous disturbance on mouse move
-    if (mouseRef.current.active) {
-      disturb(mouseRef.current.x, mouseRef.current.y, 5, 120);
-    }
-
-    // Wave propagation: average 4 neighbors, subtract previous, dampen
-    const damping = 0.972;
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const i = y * w + x;
-        b[i] = (
-          (a[i - 1] + a[i + 1] + a[i - w] + a[i + w]) / 2 - b[i]
-        ) * damping;
-      }
-    }
-
-    // Swap buffers
-    bufA.current = b;
-    bufB.current = a;
-
-    // Render: clear, then draw displaced refraction
-    ctx.save();
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, w, h);
-
-    const cur = bufA.current;
-
-    // Draw water surface as soft light patches based on height gradients
-    for (let y = 1; y < h - 1; y += 2) {
-      for (let x = 1; x < w - 1; x += 2) {
-        const i = y * w + x;
-        const height = cur[i];
-        if (Math.abs(height) < 0.5) continue;
-
-        // Gradient = normal vector of water surface
-        const dx = cur[i + 1] - cur[i - 1];
-        const dy = cur[i + w] - cur[i - w];
-        const light = Math.max(0, Math.min(1, (dx + dy) / 80 + 0.5));
-        const alpha = Math.min(0.55, Math.abs(height) / 160);
-
-        ctx.fillStyle = `rgba(255,255,255,${(light * alpha).toFixed(3)})`;
-        ctx.fillRect(x, y, 2, 2);
-      }
-    }
-
-    ctx.restore();
-    rafRef.current = requestAnimationFrame(tick);
-  }, [disturb]);
-
-  useEffect(() => {
-    initBuffers();
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [initBuffers, tick]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    mouseRef.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      active: true,
-    };
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    mouseRef.current.active = false;
-    setHovered(false);
-  }, []);
-
-  const handleMouseEnter = useCallback(() => {
-    setHovered(true);
-    // Big initial splash on enter
-    const w = W.current, h = H.current;
-    disturb(w / 2, h / 2, 12, 300);
-  }, [disturb]);
-
-  return (
-    <a
-      ref={containerRef}
-      href={href}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        position: "relative",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "8px",
-        borderRadius: "9999px",
-        padding: "9px 22px",
-        fontSize: "12px",
-        letterSpacing: "0.05em",
-        fontWeight: 500,
-        color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.72)",
-        textDecoration: "none",
-        cursor: "pointer",
-        transition: "color 0.3s ease, transform 0.25s ease",
-        transform: hovered ? "scale(1.04)" : "scale(1)",
-        marginBottom: "28px",
-        overflow: "hidden",
-        // Glass rim via layered inset shadows
-        boxShadow: `
-          0 0 0 1px rgba(255,255,255,0.12),
-          inset 0 1px 0 rgba(255,255,255,0.22),
-          inset 0 -1px 0 rgba(0,0,0,0.3),
-          0 4px 24px rgba(0,0,0,0.25),
-          0 0 20px rgba(255,255,255,0.06)
-        `,
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        background: "rgba(255,255,255,0.07)",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-      }}
-    >
-      {/* Water simulation canvas — absolute fill, pointer-events none so clicks pass through */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          borderRadius: "9999px",
-          pointerEvents: "none",
-          mixBlendMode: "screen",
-          opacity: 0.85,
-        }}
-      />
-
-      {/* Top shimmer */}
-      <span style={{
-        position: "absolute", top: 0, left: "15%", right: "15%",
-        height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent)",
-        pointerEvents: "none",
-        zIndex: 1,
-      }} />
-
-      {/* Pulse dot */}
-      <span style={{
-        position: "relative", zIndex: 2,
-        height: "6px", width: "6px",
-        borderRadius: "50%",
-        background: hovered ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.6)",
-        display: "inline-block",
-        boxShadow: hovered ? "0 0 8px rgba(255,255,255,0.8)" : "0 0 4px rgba(255,255,255,0.4)",
-        animation: "badgePulse 2.5s ease-in-out infinite",
-        flexShrink: 0,
-        transition: "all 0.3s ease",
-      }} />
-
-      {/* Label */}
-      <span style={{ position: "relative", zIndex: 2 }}>Start Something™</span>
-
-      {/* Arrow */}
-      <span style={{
-        position: "relative", zIndex: 2,
-        opacity: hovered ? 1 : 0,
-        transform: hovered ? "translateX(0px)" : "translateX(-6px)",
-        transition: "all 0.3s ease",
-        fontSize: "11px",
-      }}>→</span>
-    </a>
-  );
-};
-
-// ─── Hero Section ─────────────────────────────────────────────────────────────
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
   const [bgReady, setBgReady] = useState(false);
+  const [badgeHovered, setBadgeHovered] = useState(false);
+  const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
+  const animFrameRef = useRef<number>(0);
+  const currentScaleRef = useRef(18);
 
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
@@ -250,6 +25,27 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, []);
 
+  // Smooth interpolation of displacement scale on hover
+  useEffect(() => {
+    const targetScale = badgeHovered ? 55 : 18;
+    const animate = () => {
+      const current = currentScaleRef.current;
+      const diff = targetScale - current;
+      if (Math.abs(diff) < 0.3) {
+        currentScaleRef.current = targetScale;
+      } else {
+        currentScaleRef.current = current + diff * 0.08;
+        animFrameRef.current = requestAnimationFrame(animate);
+      }
+      if (displacementRef.current) {
+        displacementRef.current.setAttribute("scale", String(currentScaleRef.current));
+      }
+    };
+    cancelAnimationFrame(animFrameRef.current);
+    animFrameRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, [badgeHovered]);
+
   return (
     <section
       style={{
@@ -265,6 +61,53 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
+      {/*
+        LIQUID WATER SVG FILTER
+        - type="turbulence" for ripple/wave patterns (not fractalNoise which is cloudy)
+        - <animate> on baseFrequency makes it continuously shift — living water
+        - numOctaves="2" gives wave detail without being noisy
+        - Applied ONLY to backdrop div, text layer sits above unaffected
+      */}
+      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
+        <defs>
+          <filter
+            id="jelly-water"
+            x="-10%" y="-10%" width="120%" height="120%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feTurbulence
+              id="jelly-turbulence"
+              type="turbulence"
+              baseFrequency="0.018 0.032"
+              numOctaves="2"
+              seed="4"
+              result="turbulence"
+            >
+              {/* This <animate> is the key — shifts baseFrequency over time = living water */}
+              <animate
+                attributeName="baseFrequency"
+                values="0.018 0.032;0.028 0.048;0.022 0.038;0.018 0.032"
+                keyTimes="0;0.35;0.7;1"
+                dur="7s"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feGaussianBlur in="turbulence" stdDeviation="1" result="blurred" />
+            <feDisplacementMap
+              ref={displacementRef}
+              in="SourceGraphic"
+              in2="blurred"
+              scale="18"
+              xChannelSelector="R"
+              yChannelSelector="B"
+              result="displaced"
+            />
+            <feGaussianBlur in="displaced" stdDeviation="2.5" result="softDisplaced" />
+            <feComposite in="softDisplaced" in2="softDisplaced" operator="over" />
+          </filter>
+        </defs>
+      </svg>
+
       <div style={{
         position: "absolute", inset: 0, zIndex: 0,
         opacity: bgReady ? 1 : 0,
@@ -290,7 +133,101 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        <WaterBadge href="mailto:autobitofficial.ph@gmail.com" />
+        {/* ===== JELLY WATER GLASS LABEL ===== */}
+        {/* This is an announcement chip / label — NOT a button */}
+        <div
+          onMouseEnter={() => setBadgeHovered(true)}
+          onMouseLeave={() => setBadgeHovered(false)}
+          style={{
+            position: "relative",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "9999px",
+            padding: "9px 24px",
+            marginBottom: "28px",
+            cursor: "default",
+            transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+            transform: badgeHovered ? "scale(1.05)" : "scale(1)",
+            // Dark glass rim — from 21st.dev dark shadow spec
+            boxShadow: `
+              0 0 8px rgba(0,0,0,0.04),
+              0 2px 8px rgba(0,0,0,0.10),
+              inset 3px 3px 0.5px -3.5px rgba(255,255,255,0.09),
+              inset -3px -3px 0.5px -3.5px rgba(255,255,255,0.85),
+              inset 1px 1px 1px -0.5px rgba(255,255,255,0.60),
+              inset -1px -1px 1px -0.5px rgba(255,255,255,0.60),
+              inset 0 0 6px 6px rgba(255,255,255,0.10),
+              inset 0 0 2px 2px rgba(255,255,255,0.05),
+              0 0 ${badgeHovered ? "22px" : "8px"} rgba(255,255,255,${badgeHovered ? "0.10" : "0.03"})
+            `,
+          }}
+        >
+          {/*
+            WATER LAYER — this is the "liquid inside glass"
+            filter: url(#jelly-water) applies the living turbulence to whatever
+            is behind this div (the ColorBends background)
+            Clip to pill shape with overflow hidden + border-radius
+            Text sits above in a separate z-layer, completely unaffected
+          */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "9999px",
+              overflow: "hidden",
+              zIndex: 0,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "9999px",
+                // Liquid distortion on the backdrop — this is the water ripple
+                backdropFilter: "blur(8px) url(#jelly-water)",
+                WebkitBackdropFilter: "blur(8px)",
+                // Slight tint to make the glass visible
+                background: "rgba(255,255,255,0.04)",
+              }}
+            />
+          </div>
+
+          {/* Top glass shimmer — catches the "light on glass" look */}
+          <div style={{
+            position: "absolute",
+            top: 0, left: "12%", right: "12%",
+            height: "1px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), transparent)",
+            zIndex: 1,
+            borderRadius: "9999px",
+          }} />
+
+          {/* Bottom subtle edge */}
+          <div style={{
+            position: "absolute",
+            bottom: 0, left: "25%", right: "25%",
+            height: "1px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+            zIndex: 1,
+          }} />
+
+          {/* Label text — z:2 so it floats above the water, completely unaffected */}
+          <span style={{
+            position: "relative",
+            zIndex: 2,
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: badgeHovered ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.65)",
+            transition: "color 0.3s ease",
+            fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+            userSelect: "none",
+          }}>
+            Start Something™
+          </span>
+        </div>
 
         {/* Headline */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
@@ -450,16 +387,18 @@ const HeroSection = () => {
       </div>
 
       <style>{`
-        @keyframes badgePulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.3; transform: scale(0.75); }
-        }
         @media (max-width: 600px) {
-          .hero-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .hero-stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
           .hero-stats-grid > div:nth-child(1),
-          .hero-stats-grid > div:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+          .hero-stats-grid > div:nth-child(2) {
+            border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+          }
           .hero-stats-grid > div:nth-child(2),
-          .hero-stats-grid > div:nth-child(4) { border-right: none !important; }
+          .hero-stats-grid > div:nth-child(4) {
+            border-right: none !important;
+          }
         }
       `}</style>
     </section>
