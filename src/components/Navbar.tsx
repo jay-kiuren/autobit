@@ -58,7 +58,7 @@ const projectLinks = [
 const navItems = [
   { label: "Services", href: "/services", type: "mega" },
   { label: "Projects", href: "/projects", type: "mega" },
-  { label: "Team", href: "/team", type: "link" },
+  { label: "News", href: "/news", type: "link" },
   { label: "Contact", href: "/contact", type: "link" },
   { label: "Pricing", href: "/pricing", type: "link" },
 ];
@@ -87,6 +87,16 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
   useEffect(() => {
     onDropdownChange?.(!!activeDropdown);
   }, [activeDropdown, onDropdownChange]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   const isDropdownOpen = !!activeDropdown;
 
@@ -154,6 +164,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
           <button
             className="md:hidden text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -172,7 +183,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
 
       {/* Services mega dropdown */}
       <div
-        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
+        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border hidden md:block"
         onMouseEnter={() => openDropdown("Services")}
         onMouseLeave={closeDropdown}
         style={{
@@ -226,7 +237,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
 
       {/* Projects mega dropdown */}
       <div
-        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border"
+        className="fixed top-11 left-0 right-0 z-[999] mega-blur border-b border-border hidden md:block"
         onMouseEnter={() => openDropdown("Projects")}
         onMouseLeave={closeDropdown}
         style={{
@@ -264,31 +275,63 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-[9999] bg-[rgba(0,0,0,0.97)] backdrop-blur-[24px] md:hidden flex flex-col pt-14 px-8">
-          <button className="absolute top-3 right-6 text-foreground" onClick={() => setMobileOpen(false)}>
-            <X size={24} />
-          </button>
+      {/* Mobile fullscreen overlay menu */}
+      <div
+        className="fixed inset-0 z-[9999] md:hidden flex flex-col items-center justify-center"
+        style={{
+          background: 'rgba(0,0,0,0.96)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          opacity: mobileOpen ? 1 : 0,
+          transform: mobileOpen ? 'translateY(0)' : 'translateY(-20px)',
+          transition: 'opacity 0.35s ease, transform 0.35s ease',
+          pointerEvents: mobileOpen ? 'auto' : 'none',
+        }}
+      >
+        <button
+          className="absolute top-4 right-5 text-white"
+          onClick={() => setMobileOpen(false)}
+          aria-label="Close menu"
+          style={{ background: 'none', border: 'none', fontSize: '28px', cursor: 'pointer' }}
+        >
+          ✕
+        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
           {navItems.map((item) => (
             <Link
               key={item.label}
               to={item.href}
               onClick={() => setMobileOpen(false)}
-              className="py-5 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-2"
-              style={{ ...dropdownLinkStyle }}
+              style={{
+                fontFamily: sfProDisplay,
+                fontSize: '28px',
+                fontWeight: 600,
+                color: '#f5f5f7',
+                textDecoration: 'none',
+                letterSpacing: '-0.3px',
+              }}
             >
               {item.label}
             </Link>
           ))}
-          <a
-            href="mailto:autobitofficial.ph@gmail.com"
-            className="mt-auto mb-10 bg-foreground text-background rounded-full py-3 text-center text-[17px] font-semibold"
-          >
-            Start a project
-          </a>
         </div>
-      )}
+        <a
+          href="mailto:autobitofficial.ph@gmail.com"
+          className="mt-16"
+          style={{
+            background: '#2997ff',
+            color: '#ffffff',
+            padding: '14px 40px',
+            borderRadius: '980px',
+            fontSize: '17px',
+            fontWeight: 600,
+            textDecoration: 'none',
+            fontFamily: sfProDisplay,
+          }}
+        >
+          Start a project
+        </a>
+      </div>
     </>
   );
 };

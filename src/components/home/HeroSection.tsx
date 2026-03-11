@@ -21,32 +21,20 @@ const HeroSection = () => {
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      padding: "120px 40px 80px",
+      padding: "120px 24px 80px",
       background: "#000000",
       position: "relative",
       overflow: "hidden",
     }}>
 
-      {/* Silk WebGL background */}
-      <Silk
-        speed={0.5}
-        scale={1}
-        color="#888888"
-        noiseIntensity={1.5}
-        rotation={0}
-        mouseInfluence={0.5}
-      />
+      <Silk speed={0.5} scale={1} color="#888888" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
 
-      {/* Dark overlay so text stays readable */}
       <div style={{
-        position: "absolute",
-        inset: 0,
+        position: "absolute", inset: 0,
         background: "rgba(0,0,0,0.35)",
-        zIndex: 1,
-        pointerEvents: "none",
+        zIndex: 1, pointerEvents: "none",
       }} />
 
-      {/* Content */}
       <div style={{ position: "relative", zIndex: 2, textAlign: "center", width: "100%", maxWidth: "900px" }}>
 
         <a
@@ -88,7 +76,7 @@ const HeroSection = () => {
 
         <h1 style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "clamp(44px, 6.5vw, 84px)",
+          fontSize: "clamp(36px, 8vw, 84px)",
           fontWeight: 700,
           letterSpacing: "-0.035em",
           lineHeight: 1.04,
@@ -100,7 +88,7 @@ const HeroSection = () => {
         </h1>
 
         <div style={{
-          height: "clamp(54px, 8vw, 100px)",
+          height: "clamp(46px, 9vw, 100px)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -116,7 +104,7 @@ const HeroSection = () => {
               transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
               style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(44px, 6.5vw, 84px)",
+                fontSize: "clamp(36px, 8vw, 84px)",
                 fontWeight: 700,
                 letterSpacing: "-0.035em",
                 lineHeight: 1.04,
@@ -185,13 +173,16 @@ const HeroSection = () => {
         </p>
 
         <div style={{
-          display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
           marginTop: "64px",
           border: "1px solid rgba(255,255,255,0.07)",
           borderRadius: "16px", overflow: "hidden",
           background: "rgba(0,0,0,0.40)",
           backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-        }}>
+        }}
+          className="hero-stats-grid"
+        >
           {[
             { value: "2–5d", label: "Average delivery" },
             { value: "$800+", label: "Starting price" },
@@ -200,7 +191,8 @@ const HeroSection = () => {
           ].map((stat, i) => (
             <div key={i} style={{
               padding: "24px 16px", textAlign: "center",
-              borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.07)" : "none",
             }}>
               <div style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
@@ -220,6 +212,14 @@ const HeroSection = () => {
         @keyframes badgePulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.35; transform: scale(0.85); }
+        }
+        @media (min-width: 768px) {
+          .hero-stats-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+          }
+          .hero-stats-grid > div {
+            border-bottom: none !important;
+          }
         }
       `}</style>
     </section>

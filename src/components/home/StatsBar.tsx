@@ -129,7 +129,6 @@ const doubled = [...logos, ...logos];
 const StatsBar = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -138,12 +137,6 @@ const StatsBar = () => {
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -157,18 +150,18 @@ const StatsBar = () => {
         borderBottom: "1px solid rgba(255,255,255,0.08)",
         padding: "32px 0",
         position: "relative",
+        contain: "layout",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(16px)",
         transition: "opacity 0.9s cubic-bezier(0.25,0.1,0.25,1), transform 0.9s cubic-bezier(0.25,0.1,0.25,1)",
+        willChange: "transform, opacity",
       }}
     >
-      {/* Left fade */}
       <div style={{
         position: "absolute", left: 0, top: 0, bottom: 0, width: "200px",
         background: "linear-gradient(to right, #000000 50%, transparent)",
         zIndex: 2, pointerEvents: "none",
       }} />
-      {/* Right fade */}
       <div style={{
         position: "absolute", right: 0, top: 0, bottom: 0, width: "200px",
         background: "linear-gradient(to left, #000000 50%, transparent)",
@@ -182,11 +175,13 @@ const StatsBar = () => {
           width: "max-content",
           animation: "logoScroll 60s linear infinite",
           willChange: "transform",
+          transform: "translateZ(0)",
         }}
       >
         {doubled.map((logo, i) => (
           <div
             key={i}
+            className="statsbar-logo-item"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -222,8 +217,13 @@ const StatsBar = () => {
 
       <style>{`
         @keyframes logoScroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          0% { transform: translateX(0) translateZ(0); }
+          100% { transform: translateX(-50%) translateZ(0); }
+        }
+        @media (max-width: 767px) {
+          .statsbar-logo-item {
+            padding: 0 24px !important;
+          }
         }
       `}</style>
     </div>

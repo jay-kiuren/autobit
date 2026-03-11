@@ -12,10 +12,11 @@ const floatingIcons = [
 ];
 
 const EarlynxPanel = () => (
-  <section style={{
+  <section className="earlynx-section" style={{
     width: '100%', background: '#000000', padding: '100px 10%',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
     position: 'relative', overflow: 'hidden', minHeight: '60vh',
+    contain: 'layout',
   }}>
     <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,255,255,0.06), transparent 60%)', pointerEvents: 'none', zIndex: 0 }} />
     <div style={{
@@ -33,17 +34,17 @@ const EarlynxPanel = () => (
         borderRadius: '980px', padding: '6px 16px', fontSize: '12px', color: 'rgba(255,255,255,0.60)', fontFamily: font, marginBottom: '20px',
       }}>National Winner · Patent Held</span>
       <p style={{ fontFamily: font, fontSize: '11px', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginBottom: '16px' }}>EARLYNX — Medical AI</p>
-      <h2 style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>
+      <h2 className="earlynx-heading" style={{ fontFamily: font, fontSize: '56px', fontWeight: 700, letterSpacing: '-2px', lineHeight: 1.0, color: '#ffffff', margin: 0 }}>
         AI cancer screening.<br />Nationally awarded.
       </h2>
       <p style={{ fontFamily: font, fontSize: '17px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.6, maxWidth: '560px', margin: '16px auto 0', textAlign: 'center' }}>
         Non-invasive diagnostic prototype using sensor fusion and CNN model to analyze saliva samples. Evaluated and verified by DOST. Champion at 2026 Congress Life and Science Category.
       </p>
-      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '32px' }}>
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '32px', flexWrap: 'wrap' }}>
         <a href="/projects#earlynx" style={{ background: '#2997ff', color: '#ffffff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>Learn more</a>
         <a href="/projects" style={{ background: 'transparent', color: '#2997ff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>See all projects →</a>
       </div>
-      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px' }}>
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
         {pills.map(p => (
           <span key={p} style={{
             background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
@@ -52,6 +53,12 @@ const EarlynxPanel = () => (
         ))}
       </div>
     </div>
+    <style>{`
+      @media (max-width: 767px) {
+        .earlynx-section { padding: 48px 24px !important; }
+        .earlynx-heading { font-size: 32px !important; }
+      }
+    `}</style>
   </section>
 );
 
