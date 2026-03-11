@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ColorBends from "@/components/ui/ColorBends";
+import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
