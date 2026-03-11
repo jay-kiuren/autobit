@@ -5,6 +5,7 @@ import ColorBends from "@/components/ColorBends";
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
   const [bgReady, setBgReady] = useState(false);
+  const [badgeHovered, setBadgeHovered] = useState(false);
 
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
@@ -36,6 +37,36 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
+      {/* Liquid glass SVG filter — hidden, just defines the distortion */}
+      <svg style={{ position: "absolute", width: 0, height: 0 }}>
+        <defs>
+          <filter
+            id="badge-glass"
+            x="-20%" y="-20%" width="140%" height="140%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.065 0.065"
+              numOctaves="1"
+              seed="3"
+              result="turbulence"
+            />
+            <feGaussianBlur in="turbulence" stdDeviation="1.5" result="blurredNoise" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="blurredNoise"
+              scale="18"
+              xChannelSelector="R"
+              yChannelSelector="B"
+              result="displaced"
+            />
+            <feGaussianBlur in="displaced" stdDeviation="1.5" result="finalBlur" />
+            <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+          </filter>
+        </defs>
+      </svg>
+
       <div style={{
         position: "absolute", inset: 0, zIndex: 0,
         opacity: bgReady ? 1 : 0,
@@ -61,37 +92,78 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        {/* Badge */}
+        {/* Liquid Glass Badge */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
+          onMouseEnter={() => setBadgeHovered(true)}
+          onMouseLeave={() => setBadgeHovered(false)}
           style={{
+            position: "relative",
             display: "inline-flex", alignItems: "center", gap: "8px",
-            borderRadius: "9999px", border: "none",
-            background: "rgba(255,255,255,0.08)",
-            backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 16px rgba(0,0,0,0.25)",
-            padding: "7px 18px",
-            fontSize: "12px", letterSpacing: "0.04em",
-            color: "rgba(255,255,255,0.60)",
+            borderRadius: "9999px",
+            padding: "8px 20px",
+            fontSize: "12px", letterSpacing: "0.05em",
+            color: badgeHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
             textDecoration: "none", cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "color 0.3s ease, transform 0.3s ease",
+            transform: badgeHovered ? "scale(1.04)" : "scale(1)",
             marginBottom: "28px",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.13)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.85)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.60)";
+            // Liquid glass rim — the magic
+            boxShadow: `
+              0 0 6px rgba(0,0,0,0.03),
+              0 2px 6px rgba(0,0,0,0.08),
+              inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),
+              inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
+              inset 1px 1px 1px -0.5px rgba(255,255,255,0.35),
+              inset -1px -1px 1px -0.5px rgba(255,255,255,0.20),
+              inset 0 0 6px 6px rgba(255,255,255,0.06),
+              inset 0 0 2px 2px rgba(255,255,255,0.04),
+              0 0 18px rgba(255,255,255,0.08)
+            `,
           }}
         >
-          <span style={{
-            height: "6px", width: "6px", borderRadius: "50%",
-            background: "rgba(255,255,255,0.55)", display: "inline-block",
-            animation: "badgePulse 2.5s ease-in-out infinite",
+          {/* Liquid glass distorted backdrop */}
+          <div style={{
+            position: "absolute", inset: 0,
+            borderRadius: "9999px",
+            backdropFilter: 'url("#badge-glass") blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            zIndex: 0,
           }} />
-          Start Something™
+
+          {/* Top highlight shimmer */}
+          <div style={{
+            position: "absolute", top: 0, left: "10%", right: "10%",
+            height: "1px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)",
+            borderRadius: "9999px",
+            zIndex: 1,
+          }} />
+
+          {/* Pulse dot */}
+          <span style={{
+            position: "relative", zIndex: 2,
+            height: "6px", width: "6px", borderRadius: "50%",
+            background: "rgba(255,255,255,0.7)",
+            display: "inline-block",
+            boxShadow: "0 0 6px rgba(255,255,255,0.6)",
+            animation: "badgePulse 2.5s ease-in-out infinite",
+            flexShrink: 0,
+          }} />
+
+          {/* Text */}
+          <span style={{ position: "relative", zIndex: 2, fontWeight: 500 }}>
+            Start Something™
+          </span>
+
+          {/* Arrow on hover */}
+          <span style={{
+            position: "relative", zIndex: 2,
+            opacity: badgeHovered ? 1 : 0,
+            transform: badgeHovered ? "translateX(0)" : "translateX(-4px)",
+            transition: "all 0.3s ease",
+            fontSize: "11px",
+          }}>→</span>
         </a>
 
         {/* Headline */}
@@ -153,7 +225,7 @@ const HeroSection = () => {
           AI agents, automation, web applications, and intelligent robotics. Engineered to scale.
         </p>
 
-        {/* CTAs — Apple style: solid primary, ghost fills solid blue on hover */}
+        {/* CTAs */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
@@ -179,8 +251,7 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "rgba(255,255,255,0.10)",
-              color: "#ffffff",
+              background: "rgba(255,255,255,0.10)", color: "#ffffff",
               padding: "12px 26px", borderRadius: "980px",
               fontSize: "15px", fontWeight: 500,
               textDecoration: "none",
@@ -255,7 +326,7 @@ const HeroSection = () => {
       <style>{`
         @keyframes badgePulse {
           0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.35; transform: scale(0.85); }
+          50% { opacity: 0.35; transform: scale(0.75); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         }
         @media (max-width: 600px) {
           .hero-stats-grid {
