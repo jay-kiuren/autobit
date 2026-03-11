@@ -94,7 +94,7 @@ const HeroSection = () => {
           Start Something™
         </a>
 
-        {/* Headline + cycling word — tightest group, zero gap between lines */}
+        {/* Headline */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
           <h1 style={{
             fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -139,7 +139,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Subheading — more space from headline, less from CTAs */}
+        {/* Subheading */}
         <p style={{
           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
           fontSize: "clamp(15px, 1.5vw, 19px)",
@@ -153,7 +153,7 @@ const HeroSection = () => {
           AI agents, automation, web applications, and intelligent robotics. Engineered to scale.
         </p>
 
-        {/* CTAs */}
+        {/* CTAs — Apple style: solid primary, ghost fills solid blue on hover */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
@@ -161,9 +161,10 @@ const HeroSection = () => {
               background: "#2997ff", color: "#ffffff",
               padding: "12px 26px", borderRadius: "980px",
               fontSize: "15px", fontWeight: 500,
-              textDecoration: "none", transition: "all 0.2s ease",
+              textDecoration: "none", transition: "background 0.2s ease, transform 0.2s ease",
               fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "-0.01em",
+              display: "inline-block",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "#0077ed";
@@ -178,28 +179,29 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "transparent", color: "#ffffff",
+              background: "rgba(255,255,255,0.10)",
+              color: "#ffffff",
               padding: "12px 26px", borderRadius: "980px",
               fontSize: "15px", fontWeight: 500,
-              textDecoration: "none", transition: "all 0.2s ease",
+              textDecoration: "none",
+              transition: "background 0.2s ease, transform 0.2s ease",
               fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "-0.01em",
-              border: "1px solid rgba(255,255,255,0.28)",
+              display: "inline-block",
+              border: "none",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#2997ff";
-              e.currentTarget.style.borderColor = "#2997ff";
+              e.currentTarget.style.background = "#2997ff";
               e.currentTarget.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#ffffff";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.10)";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >See our work</a>
         </div>
 
-        {/* Trust line — close to CTAs, feels like a footnote to the action */}
+        {/* Trust line */}
         <p style={{
           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
           fontSize: "13px", fontWeight: 400,
@@ -209,7 +211,7 @@ const HeroSection = () => {
           Trusted by founders and teams across Southeast Asia.
         </p>
 
-        {/* Stats grid — most distant from headline, its own visual block */}
+        {/* Stats grid */}
         <div
           className="hero-stats-grid"
           style={{
