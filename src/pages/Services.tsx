@@ -324,90 +324,115 @@ const Services = () => {
     <>
       <Navbar onDropdownChange={handleDropdownChange}/>
       <style>{`
-        .svc-c { max-width:1320px; margin:0 auto; padding:0 40px; }
-        .svc-grid { display:grid; grid-template-columns:1fr 1.15fr; gap:52px; align-items:center; }
+        /* ── Base container — fluid at all sizes ── */
+        .svc-c { max-width:1320px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+
+        /* ── Grid layouts ── */
+        .svc-grid       { display:grid; grid-template-columns:1fr 1.15fr; gap:clamp(24px,4vw,56px); align-items:center; }
+        .svc-grid-rev   { display:grid; grid-template-columns:1.15fr 1fr; gap:clamp(24px,4vw,56px); align-items:center; }
+        .svc-grid-tall  { display:grid; grid-template-columns:1fr; gap:clamp(20px,3vw,36px); }
+        .svc-grid-wide  { display:grid; grid-template-columns:1fr 1.4fr; gap:clamp(24px,4vw,56px); align-items:center; }
+
+        /* ── Heading — fluid typography ── */
         .svc-heading {
-          font-size:clamp(34px,4.2vw,62px);
+          font-size:clamp(30px,3.8vw,62px);
           font-weight:800; letter-spacing:-2px; line-height:1.04;
           color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
         }
-        /* Frame card */
+
+        /* ── Frame card ── */
         .svc-frame {
-          border-radius:24px;
+          border-radius:clamp(16px,2vw,24px);
           border:1px solid rgba(255,255,255,0.07);
           background:rgba(255,255,255,0.016);
-          padding:40px 40px 28px;
+          padding:clamp(22px,3.2vw,44px) clamp(22px,3.2vw,44px) clamp(18px,2.4vw,32px);
           position:relative; overflow:hidden;
         }
-        /* Unique per-section top stripe */
         .svc-frame-stripe {
           position:absolute; top:0; left:0; right:0; height:2px;
           background:linear-gradient(90deg,transparent 0%,var(--accent) 30%,var(--accent) 70%,transparent 100%);
           opacity:0.6;
         }
-        /* Glass art card */
+
+        /* ── Glass art card ── */
         .svc-glass { border-radius:20px; padding:1px; }
         .svc-glass-inner {
           border-radius:19px;
           background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
           backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
           border:1px solid rgba(255,255,255,0.06);
-          height:340px; display:flex; align-items:center; justify-content:center;
-          position:relative; overflow:hidden; padding:20px;
+          height:clamp(200px,28vw,360px);
+          display:flex; align-items:center; justify-content:center;
+          position:relative; overflow:hidden;
+          padding:clamp(12px,2vw,22px);
         }
-        .svc-glass-inner::before {
+        .svc-glass-inner-tall {
+          border-radius:19px;
+          background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
+          backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+          border:1px solid rgba(255,255,255,0.06);
+          height:clamp(180px,22vw,280px);
+          display:flex; align-items:center; justify-content:center;
+          position:relative; overflow:hidden;
+          padding:clamp(10px,1.6vw,18px);
+        }
+        .svc-glass-inner::before,
+        .svc-glass-inner-tall::before {
           content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
           background:linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent);
         }
-        /* Overlap fade */
+
+        /* ── Overlap fade ── */
         .svc-fade { position:absolute; bottom:0; left:0; right:0; height:90px;
           background:linear-gradient(to bottom,transparent,#000); pointer-events:none; z-index:5; }
-        /* Tech tags */
+
+        /* ── Tech tag ── */
         .svc-tag {
-          display:inline-block; font-size:9px; font-weight:500; letter-spacing:0.05em;
-          padding:3px 8px; border-radius:6px;
+          display:inline-block; font-size:clamp(8px,0.8vw,10px); font-weight:500; letter-spacing:0.05em;
+          padding:3px 9px; border-radius:6px;
           background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
           color:rgba(255,255,255,0.4); font-family:monospace;
-          margin-bottom:14px;
+          margin-bottom:clamp(10px,1.5vw,18px);
         }
-        /* Badge pill */
+
+        /* ── Badge pill ── */
         .svc-badge {
-          display:inline-block; font-size:8px; font-weight:700; letter-spacing:0.1em;
-          padding:3px 8px; border-radius:20px; margin-bottom:10px;
+          display:inline-block; font-size:clamp(7px,0.7vw,9px); font-weight:700; letter-spacing:0.1em;
+          padding:3px 9px; border-radius:20px; margin-bottom:clamp(8px,1vw,12px);
         }
-        /* CTA always blue */
+
+        /* ── CTA buttons ── */
         .svc-cta {
           background:#2997ff; color:#fff;
-          padding:14px 28px; border-radius:980px;
-          font-size:15px; font-weight:600;
-          text-decoration:none; display:inline-block;
-          transition:all 0.22s ease;
+          padding:clamp(11px,1.1vw,15px) clamp(20px,2vw,30px);
+          border-radius:980px; font-size:clamp(13px,1.1vw,15px); font-weight:600;
+          text-decoration:none; display:inline-block; transition:all 0.22s ease;
           box-shadow:0 4px 18px rgba(41,151,255,0.35);
+          white-space:nowrap;
         }
         .svc-cta:hover { transform:scale(1.04); box-shadow:0 7px 30px rgba(41,151,255,0.55); }
-        /* Bottom CTA glow */
         .cta-glow-btn {
           background:#2997ff; color:#fff;
-          padding:16px 48px; border-radius:980px;
-          font-size:16px; font-weight:700;
-          text-decoration:none; display:inline-block;
-          transition:all 0.25s ease;
-          box-shadow:0 0 0 1px rgba(41,151,255,0.4),
-                     0 0 32px rgba(41,151,255,0.35),
-                     0 0 64px rgba(41,151,255,0.15);
+          padding:clamp(13px,1.2vw,17px) clamp(32px,3.5vw,52px);
+          border-radius:980px; font-size:clamp(14px,1.2vw,17px); font-weight:700;
+          text-decoration:none; display:inline-block; transition:all 0.25s ease;
+          box-shadow:0 0 0 1px rgba(41,151,255,0.4),0 0 32px rgba(41,151,255,0.35),0 0 64px rgba(41,151,255,0.15);
           letter-spacing:-0.2px;
         }
-        .cta-glow-btn:hover {
-          transform:scale(1.05);
-          box-shadow:0 0 0 1px rgba(41,151,255,0.6),
-                     0 0 48px rgba(41,151,255,0.55),
-                     0 0 96px rgba(41,151,255,0.25);
+        .cta-glow-btn:hover { transform:scale(1.05); box-shadow:0 0 0 1px rgba(41,151,255,0.6),0 0 48px rgba(41,151,255,0.55),0 0 96px rgba(41,151,255,0.25); }
+
+        /* ── Description text ── */
+        .svc-desc { font-size:clamp(13px,1.1vw,16px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
+
+        /* ── Responsive breakpoints ── */
+        @media(max-width:1024px){
+          .svc-grid, .svc-grid-rev, .svc-grid-wide { grid-template-columns:1fr; gap:20px; }
+          .svc-glass-inner { height:clamp(180px,36vw,300px); }
         }
-        @media(max-width:768px){
-          .svc-grid { grid-template-columns:1fr; gap:20px; }
-          .svc-glass-inner { height:220px; }
-          .svc-frame { padding:22px 20px 18px; border-radius:18px; }
-          .svc-c { padding:0 16px; }
+        @media(max-width:640px){
+          .svc-heading { letter-spacing:-1px; }
+          .svc-glass-inner, .svc-glass-inner-tall { height:clamp(160px,50vw,240px); }
+          .svc-frame { border-radius:14px; }
         }
       `}</style>
 
@@ -434,7 +459,27 @@ const Services = () => {
 
         {/* ── Service Sections ── */}
         {services.map((s,i)=>{
-          const {Art,Icon} = s;
+          const {Art} = s;
+
+          // Unique entry animation per panel
+          const panelAnim = [
+            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,scale:0.88},animate:{opacity:1,scale:1},transition:{duration:0.7,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.6,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:-40,rotate:-2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,y:-40,scale:0.95},animate:{opacity:1,y:0,scale:1},transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
+          ][i];
+
+          // Unique art entry per panel
+          const artAnim = [
+            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,y:40},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.15,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,scale:0.9},animate:{opacity:1,scale:1},transition:{duration:0.7,delay:0.1,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:50,rotate:2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.08,ease:[0.22,1,0.36,1]} },
+          ][i];
           const isActive  = activeIndex===i;
           const isReverse = i%2===1;
 
@@ -453,77 +498,52 @@ const Services = () => {
               </div>
 
               <div className="svc-c" style={{width:"100%",position:"relative",zIndex:1}}>
-                <motion.div className="svc-frame"
-                  style={{"--accent":s.accent} as React.CSSProperties}
-                  initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:false,amount:0.18}} transition={{duration:0.5,ease:[0.25,0.1,0.25,1]}}>
+                <div className="svc-frame" style={{"--accent":s.accent} as React.CSSProperties}>
 
                   {/* Top accent stripe */}
                   <div className="svc-frame-stripe"/>
 
-                  <div className="svc-grid" style={{direction:isReverse?"rtl":"ltr"} as React.CSSProperties}>
+                  <div className={isReverse ? "svc-grid-rev" : "svc-grid"}>
 
-                    {/* Text */}
-                    <div style={{direction:"ltr"}}>
-                      {/* Badge */}
-                      <div className="svc-badge" style={{background:`${s.accent}18`,color:s.accent,border:`1px solid ${s.accent}44`}}>
+                    {/* Text — unique entry */}
+                    <motion.div
+                      style={{direction:"ltr", order: isReverse ? 2 : 1}}
+                      initial={panelAnim.initial} whileInView={panelAnim.animate}
+                      viewport={{once:false,amount:0.2}} transition={panelAnim.transition}>
+
+                      {/* Badge only — no icon, no counter */}
+                      <div className="svc-badge" style={{background:`${s.accent}18`,color:s.accent,border:`1px solid ${s.accent}40`}}>
                         {s.badge}
-                      </div>
-
-                      {/* Icon + eyebrow inline */}
-                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                        <div style={{width:32,height:32,borderRadius:10,background:`${s.accent}14`,border:`1px solid ${s.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                          <Icon size={16} color={s.accent}/>
-                        </div>
-                        <span style={{fontSize:"10px",fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase" as const,color:s.accent}}>
-                          {String(i+1).padStart(2,"0")} / {String(services.length).padStart(2,"0")} — {s.eyebrow}
-                        </span>
                       </div>
 
                       <h2 className="svc-heading">{s.heading}</h2>
 
-                      <p style={{fontSize:"clamp(13px,1.2vw,16px)",lineHeight:1.68,color:"rgba(255,255,255,0.38)",margin:"0 0 18px",maxWidth:400}}>{s.desc}</p>
+                      <p className="svc-desc">{s.desc}</p>
 
                       {/* Tech stack tag */}
                       <span className="svc-tag">{s.uniqueTag}</span>
 
-                      <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:4}}>
-                        <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 20px",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)"}}>
-                          <div style={{fontSize:20,fontWeight:700,color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1}}>{s.price}</div>
-                          <div style={{fontSize:11,color:"rgba(255,255,255,0.22)",marginTop:3}}>{s.timeline} delivery</div>
-                        </div>
+                      <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:8}}>
                         <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">Get a quote →</a>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Art */}
-                    <div style={{direction:"ltr"}}>
-                      <div className="svc-glass" style={{background:`linear-gradient(135deg,${s.accent}20 0%,rgba(255,255,255,0.02) 50%,${s.accent}0e 100%)`,boxShadow:`0 0 0 1px rgba(255,255,255,0.07),0 18px 48px rgba(0,0,0,0.5),0 4px 16px ${s.accent}16`}}>
-                        <div className="svc-glass-inner" style={{background:`linear-gradient(145deg,rgba(255,255,255,0.05) 0%,rgba(0,0,0,0.22) 60%,rgba(255,255,255,0.025) 100%)`}}>
+                    {/* Art — unique entry */}
+                    <motion.div
+                      style={{direction:"ltr", order: isReverse ? 1 : 2}}
+                      initial={artAnim.initial} whileInView={artAnim.animate}
+                      viewport={{once:false,amount:0.2}} transition={artAnim.transition}>
+                      <div className="svc-glass" style={{background:`linear-gradient(135deg,${s.accent}1e 0%,rgba(255,255,255,0.02) 50%,${s.accent}0c 100%)`,boxShadow:`0 0 0 1px rgba(255,255,255,0.07),0 20px 52px rgba(0,0,0,0.55),0 4px 16px ${s.accent}14`}}>
+                        <div className="svc-glass-inner">
                           <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,background:`linear-gradient(90deg,transparent,${s.accent}60,transparent)`}}/>
                           <Art active={isActive} animKey={animKeys[i]}/>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                   </div>
 
-                  {/* Prev / Next */}
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:18,marginTop:18,borderTop:"1px solid rgba(255,255,255,0.05)"}}>
-                    <button onClick={()=>i>0&&sectionRefs.current[i-1]?.scrollIntoView({behavior:"smooth",block:"start"})}
-                      style={{fontSize:"11px",color:i>0?"rgba(255,255,255,0.2)":"transparent",background:"none",border:"none",cursor:i>0?"pointer":"default",padding:0,letterSpacing:"0.03em",transition:"color 0.2s",fontFamily:"inherit"}}
-                      onMouseEnter={e=>i>0&&((e.currentTarget as HTMLButtonElement).style.color="rgba(255,255,255,0.5)")}
-                      onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.color=i>0?"rgba(255,255,255,0.2)":"transparent";}}>
-                      {i>0?`← ${services[i-1].eyebrow}`:""}
-                    </button>
-                    <span style={{fontSize:"10px",color:"rgba(255,255,255,0.12)",letterSpacing:"0.07em"}}>{String(i+1).padStart(2,"0")} / {String(services.length).padStart(2,"0")}</span>
-                    <button onClick={()=>i<services.length-1&&sectionRefs.current[i+1]?.scrollIntoView({behavior:"smooth",block:"start"})}
-                      style={{fontSize:"11px",color:i<services.length-1?"rgba(255,255,255,0.2)":"transparent",background:"none",border:"none",cursor:i<services.length-1?"pointer":"default",padding:0,letterSpacing:"0.03em",transition:"color 0.2s",fontFamily:"inherit"}}
-                      onMouseEnter={e=>i<services.length-1&&((e.currentTarget as HTMLButtonElement).style.color="rgba(255,255,255,0.5)")}
-                      onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.color=i<services.length-1?"rgba(255,255,255,0.2)":"transparent";}}>
-                      {i<services.length-1?`${services[i+1].eyebrow} →`:""}
-                    </button>
-                  </div>
-                </motion.div>
+                </div>
               </div>
 
               {i<services.length-1&&<div className="svc-fade"/>}
