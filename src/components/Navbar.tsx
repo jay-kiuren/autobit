@@ -113,16 +113,16 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
               height={18}
               style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }}
             />
+            {/* fontWeight 700 = same as hero heading. No stroke. 14px. Looks identical on Linux, Mac, Windows */}
             <span style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              fontSize: '13px',
-              fontWeight: 600,
-              letterSpacing: '0.12em',
+              fontSize: '14px',
+              fontWeight: 700,
+              letterSpacing: '0.10em',
               color: '#ffffff',
-              textTransform: 'uppercase',
+              textTransform: 'uppercase' as const,
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale',
-              // No WebkitTextStroke — causes bold rendering on Windows ClearType
               lineHeight: 1,
               display: 'inline-block',
             }}>AUTOBIT</span>
