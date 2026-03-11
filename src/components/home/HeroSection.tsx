@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
   const [bgReady, setBgReady] = useState(false);
-  const [badgeHovered, setBadgeHovered] = useState(false);
-  const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
-  const animFrameRef = useRef<number>(0);
-  const currentScaleRef = useRef(18);
 
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
@@ -25,27 +21,6 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, []);
 
-  // Smooth interpolation of displacement scale on hover
-  useEffect(() => {
-    const targetScale = badgeHovered ? 55 : 18;
-    const animate = () => {
-      const current = currentScaleRef.current;
-      const diff = targetScale - current;
-      if (Math.abs(diff) < 0.3) {
-        currentScaleRef.current = targetScale;
-      } else {
-        currentScaleRef.current = current + diff * 0.08;
-        animFrameRef.current = requestAnimationFrame(animate);
-      }
-      if (displacementRef.current) {
-        displacementRef.current.setAttribute("scale", String(currentScaleRef.current));
-      }
-    };
-    cancelAnimationFrame(animFrameRef.current);
-    animFrameRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animFrameRef.current);
-  }, [badgeHovered]);
-
   return (
     <section
       style={{
@@ -61,53 +36,6 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/*
-        LIQUID WATER SVG FILTER
-        - type="turbulence" for ripple/wave patterns (not fractalNoise which is cloudy)
-        - <animate> on baseFrequency makes it continuously shift — living water
-        - numOctaves="2" gives wave detail without being noisy
-        - Applied ONLY to backdrop div, text layer sits above unaffected
-      */}
-      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
-        <defs>
-          <filter
-            id="jelly-water"
-            x="-10%" y="-10%" width="120%" height="120%"
-            colorInterpolationFilters="sRGB"
-          >
-            <feTurbulence
-              id="jelly-turbulence"
-              type="turbulence"
-              baseFrequency="0.018 0.032"
-              numOctaves="2"
-              seed="4"
-              result="turbulence"
-            >
-              {/* This <animate> is the key — shifts baseFrequency over time = living water */}
-              <animate
-                attributeName="baseFrequency"
-                values="0.018 0.032;0.028 0.048;0.022 0.038;0.018 0.032"
-                keyTimes="0;0.35;0.7;1"
-                dur="7s"
-                repeatCount="indefinite"
-              />
-            </feTurbulence>
-            <feGaussianBlur in="turbulence" stdDeviation="1" result="blurred" />
-            <feDisplacementMap
-              ref={displacementRef}
-              in="SourceGraphic"
-              in2="blurred"
-              scale="18"
-              xChannelSelector="R"
-              yChannelSelector="B"
-              result="displaced"
-            />
-            <feGaussianBlur in="displaced" stdDeviation="2.5" result="softDisplaced" />
-            <feComposite in="softDisplaced" in2="softDisplaced" operator="over" />
-          </filter>
-        </defs>
-      </svg>
-
       <div style={{
         position: "absolute", inset: 0, zIndex: 0,
         opacity: bgReady ? 1 : 0,
@@ -133,101 +61,8 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        {/* ===== JELLY WATER GLASS LABEL ===== */}
-        {/* This is an announcement chip / label — NOT a button */}
-        <div
-          onMouseEnter={() => setBadgeHovered(true)}
-          onMouseLeave={() => setBadgeHovered(false)}
-          style={{
-            position: "relative",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "9999px",
-            padding: "9px 24px",
-            marginBottom: "28px",
-            cursor: "default",
-            transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-            transform: badgeHovered ? "scale(1.05)" : "scale(1)",
-            // Dark glass rim — from 21st.dev dark shadow spec
-            boxShadow: `
-              0 0 8px rgba(0,0,0,0.04),
-              0 2px 8px rgba(0,0,0,0.10),
-              inset 3px 3px 0.5px -3.5px rgba(255,255,255,0.09),
-              inset -3px -3px 0.5px -3.5px rgba(255,255,255,0.85),
-              inset 1px 1px 1px -0.5px rgba(255,255,255,0.60),
-              inset -1px -1px 1px -0.5px rgba(255,255,255,0.60),
-              inset 0 0 6px 6px rgba(255,255,255,0.10),
-              inset 0 0 2px 2px rgba(255,255,255,0.05),
-              0 0 ${badgeHovered ? "22px" : "8px"} rgba(255,255,255,${badgeHovered ? "0.10" : "0.03"})
-            `,
-          }}
-        >
-          {/*
-            WATER LAYER — this is the "liquid inside glass"
-            filter: url(#jelly-water) applies the living turbulence to whatever
-            is behind this div (the ColorBends background)
-            Clip to pill shape with overflow hidden + border-radius
-            Text sits above in a separate z-layer, completely unaffected
-          */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "9999px",
-              overflow: "hidden",
-              zIndex: 0,
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "9999px",
-                // Liquid distortion on the backdrop — this is the water ripple
-                backdropFilter: "blur(8px) url(#jelly-water)",
-                WebkitBackdropFilter: "blur(8px)",
-                // Slight tint to make the glass visible
-                background: "rgba(255,255,255,0.04)",
-              }}
-            />
-          </div>
-
-          {/* Top glass shimmer — catches the "light on glass" look */}
-          <div style={{
-            position: "absolute",
-            top: 0, left: "12%", right: "12%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), transparent)",
-            zIndex: 1,
-            borderRadius: "9999px",
-          }} />
-
-          {/* Bottom subtle edge */}
-          <div style={{
-            position: "absolute",
-            bottom: 0, left: "25%", right: "25%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
-            zIndex: 1,
-          }} />
-
-          {/* Label text — z:2 so it floats above the water, completely unaffected */}
-          <span style={{
-            position: "relative",
-            zIndex: 2,
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: badgeHovered ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.65)",
-            transition: "color 0.3s ease",
-            fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-            userSelect: "none",
-          }}>
-            Start Something™
-          </span>
-        </div>
+        {/* JELLY CHIP */}
+        <JellyChip />
 
         {/* Headline */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
@@ -383,25 +218,167 @@ const HeroSection = () => {
             </div>
           ))}
         </div>
-
       </div>
 
       <style>{`
         @media (max-width: 600px) {
-          .hero-stats-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
+          .hero-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .hero-stats-grid > div:nth-child(1),
-          .hero-stats-grid > div:nth-child(2) {
-            border-bottom: 1px solid rgba(255,255,255,0.07) !important;
-          }
+          .hero-stats-grid > div:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
           .hero-stats-grid > div:nth-child(2),
-          .hero-stats-grid > div:nth-child(4) {
-            border-right: none !important;
-          }
+          .hero-stats-grid > div:nth-child(4) { border-right: none !important; }
         }
       `}</style>
     </section>
+  );
+};
+
+// ─── JELLY CHIP ──────────────────────────────────────────────────────────────
+// The SHAPE ITSELF is the jelly. When hovered:
+//   • The whole panel squishes and stretches (scaleX/scaleY spring)
+//   • border-radius morphs organically so edges aren't perfectly round
+//   • On release it bounces back with spring physics
+//   • Mouse position tilts it in 3D (rotateX/rotateY)
+//   • Text is INSIDE the jelly — it deforms WITH the panel
+// ─────────────────────────────────────────────────────────────────────────────
+const JellyChip = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
+
+  // Spring config — low stiffness + high damping = slow jelly settle
+  const springConfig = { stiffness: 180, damping: 10, mass: 0.8 };
+
+  const scaleX = useSpring(1, springConfig);
+  const scaleY = useSpring(1, springConfig);
+  const rotateX = useSpring(0, { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(0, { stiffness: 200, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    rotateY.set(dx * 8);
+    rotateX.set(-dy * 8);
+  };
+
+  const handleMouseEnter = () => {
+    setHovered(true);
+    // Squish wide on hover — jelly spreading
+    scaleX.set(1.10);
+    scaleY.set(0.92);
+    // Then it bounces back via spring automatically
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    setPressed(false);
+    scaleX.set(1);
+    scaleY.set(1);
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  const handleMouseDown = () => {
+    setPressed(true);
+    // Press squishes it down — compress like pressing jelly
+    scaleX.set(0.93);
+    scaleY.set(1.07);
+  };
+
+  const handleMouseUp = () => {
+    setPressed(false);
+    // Release — bounces back with overshoot
+    scaleX.set(1.08);
+    scaleY.set(0.94);
+    setTimeout(() => {
+      scaleX.set(1);
+      scaleY.set(1);
+    }, 80);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      style={{
+        scaleX,
+        scaleY,
+        rotateX,
+        rotateY,
+        transformPerspective: 600,
+        // Organic border-radius — not a perfect pill, slightly asymmetric like gel
+        borderRadius: hovered
+          ? "38% 62% 45% 55% / 55% 45% 55% 45%"
+          : "9999px",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "10px 26px",
+        marginBottom: "28px",
+        cursor: "default",
+        userSelect: "none" as const,
+        position: "relative" as const,
+        transition: "border-radius 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+        // Glass depth — multiple layered shadows simulate a thick gel object
+        boxShadow: hovered
+          ? `
+            0 8px 32px rgba(0,0,0,0.25),
+            0 2px 8px rgba(0,0,0,0.15),
+            inset 0 1px 0 rgba(255,255,255,0.55),
+            inset 0 -1px 0 rgba(255,255,255,0.10),
+            inset 1px 0 0 rgba(255,255,255,0.18),
+            inset -1px 0 0 rgba(255,255,255,0.08),
+            0 0 0 1px rgba(255,255,255,0.10),
+            0 0 30px rgba(255,255,255,0.08)
+          `
+          : `
+            0 4px 16px rgba(0,0,0,0.20),
+            0 1px 4px rgba(0,0,0,0.12),
+            inset 0 1px 0 rgba(255,255,255,0.40),
+            inset 0 -1px 0 rgba(255,255,255,0.06),
+            0 0 0 1px rgba(255,255,255,0.07)
+          `,
+        // Frosted gel fill
+        background: hovered
+          ? "rgba(255,255,255,0.10)"
+          : "rgba(255,255,255,0.06)",
+        backdropFilter: "blur(16px) saturate(120%)",
+        WebkitBackdropFilter: "blur(16px) saturate(120%)",
+      }}
+    >
+      {/* Top gloss highlight — thick glass catching light */}
+      <div style={{
+        position: "absolute",
+        top: "2px", left: "18%", right: "18%",
+        height: "1px",
+        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.60), transparent)",
+        borderRadius: "9999px",
+        pointerEvents: "none",
+      }} />
+
+      {/* Label — moves with the jelly, it's embedded inside */}
+      <span style={{
+        fontSize: "11px",
+        fontWeight: 500,
+        letterSpacing: "0.07em",
+        textTransform: "uppercase" as const,
+        color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.60)",
+        transition: "color 0.3s ease",
+        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+        position: "relative",
+        zIndex: 1,
+      }}>
+        Start Something™
+      </span>
+    </motion.div>
   );
 };
 
