@@ -1,3 +1,16 @@
+/* === PASTE THIS AT THE VERY TOP OF src/index.css === */
+
+*, *::before, *::after {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
