@@ -1,16 +1,3 @@
-/* === PASTE THIS AT THE VERY TOP OF src/index.css === */
-
-*, *::before, *::after {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-html {
-  text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -86,6 +73,11 @@ html {
     @apply border-border;
   }
 
+  html {
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif;
@@ -93,6 +85,8 @@ html {
 
   h1, h2, h3, h4, h5, h6 {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
