@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
@@ -6,6 +6,9 @@ const HeroSection = () => {
   const [index, setIndex] = useState(0);
   const [bgReady, setBgReady] = useState(false);
   const [badgeHovered, setBadgeHovered] = useState(false);
+  const [badgePressed, setBadgePressed] = useState(false);
+  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const badgeRef = useRef<HTMLAnchorElement>(null);
 
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
@@ -22,6 +25,16 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, []);
 
+  const handleBadgeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = badgeRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    setRipples((prev) => [...prev, { id, x, y }]);
+    setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 600);
+  };
+
   return (
     <section
       style={{
@@ -37,31 +50,31 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* Liquid glass SVG filter — hidden, just defines the distortion */}
-      <svg style={{ position: "absolute", width: 0, height: 0 }}>
+      {/* Liquid glass SVG filter — exact params from 21st.dev */}
+      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
         <defs>
           <filter
-            id="badge-glass"
-            x="-20%" y="-20%" width="140%" height="140%"
+            id="container-glass"
+            x="0%" y="0%" width="100%" height="100%"
             colorInterpolationFilters="sRGB"
           >
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.065 0.065"
+              baseFrequency="0.05 0.05"
               numOctaves="1"
-              seed="3"
+              seed="1"
               result="turbulence"
             />
-            <feGaussianBlur in="turbulence" stdDeviation="1.5" result="blurredNoise" />
+            <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
             <feDisplacementMap
               in="SourceGraphic"
               in2="blurredNoise"
-              scale="18"
+              scale="70"
               xChannelSelector="R"
               yChannelSelector="B"
               result="displaced"
             />
-            <feGaussianBlur in="displaced" stdDeviation="1.5" result="finalBlur" />
+            <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
             <feComposite in="finalBlur" in2="finalBlur" operator="over" />
           </filter>
         </defs>
@@ -92,77 +105,129 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        {/* Liquid Glass Badge */}
+        {/* === LIQUID GLASS BADGE === */}
         <a
+          ref={badgeRef}
           href="mailto:autobitofficial.ph@gmail.com"
+          onClick={handleBadgeClick}
           onMouseEnter={() => setBadgeHovered(true)}
-          onMouseLeave={() => setBadgeHovered(false)}
+          onMouseLeave={() => { setBadgeHovered(false); setBadgePressed(false); }}
+          onMouseDown={() => setBadgePressed(true)}
+          onMouseUp={() => setBadgePressed(false)}
           style={{
             position: "relative",
-            display: "inline-flex", alignItems: "center", gap: "8px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
             borderRadius: "9999px",
-            padding: "8px 20px",
-            fontSize: "12px", letterSpacing: "0.05em",
-            color: badgeHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.75)",
-            textDecoration: "none", cursor: "pointer",
-            transition: "color 0.3s ease, transform 0.3s ease",
-            transform: badgeHovered ? "scale(1.04)" : "scale(1)",
+            padding: "9px 22px",
+            fontSize: "12px",
+            letterSpacing: "0.05em",
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.85)",
+            textDecoration: "none",
+            cursor: "pointer",
+            overflow: "hidden",
             marginBottom: "28px",
-            // Liquid glass rim — the magic
+            transition: "transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+            transform: badgePressed
+              ? "scale(0.95)"
+              : badgeHovered
+              ? "scale(1.06)"
+              : "scale(1)",
+            // Dark mode glass rim — exact from 21st.dev LiquidButton dark shadow
             boxShadow: `
-              0 0 6px rgba(0,0,0,0.03),
+              0 0 8px rgba(0,0,0,0.03),
               0 2px 6px rgba(0,0,0,0.08),
-              inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),
-              inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
-              inset 1px 1px 1px -0.5px rgba(255,255,255,0.35),
-              inset -1px -1px 1px -0.5px rgba(255,255,255,0.20),
-              inset 0 0 6px 6px rgba(255,255,255,0.06),
-              inset 0 0 2px 2px rgba(255,255,255,0.04),
-              0 0 18px rgba(255,255,255,0.08)
+              inset 3px 3px 0.5px -3.5px rgba(255,255,255,0.09),
+              inset -3px -3px 0.5px -3.5px rgba(255,255,255,0.85),
+              inset 1px 1px 1px -0.5px rgba(255,255,255,0.6),
+              inset -1px -1px 1px -0.5px rgba(255,255,255,0.6),
+              inset 0 0 6px 6px rgba(255,255,255,0.12),
+              inset 0 0 2px 2px rgba(255,255,255,0.06),
+              0 0 12px rgba(0,0,0,0.15),
+              0 0 ${badgeHovered ? "20px" : "8px"} rgba(255,255,255,${badgeHovered ? "0.12" : "0.04"})
             `,
           }}
         >
-          {/* Liquid glass distorted backdrop */}
+          {/* Liquid glass distorted backdrop — exact from 21st.dev */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "9999px",
+              overflow: "hidden",
+              zIndex: -1,
+              backdropFilter: 'url("#container-glass") blur(2px)',
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* Top shimmer line */}
           <div style={{
-            position: "absolute", inset: 0,
+            position: "absolute",
+            top: 0, left: "15%", right: "15%",
+            height: "1px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
+            zIndex: 1,
             borderRadius: "9999px",
-            backdropFilter: 'url("#badge-glass") blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            zIndex: 0,
           }} />
 
-          {/* Top highlight shimmer */}
+          {/* Bottom subtle edge */}
           <div style={{
-            position: "absolute", top: 0, left: "10%", right: "10%",
+            position: "absolute",
+            bottom: 0, left: "20%", right: "20%",
             height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)",
-            borderRadius: "9999px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)",
             zIndex: 1,
           }} />
+
+          {/* Ripple effects on click */}
+          {ripples.map((r) => (
+            <span
+              key={r.id}
+              style={{
+                position: "absolute",
+                left: r.x, top: r.y,
+                width: "6px", height: "6px",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.35)",
+                transform: "translate(-50%,-50%) scale(0)",
+                animation: "rippleOut 0.6s ease-out forwards",
+                pointerEvents: "none",
+                zIndex: 3,
+              }}
+            />
+          ))}
 
           {/* Pulse dot */}
           <span style={{
             position: "relative", zIndex: 2,
-            height: "6px", width: "6px", borderRadius: "50%",
-            background: "rgba(255,255,255,0.7)",
+            height: "6px", width: "6px",
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.80)",
             display: "inline-block",
-            boxShadow: "0 0 6px rgba(255,255,255,0.6)",
-            animation: "badgePulse 2.5s ease-in-out infinite",
             flexShrink: 0,
+            boxShadow: "0 0 8px rgba(255,255,255,0.7)",
+            animation: "badgePulse 2.5s ease-in-out infinite",
           }} />
 
-          {/* Text */}
-          <span style={{ position: "relative", zIndex: 2, fontWeight: 500 }}>
+          {/* Label */}
+          <span style={{ position: "relative", zIndex: 2 }}>
             Start Something™
           </span>
 
-          {/* Arrow on hover */}
+          {/* Arrow slides in on hover */}
           <span style={{
             position: "relative", zIndex: 2,
-            opacity: badgeHovered ? 1 : 0,
-            transform: badgeHovered ? "translateX(0)" : "translateX(-4px)",
-            transition: "all 0.3s ease",
             fontSize: "11px",
+            opacity: badgeHovered ? 1 : 0,
+            transform: badgeHovered ? "translateX(0px)" : "translateX(-6px)",
+            transition: "all 0.3s ease",
+            maxWidth: badgeHovered ? "16px" : "0px",
+            overflow: "hidden",
+            display: "inline-block",
           }}>→</span>
         </a>
 
@@ -325,8 +390,12 @@ const HeroSection = () => {
 
       <style>{`
         @keyframes badgePulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.35; transform: scale(0.75); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
+          0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px rgba(255,255,255,0.7); }
+          50% { opacity: 0.4; transform: scale(0.75); box-shadow: 0 0 3px rgba(255,255,255,0.3); }
+        }
+        @keyframes rippleOut {
+          0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+          100% { transform: translate(-50%,-50%) scale(18); opacity: 0; }
         }
         @media (max-width: 600px) {
           .hero-stats-grid {
