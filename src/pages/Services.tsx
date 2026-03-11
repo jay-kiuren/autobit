@@ -503,8 +503,8 @@ const Services = () => {
 
         /* ── Heading — fluid typography ── */
         .svc-heading {
-          font-size:clamp(30px,3.8vw,62px);
-          font-weight:800; letter-spacing:-2px; line-height:1.04;
+          font-size:clamp(22px,2.8vw,44px);
+          font-weight:800; letter-spacing:-1.5px; line-height:1.04;
           color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
         }
 
@@ -557,7 +557,7 @@ const Services = () => {
         .svc-cta {
           background:#2997ff; color:#fff;
           padding:clamp(11px,1.1vw,15px) clamp(20px,2vw,30px);
-          border-radius:980px; font-size:clamp(13px,1.1vw,15px); font-weight:600;
+          border-radius:980px; font-size:clamp(12px,0.95vw,13px); font-weight:600;
           text-decoration:none; display:inline-block; transition:all 0.22s ease;
           box-shadow:0 4px 18px rgba(41,151,255,0.35);
           white-space:nowrap;
@@ -565,7 +565,7 @@ const Services = () => {
         .svc-cta:hover { transform:scale(1.04); box-shadow:0 7px 30px rgba(41,151,255,0.55); }
 
         /* ── Description text ── */
-        .svc-desc { font-size:clamp(13px,1.1vw,16px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
+        .svc-desc { font-size:clamp(12px,0.95vw,14px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
 
         /* ── Responsive breakpoints ── */
         @media(max-width:1024px){
@@ -591,7 +591,7 @@ const Services = () => {
         .cta-main-btn {
           background:#2997ff; color:#fff;
           padding:clamp(14px,1.4vw,18px) clamp(36px,4vw,60px);
-          border-radius:980px; font-size:clamp(15px,1.3vw,18px); font-weight:700;
+          border-radius:980px; font-size:clamp(13px,1.1vw,15px); font-weight:700;
           text-decoration:none; display:inline-block; transition:all 0.28s ease;
           box-shadow:0 0 0 1px rgba(41,151,255,0.5),0 0 40px rgba(41,151,255,0.4),0 0 80px rgba(41,151,255,0.18);
           letter-spacing:-0.2px; position:relative; z-index:1;
@@ -625,7 +625,7 @@ const Services = () => {
               <span style={{fontSize:"10px",fontWeight:600,letterSpacing:"0.14em",textTransform:"uppercase" as const,color:"rgba(255,255,255,0.25)",display:"block",marginBottom:18}}>
                 Engineering services
               </span>
-              <h1 style={{fontSize:"clamp(44px,7vw,92px)",fontWeight:800,letterSpacing:"-3px",lineHeight:1.01,color:"#f5f5f7",margin:"0 0 20px"}}>
+              <h1 style={{fontSize:"clamp(32px,5vw,68px)",fontWeight:800,letterSpacing:"-2.5px",lineHeight:1.01,color:"#f5f5f7",margin:"0 0 20px"}}>
                 What we build.
               </h1>
               <p style={{fontSize:"clamp(14px,1.3vw,17px)",color:"rgba(255,255,255,0.3)",margin:"0 auto",maxWidth:400,lineHeight:1.65}}>
@@ -754,34 +754,18 @@ const Services = () => {
                 {/* Top stripe glow */}
                 <div style={{position:"absolute",top:0,left:"15%",right:"15%",height:1,background:"linear-gradient(90deg,transparent,rgba(41,151,255,0.6),transparent)"}}/>
 
-                {/* Floating stat pills */}
-                <div style={{display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap",marginBottom:32,position:"relative",zIndex:1}}>
-                  {[
-                    {dot:"#30d158",text:"40+ projects shipped"},
-                    {dot:"#2997ff",text:"2-day avg. start time"},
-                    {dot:"#ff9f0a",text:"50% upfront · rest on delivery"},
-                  ].map((pill,i)=>(
-                    <motion.div key={i} className="cta-stat-pill"
-                      initial={{opacity:0,y:12}} whileInView={{opacity:1,y:0}}
-                      viewport={{once:true}} transition={{delay:i*0.1,duration:0.5}}>
-                      <span className="cta-stat-dot" style={{background:pill.dot}}/>
-                      {pill.text}
-                    </motion.div>
-                  ))}
-                </div>
-
                 {/* Main heading */}
                 <motion.h2
                   initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}}
                   viewport={{once:true}} transition={{delay:0.15,duration:0.65}}
-                  style={{fontSize:"clamp(32px,5.5vw,72px)",fontWeight:800,letterSpacing:"-2.5px",
+                  style={{fontSize:"clamp(24px,4vw,52px)",fontWeight:800,letterSpacing:"-2px",
                     lineHeight:1.02,color:"#f5f5f7",margin:"0 0 16px",position:"relative",zIndex:1}}>
-                  Ready to build{" "}
+                  Build something{" "}
                   <span style={{
                     background:"linear-gradient(90deg,#2997ff,#64d2ff)",
                     WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
                   }}>
-                    something?
+                    others won't.
                   </span>
                 </motion.h2>
 
@@ -789,7 +773,7 @@ const Services = () => {
                 <motion.p
                   initial={{opacity:0}} whileInView={{opacity:1}}
                   viewport={{once:true}} transition={{delay:0.25,duration:0.6}}
-                  style={{fontSize:"clamp(14px,1.3vw,18px)",color:"rgba(255,255,255,0.35)",
+                  style={{fontSize:"clamp(12px,1vw,15px)",color:"rgba(255,255,255,0.35)",
                     margin:"0 auto 40px",maxWidth:440,lineHeight:1.65,position:"relative",zIndex:1}}>
                   Fixed pricing. Fast delivery. 50% to start.
                 </motion.p>
