@@ -16,24 +16,13 @@ const HeroSection = () => {
 
   return (
     <section
-      className="hero-section"
       style={{
+        height: "100svh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        /* 
-          KEY FIX: minHeight 100svh keeps the section exactly one screen tall
-          on every OS/DPI. svh = "small viewport height" which correctly
-          excludes browser chrome on mobile AND respects Windows DPI scaling.
-          paddingTop/Bottom use vh-based clamp so they shrink on small viewports
-          (Windows 125% DPI) and grow on large ones (your Linux setup).
-        */
-        minHeight: "100svh",
-        paddingTop: "clamp(64px, 10vh, 120px)",
-        paddingBottom: "clamp(36px, 6vh, 72px)",
-        paddingLeft: "24px",
-        paddingRight: "24px",
+        padding: "0 24px",
         background: "#000000",
         position: "relative",
         overflow: "hidden",
@@ -42,6 +31,7 @@ const HeroSection = () => {
     >
       <Silk speed={0.5} scale={1} color="#888888" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
 
+      {/* Overlay */}
       <div style={{
         position: "absolute", inset: 0,
         background: "rgba(0,0,0,0.35)",
@@ -51,20 +41,21 @@ const HeroSection = () => {
       <div style={{
         position: "relative", zIndex: 2,
         textAlign: "center", width: "100%", maxWidth: "860px",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        gap: "clamp(8px, 1.4vh, 18px)",
       }}>
 
         {/* Badge */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
-            marginBottom: "clamp(16px, 2.5vh, 28px)",
             display: "inline-flex", alignItems: "center", gap: "8px",
             borderRadius: "9999px",
             border: "1px solid rgba(255,255,255,0.12)",
             background: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-            padding: "7px 18px",
-            fontSize: "12px", letterSpacing: "0.04em",
+            padding: "6px 16px",
+            fontSize: "11px", letterSpacing: "0.04em",
             color: "rgba(255,255,255,0.50)",
             textDecoration: "none", cursor: "pointer",
             transition: "all 0.3s ease",
@@ -86,86 +77,72 @@ const HeroSection = () => {
           Start Something™
         </a>
 
-        {/* Headline */}
-        <h1 style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          /*
-            clamp: min 30px | fluid 5.5vw | max 68px
-            Tightened from 6.5vw → 5.5vw so Windows (smaller vw due to DPI)
-            doesn't render it oversized relative to the available space.
-          */
-          fontSize: "clamp(30px, 5.5vw, 68px)",
-          fontWeight: 700,
-          letterSpacing: "-0.035em",
-          lineHeight: 1.04,
-          color: "#ffffff",
-          textAlign: "center",
-          margin: "0 auto",
-          WebkitFontSmoothing: "antialiased",
-          MozOsxFontSmoothing: "grayscale",
-        }}>
-          Systems engineered for
-        </h1>
+        {/* Headline + cycling word */}
+        <div>
+          <h1 style={{
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+            fontSize: "clamp(28px, 5vw, 66px)",
+            fontWeight: 700,
+            letterSpacing: "-0.035em",
+            lineHeight: 1.06,
+            color: "#ffffff",
+            margin: 0,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+          }}>
+            Systems engineered for
+          </h1>
 
-        {/* Cycling word */}
-        <div style={{
-          /*
-            Height uses vh clamp — shrinks on Windows small viewport,
-            expands on Linux. Matches font size tier.
-          */
-          height: "clamp(38px, 7vh, 82px)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          overflow: "hidden", marginTop: "2px",
-        }}>
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={words[index]}
-              initial={{ opacity: 0, y: 32, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -32, filter: "blur(10px)" }}
-              transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{
-                fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(30px, 5.5vw, 68px)",
-                fontWeight: 700,
-                letterSpacing: "-0.035em",
-                lineHeight: 1.04,
-                color: "rgba(255,255,255,0.42)",
-                display: "block", textAlign: "center",
-                WebkitFontSmoothing: "antialiased",
-              }}
-            >
-              {words[index]}
-            </motion.span>
-          </AnimatePresence>
+          <div style={{
+            height: "clamp(36px, 6.5vh, 78px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            overflow: "hidden",
+          }}>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={words[index]}
+                initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -28, filter: "blur(8px)" }}
+                transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
+                style={{
+                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                  fontSize: "clamp(28px, 5vw, 66px)",
+                  fontWeight: 700,
+                  letterSpacing: "-0.035em",
+                  lineHeight: 1.06,
+                  color: "rgba(255,255,255,0.42)",
+                  display: "block", textAlign: "center",
+                  WebkitFontSmoothing: "antialiased",
+                }}
+              >
+                {words[index]}
+              </motion.span>
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Subheading */}
         <p style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "clamp(13px, 1.3vw, 17px)",
+          fontSize: "clamp(13px, 1.2vw, 16px)",
           fontWeight: 400,
           color: "rgba(255,255,255,0.40)",
-          textAlign: "center",
-          maxWidth: "460px",
-          margin: "clamp(12px, 2vh, 20px) auto 0",
-          lineHeight: 1.6,
+          maxWidth: "440px",
+          margin: 0,
+          lineHeight: 1.55,
           letterSpacing: "-0.01em",
         }}>
           AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
         </p>
 
         {/* CTAs */}
-        <div style={{
-          display: "flex", gap: "14px", justifyContent: "center",
-          marginTop: "clamp(20px, 3vh, 32px)",
-          flexWrap: "wrap",
-        }}>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff", color: "#ffffff", padding: "13px 30px",
-              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
+              background: "#2997ff", color: "#ffffff", padding: "12px 28px",
+              borderRadius: "980px", fontSize: "14px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
               boxShadow: "0 0 28px rgba(41,151,255,0.25)",
@@ -182,8 +159,8 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "transparent", color: "#2997ff", padding: "13px 30px",
-              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
+              background: "transparent", color: "#2997ff", padding: "12px 28px",
+              borderRadius: "980px", fontSize: "14px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
             }}
@@ -194,25 +171,23 @@ const HeroSection = () => {
 
         {/* Trust line */}
         <p style={{
-          fontSize: "11px", color: "rgba(255,255,255,0.18)",
-          textAlign: "center", marginTop: "clamp(10px, 1.5vh, 16px)",
-          letterSpacing: "0.04em", textTransform: "uppercase",
+          fontSize: "10px", color: "rgba(255,255,255,0.18)",
+          letterSpacing: "0.04em", textTransform: "uppercase", margin: 0,
         }}>
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        {/* Stats grid */}
+        {/* Stats grid — always 4 columns, always inside hero */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            marginTop: "clamp(20px, 3.5vh, 48px)",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            width: "100%",
             border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "16px", overflow: "hidden",
+            borderRadius: "14px", overflow: "hidden",
             background: "rgba(0,0,0,0.40)",
             backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
           }}
-          className="hero-stats-grid"
         >
           {[
             { value: "2–5d",     label: "Average delivery" },
@@ -221,24 +196,24 @@ const HeroSection = () => {
             { value: "50%",      label: "Deposit to start" },
           ].map((stat, i) => (
             <div key={i} style={{
-              padding: "clamp(14px, 2vh, 20px) 16px",
+              padding: "clamp(12px, 1.8vh, 18px) 12px",
               textAlign: "center",
-              borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
             }}>
               <div style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(16px, 1.8vw, 26px)", fontWeight: 700,
+                fontSize: "clamp(15px, 1.6vw, 24px)", fontWeight: 700,
                 letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1,
                 WebkitFontSmoothing: "antialiased",
               }}>{stat.value}</div>
               <div style={{
-                fontSize: "10px", color: "rgba(255,255,255,0.28)",
-                marginTop: "5px", letterSpacing: "0.07em", textTransform: "uppercase",
+                fontSize: "9px", color: "rgba(255,255,255,0.28)",
+                marginTop: "4px", letterSpacing: "0.07em", textTransform: "uppercase",
               }}>{stat.label}</div>
             </div>
           ))}
         </div>
+
       </div>
 
       <style>{`
@@ -246,18 +221,9 @@ const HeroSection = () => {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.35; transform: scale(0.85); }
         }
-        @media (min-width: 768px) {
-          .hero-stats-grid {
-            grid-template-columns: repeat(4, 1fr) !important;
-          }
-          .hero-stats-grid > div {
-            border-bottom: none !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .hero-section {
-            padding-top: 80px !important;
-            padding-bottom: 48px !important;
+        @media (max-width: 600px) {
+          .hero-stats-mobile {
+            grid-template-columns: repeat(2, 1fr) !important;
           }
         }
       `}</style>
