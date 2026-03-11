@@ -15,18 +15,20 @@ const HeroSection = () => {
   }, [index, words]);
 
   return (
-    <section style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "120px 24px 80px",
-      background: "#000000",
-      position: "relative",
-      overflow: "hidden",
-    }}>
-
+    <section
+      className="hero-section"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        /* No minHeight:100vh — that's what breaks on Windows 125% DPI */
+        padding: "110px 24px 72px",
+        background: "#000000",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <Silk speed={0.5} scale={1} color="#888888" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
 
       <div style={{
@@ -35,26 +37,25 @@ const HeroSection = () => {
         zIndex: 1, pointerEvents: "none",
       }} />
 
-      <div style={{ position: "relative", zIndex: 2, textAlign: "center", width: "100%", maxWidth: "900px" }}>
+      <div style={{
+        position: "relative", zIndex: 2,
+        textAlign: "center", width: "100%", maxWidth: "860px",
+      }}>
 
+        {/* Badge */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
-            marginBottom: "32px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
+            marginBottom: "28px",
+            display: "inline-flex", alignItems: "center", gap: "8px",
             borderRadius: "9999px",
             border: "1px solid rgba(255,255,255,0.12)",
             background: "rgba(255,255,255,0.05)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
+            backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
             padding: "7px 18px",
-            fontSize: "12px",
-            letterSpacing: "0.04em",
+            fontSize: "12px", letterSpacing: "0.04em",
             color: "rgba(255,255,255,0.50)",
-            textDecoration: "none",
-            cursor: "pointer",
+            textDecoration: "none", cursor: "pointer",
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
@@ -74,43 +75,44 @@ const HeroSection = () => {
           Start Something™
         </a>
 
+        {/* Headline — capped at 72px max, 7vw scales gently */}
         <h1 style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "clamp(36px, 8vw, 84px)",
+          fontSize: "clamp(34px, 6.5vw, 72px)",
           fontWeight: 700,
           letterSpacing: "-0.035em",
           lineHeight: 1.04,
           color: "#ffffff",
           textAlign: "center",
           margin: "0 auto",
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
         }}>
           Systems engineered for
         </h1>
 
+        {/* Cycling word */}
         <div style={{
-          height: "clamp(46px, 9vw, 100px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          marginTop: "2px",
+          height: "clamp(42px, 7.5vw, 86px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          overflow: "hidden", marginTop: "2px",
         }}>
           <AnimatePresence mode="wait">
             <motion.span
               key={words[index]}
-              initial={{ opacity: 0, y: 36, filter: "blur(10px)" }}
+              initial={{ opacity: 0, y: 32, filter: "blur(10px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -36, filter: "blur(10px)" }}
+              exit={{ opacity: 0, y: -32, filter: "blur(10px)" }}
               transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
               style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(36px, 8vw, 84px)",
+                fontSize: "clamp(34px, 6.5vw, 72px)",
                 fontWeight: 700,
                 letterSpacing: "-0.035em",
                 lineHeight: 1.04,
                 color: "rgba(255,255,255,0.42)",
-                display: "block",
-                textAlign: "center",
+                display: "block", textAlign: "center",
+                WebkitFontSmoothing: "antialiased",
               }}
             >
               {words[index]}
@@ -118,25 +120,27 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
 
+        {/* Subheading */}
         <p style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "clamp(15px, 1.6vw, 18px)",
+          fontSize: "clamp(14px, 1.4vw, 17px)",
           fontWeight: 400,
           color: "rgba(255,255,255,0.40)",
           textAlign: "center",
-          maxWidth: "480px",
-          margin: "24px auto 0",
+          maxWidth: "460px",
+          margin: "20px auto 0",
           lineHeight: 1.6,
           letterSpacing: "-0.01em",
         }}>
           AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
         </p>
 
-        <div style={{ display: "flex", gap: "14px", justifyContent: "center", marginTop: "36px", flexWrap: "wrap" }}>
+        {/* CTAs */}
+        <div style={{ display: "flex", gap: "14px", justifyContent: "center", marginTop: "32px", flexWrap: "wrap" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff", color: "#ffffff", padding: "14px 32px",
+              background: "#2997ff", color: "#ffffff", padding: "13px 30px",
               borderRadius: "980px", fontSize: "15px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
@@ -154,7 +158,7 @@ const HeroSection = () => {
           <a
             href="/projects"
             style={{
-              background: "transparent", color: "#2997ff", padding: "14px 32px",
+              background: "transparent", color: "#2997ff", padding: "13px 30px",
               borderRadius: "980px", fontSize: "15px", fontWeight: 600,
               textDecoration: "none", transition: "all 0.25s ease",
               fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
@@ -164,44 +168,48 @@ const HeroSection = () => {
           >See our work →</a>
         </div>
 
+        {/* Trust line */}
         <p style={{
           fontSize: "11px", color: "rgba(255,255,255,0.18)",
-          textAlign: "center", marginTop: "18px",
+          textAlign: "center", marginTop: "16px",
           letterSpacing: "0.04em", textTransform: "uppercase",
         }}>
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          marginTop: "64px",
-          border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: "16px", overflow: "hidden",
-          background: "rgba(0,0,0,0.40)",
-          backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-        }}
+        {/* Stats grid — always visible, tighter margin */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            marginTop: "48px",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "16px", overflow: "hidden",
+            background: "rgba(0,0,0,0.40)",
+            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+          }}
           className="hero-stats-grid"
         >
           {[
-            { value: "2–5d", label: "Average delivery" },
-            { value: "$800+", label: "Starting price" },
+            { value: "2–5d",     label: "Average delivery" },
+            { value: "$800+",    label: "Starting price" },
             { value: "Patented", label: "Award-winning builds" },
-            { value: "50%", label: "Deposit to start" },
+            { value: "50%",      label: "Deposit to start" },
           ].map((stat, i) => (
             <div key={i} style={{
-              padding: "24px 16px", textAlign: "center",
+              padding: "20px 16px", textAlign: "center",
               borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.07)" : "none",
               borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.07)" : "none",
             }}>
               <div style={{
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                fontSize: "clamp(20px, 2.2vw, 30px)", fontWeight: 700,
+                fontSize: "clamp(18px, 2vw, 26px)", fontWeight: 700,
                 letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1,
+                WebkitFontSmoothing: "antialiased",
               }}>{stat.value}</div>
               <div style={{
                 fontSize: "10px", color: "rgba(255,255,255,0.28)",
-                marginTop: "6px", letterSpacing: "0.07em", textTransform: "uppercase",
+                marginTop: "5px", letterSpacing: "0.07em", textTransform: "uppercase",
               }}>{stat.label}</div>
             </div>
           ))}
@@ -213,12 +221,19 @@ const HeroSection = () => {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.35; transform: scale(0.85); }
         }
+        /* On desktop: 4-column stats, remove bottom borders */
         @media (min-width: 768px) {
           .hero-stats-grid {
             grid-template-columns: repeat(4, 1fr) !important;
           }
           .hero-stats-grid > div {
             border-bottom: none !important;
+          }
+        }
+        /* On very small screens: tighten padding */
+        @media (max-width: 480px) {
+          .hero-section {
+            padding: 90px 20px 56px !important;
           }
         }
       `}</style>
