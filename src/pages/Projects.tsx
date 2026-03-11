@@ -563,7 +563,7 @@ const Projects = () => {
                 {
                   eyebrow: "Start a project",
                   headline: "Ready when you are.",
-                  body: "50% deposit to start, balance on delivery. No retainers, no lock-in. If we don't deliver, you don't pay the rest.",
+                  body: "70% deposit to start, balance on delivery. No retainers, no lock-in. If we don't deliver, you don't pay the rest.",
                   accent: "255, 159, 10",
                   cta: true,
                 },
