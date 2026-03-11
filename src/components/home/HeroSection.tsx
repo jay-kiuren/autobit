@@ -4,6 +4,8 @@ import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
+  const [bgReady, setBgReady] = useState(false);
+
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
     []
@@ -13,6 +15,12 @@ const HeroSection = () => {
     const t = setTimeout(() => setIndex((i) => (i + 1) % words.length), 2200);
     return () => clearTimeout(t);
   }, [index, words]);
+
+  // Fade in background after a short delay so it doesn't look cut on first render
+  useEffect(() => {
+    const t = setTimeout(() => setBgReady(true), 300);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <section
@@ -29,14 +37,16 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* ColorBends background */}
+      {/* ColorBends — fades in after init so no jarring cut on load */}
       <div style={{
         position: "absolute",
         inset: 0,
         zIndex: 0,
+        opacity: bgReady ? 1 : 0,
+        transition: "opacity 1.8s ease",
       }}>
         <ColorBends
-          colors={["#2a2a2a", "#444444", "#606060", "#444444", "#2a2a2a"]}
+          colors={["#1a1a1a", "#383838", "#595959", "#383838", "#1a1a1a"]}
           rotation={0}
           speed={0.11}
           scale={1}
@@ -50,10 +60,10 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Dark overlay — makes it 50% darker so it stays premium not flashy */}
+      {/* Dark overlay — keeps it premium not too bright */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "rgba(0,0,0,0.55)",
+        background: "rgba(0,0,0,0.62)",
         zIndex: 1, pointerEvents: "none",
       }} />
 
