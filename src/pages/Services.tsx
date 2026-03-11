@@ -324,19 +324,19 @@ const Services = () => {
     <>
       <Navbar onDropdownChange={handleDropdownChange}/>
       <style>{`
-        .svc-c { max-width:1080px; margin:0 auto; padding:0 28px; }
-        .svc-grid { display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:center; }
+        .svc-c { max-width:1320px; margin:0 auto; padding:0 40px; }
+        .svc-grid { display:grid; grid-template-columns:1fr 1.15fr; gap:52px; align-items:center; }
         .svc-heading {
-          font-size:clamp(26px,3.2vw,48px);
-          font-weight:700; letter-spacing:-1.4px; line-height:1.06;
-          color:#f5f5f7; margin:0 0 12px; white-space:pre-line;
+          font-size:clamp(34px,4.2vw,62px);
+          font-weight:800; letter-spacing:-2px; line-height:1.04;
+          color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
         }
         /* Frame card */
         .svc-frame {
-          border-radius:20px;
+          border-radius:24px;
           border:1px solid rgba(255,255,255,0.07);
           background:rgba(255,255,255,0.016);
-          padding:28px 28px 22px;
+          padding:40px 40px 28px;
           position:relative; overflow:hidden;
         }
         /* Unique per-section top stripe */
@@ -346,14 +346,14 @@ const Services = () => {
           opacity:0.6;
         }
         /* Glass art card */
-        .svc-glass { border-radius:18px; padding:1px; }
+        .svc-glass { border-radius:20px; padding:1px; }
         .svc-glass-inner {
-          border-radius:17px;
+          border-radius:19px;
           background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
           backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
           border:1px solid rgba(255,255,255,0.06);
-          height:252px; display:flex; align-items:center; justify-content:center;
-          position:relative; overflow:hidden; padding:14px;
+          height:340px; display:flex; align-items:center; justify-content:center;
+          position:relative; overflow:hidden; padding:20px;
         }
         .svc-glass-inner::before {
           content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
@@ -378,8 +378,8 @@ const Services = () => {
         /* CTA always blue */
         .svc-cta {
           background:#2997ff; color:#fff;
-          padding:11px 22px; border-radius:980px;
-          font-size:13px; font-weight:600;
+          padding:14px 28px; border-radius:980px;
+          font-size:15px; font-weight:600;
           text-decoration:none; display:inline-block;
           transition:all 0.22s ease;
           box-shadow:0 4px 18px rgba(41,151,255,0.35);
@@ -404,9 +404,10 @@ const Services = () => {
                      0 0 96px rgba(41,151,255,0.25);
         }
         @media(max-width:768px){
-          .svc-grid { grid-template-columns:1fr; gap:18px; }
-          .svc-glass-inner { height:190px; }
-          .svc-frame { padding:18px 18px 16px; }
+          .svc-grid { grid-template-columns:1fr; gap:20px; }
+          .svc-glass-inner { height:220px; }
+          .svc-frame { padding:22px 20px 18px; border-radius:18px; }
+          .svc-c { padding:0 16px; }
         }
       `}</style>
 
@@ -442,8 +443,8 @@ const Services = () => {
               ref={el=>{sectionRefs.current[i]=el;}}
               style={{
                 background:"#000",position:"relative",overflow:"hidden",
-                padding:"56px 0 40px",
-                marginBottom:i<services.length-1?-44:0,
+                padding:"72px 0 52px",
+                marginBottom:i<services.length-1?-36:0,
                 zIndex:i+2,
               }}>
               <div style={{position:"absolute",inset:0,pointerEvents:"none",background:`radial-gradient(ellipse 48% 52% at ${isReverse?"28%":"72%"} 50%,${s.accent}08 0%,transparent 70%)`,opacity:isActive?1:0,transition:"opacity 0.8s ease"}}/>
@@ -480,15 +481,15 @@ const Services = () => {
 
                       <h2 className="svc-heading">{s.heading}</h2>
 
-                      <p style={{fontSize:"clamp(12px,1.1vw,14px)",lineHeight:1.65,color:"rgba(255,255,255,0.38)",margin:"0 0 16px",maxWidth:340}}>{s.desc}</p>
+                      <p style={{fontSize:"clamp(13px,1.2vw,16px)",lineHeight:1.68,color:"rgba(255,255,255,0.38)",margin:"0 0 18px",maxWidth:400}}>{s.desc}</p>
 
                       {/* Tech stack tag */}
                       <span className="svc-tag">{s.uniqueTag}</span>
 
                       <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:4}}>
-                        <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:12,padding:"9px 15px",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)"}}>
-                          <div style={{fontSize:16,fontWeight:700,color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1}}>{s.price}</div>
-                          <div style={{fontSize:10,color:"rgba(255,255,255,0.22)",marginTop:2}}>{s.timeline} delivery</div>
+                        <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 20px",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)"}}>
+                          <div style={{fontSize:20,fontWeight:700,color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1}}>{s.price}</div>
+                          <div style={{fontSize:11,color:"rgba(255,255,255,0.22)",marginTop:3}}>{s.timeline} delivery</div>
                         </div>
                         <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">Get a quote →</a>
                       </div>
