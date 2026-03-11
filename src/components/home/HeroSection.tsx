@@ -18,15 +18,16 @@ const HeroSection = () => {
     <section
       className="hero-section"
       style={{
+        height: "100svh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        /* No minHeight:100vh — that's what breaks on Windows 125% DPI */
-        padding: "110px 24px 72px",
+        padding: "0 24px",
         background: "#000000",
         position: "relative",
         overflow: "hidden",
+        boxSizing: "border-box",
       }}
     >
       <Silk speed={0.5} scale={1} color="#888888" noiseIntensity={1.5} rotation={0} mouseInfluence={0.5} />
@@ -75,7 +76,7 @@ const HeroSection = () => {
           Start Something™
         </a>
 
-        {/* Headline — capped at 72px max, 7vw scales gently */}
+        {/* Headline */}
         <h1 style={{
           fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
           fontSize: "clamp(34px, 6.5vw, 72px)",
@@ -177,12 +178,12 @@ const HeroSection = () => {
           50% deposit to start · Balance on delivery · No retainers
         </p>
 
-        {/* Stats grid — always visible, tighter margin */}
+        {/* Stats grid */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
-            marginTop: "48px",
+            marginTop: "40px",
             border: "1px solid rgba(255,255,255,0.07)",
             borderRadius: "16px", overflow: "hidden",
             background: "rgba(0,0,0,0.40)",
@@ -221,7 +222,6 @@ const HeroSection = () => {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.35; transform: scale(0.85); }
         }
-        /* On desktop: 4-column stats, remove bottom borders */
         @media (min-width: 768px) {
           .hero-stats-grid {
             grid-template-columns: repeat(4, 1fr) !important;
@@ -230,10 +230,9 @@ const HeroSection = () => {
             border-bottom: none !important;
           }
         }
-        /* On very small screens: tighten padding */
         @media (max-width: 480px) {
           .hero-section {
-            padding: 90px 20px 56px !important;
+            padding: 0 20px !important;
           }
         }
       `}</style>
