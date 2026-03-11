@@ -70,7 +70,7 @@ const HeroSection = () => {
         gap: "clamp(10px, 1.8vh, 22px)",
       }}>
 
-        {/* Badge — glassy, no border, subtle inner highlight */}
+        {/* Badge */}
         <a
           href="mailto:autobitofficial.ph@gmail.com"
           style={{
@@ -106,7 +106,7 @@ const HeroSection = () => {
         {/* Headline + cycling word */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
           <h1 style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+            fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
             fontSize: "clamp(32px, 6vw, 72px)",
             fontWeight: 700,
             letterSpacing: "-0.035em",
@@ -132,7 +132,7 @@ const HeroSection = () => {
                 exit={{ opacity: 0, y: -32, filter: "blur(10px)" }}
                 transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
                 style={{
-                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                  fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
                   fontSize: "clamp(32px, 6vw, 72px)",
                   fontWeight: 700,
                   letterSpacing: "-0.035em",
@@ -150,59 +150,80 @@ const HeroSection = () => {
 
         {/* Subheading */}
         <p style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "clamp(13px, 1.3vw, 17px)",
+          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+          fontSize: "clamp(15px, 1.5vw, 19px)",
           fontWeight: 400,
-          color: "rgba(255,255,255,0.40)",
-          maxWidth: "460px",
+          color: "rgba(255,255,255,0.72)",
+          maxWidth: "520px",
           margin: 0,
-          lineHeight: 1.6,
-          letterSpacing: "-0.01em",
+          lineHeight: 1.5,
+          letterSpacing: "-0.015em",
         }}>
-          AI agents, automation, web applications, and intelligent robotics — built and deployed in days.
+          AI agents, automation, web applications, and intelligent robotics. Engineered to scale.
         </p>
 
         {/* CTAs */}
-        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "4px" }}>
           <a
             href="mailto:autobitofficial.ph@gmail.com"
             style={{
-              background: "#2997ff", color: "#ffffff",
-              padding: "clamp(10px, 1.2vh, 13px) 30px",
-              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
-              textDecoration: "none", transition: "all 0.25s ease",
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-              boxShadow: "0 0 28px rgba(41,151,255,0.25)",
+              background: "#2997ff",
+              color: "#ffffff",
+              padding: "12px 26px",
+              borderRadius: "980px",
+              fontSize: "15px",
+              fontWeight: 500,
+              textDecoration: "none",
+              transition: "all 0.2s ease",
+              fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: "-0.01em",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 52px rgba(41,151,255,0.50)";
-              e.currentTarget.style.transform = "scale(1.025)";
+              e.currentTarget.style.background = "#0077ed";
+              e.currentTarget.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 28px rgba(41,151,255,0.25)";
+              e.currentTarget.style.background = "#2997ff";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >Start a project</a>
+
           <a
             href="/projects"
             style={{
-              background: "transparent", color: "#2997ff",
-              padding: "clamp(10px, 1.2vh, 13px) 30px",
-              borderRadius: "980px", fontSize: "15px", fontWeight: 600,
-              textDecoration: "none", transition: "all 0.25s ease",
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+              background: "transparent",
+              color: "#ffffff",
+              padding: "12px 26px",
+              borderRadius: "980px",
+              fontSize: "15px",
+              fontWeight: 500,
+              textDecoration: "none",
+              transition: "all 0.2s ease",
+              fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: "-0.01em",
+              border: "1px solid rgba(255,255,255,0.28)",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(41,151,255,0.70)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = "#2997ff"; }}
-          >See our work →</a>
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.55)";
+              e.currentTarget.style.transform = "scale(1.02)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >See our work</a>
         </div>
 
         {/* Trust line */}
         <p style={{
-          fontSize: "11px", color: "rgba(255,255,255,0.18)",
-          letterSpacing: "0.04em", textTransform: "uppercase", margin: 0,
+          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+          fontSize: "13px",
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.38)",
+          letterSpacing: "0em",
+          margin: 0,
         }}>
-          50% deposit to start · Balance on delivery · No retainers
+          Trusted by founders and teams across Southeast Asia.
         </p>
 
         {/* Stats grid */}
@@ -212,6 +233,7 @@ const HeroSection = () => {
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
             width: "100%",
+            marginTop: "4px",
             border: "1px solid rgba(255,255,255,0.07)",
             borderRadius: "16px", overflow: "hidden",
             background: "rgba(0,0,0,0.40)",
@@ -230,14 +252,15 @@ const HeroSection = () => {
               borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
             }}>
               <div style={{
-                fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
                 fontSize: "clamp(16px, 1.8vw, 26px)", fontWeight: 700,
                 letterSpacing: "-0.03em", color: "#ffffff", lineHeight: 1,
                 WebkitFontSmoothing: "antialiased",
               }}>{stat.value}</div>
               <div style={{
-                fontSize: "10px", color: "rgba(255,255,255,0.28)",
-                marginTop: "4px", letterSpacing: "0.07em", textTransform: "uppercase",
+                fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                fontSize: "10px", color: "rgba(255,255,255,0.38)",
+                marginTop: "4px", letterSpacing: "0.06em", textTransform: "uppercase",
               }}>{stat.label}</div>
             </div>
           ))}
