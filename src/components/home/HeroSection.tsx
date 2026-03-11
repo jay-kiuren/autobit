@@ -1,14 +1,239 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
+// ─── Water Ripple Badge ───────────────────────────────────────────────────────
+const WaterBadge = ({ href }: { href: string }) => {
+  const containerRef = useRef<HTMLAnchorElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const bufA = useRef<Float32Array | null>(null);
+  const bufB = useRef<Float32Array | null>(null);
+  const rafRef = useRef<number>(0);
+  const mouseRef = useRef({ x: -1, y: -1, active: false });
+  const [hovered, setHovered] = useState(false);
+  const W = useRef(0);
+  const H = useRef(0);
+
+  // Initialize buffers when canvas mounts / resizes
+  const initBuffers = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    // Use logical size for simulation (performance)
+    const w = Math.floor(rect.width);
+    const h = Math.floor(rect.height);
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    W.current = w;
+    H.current = h;
+    bufA.current = new Float32Array(w * h);
+    bufB.current = new Float32Array(w * h);
+  }, []);
+
+  // Disturb water at (x, y) with given radius & strength
+  const disturb = useCallback((x: number, y: number, radius = 6, strength = 180) => {
+    const w = W.current, h = H.current;
+    if (!bufA.current || w === 0) return;
+    const ix = Math.round(x), iy = Math.round(y);
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        const nx = ix + dx, ny = iy + dy;
+        if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist <= radius) {
+          bufA.current[ny * w + nx] += strength * (1 - dist / radius);
+        }
+      }
+    }
+  }, []);
+
+  // Main simulation + render loop
+  const tick = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !bufA.current || !bufB.current) {
+      rafRef.current = requestAnimationFrame(tick);
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const w = W.current, h = H.current;
+    const a = bufA.current, b = bufB.current;
+    const dpr = window.devicePixelRatio || 1;
+
+    // Continuous disturbance on mouse move
+    if (mouseRef.current.active) {
+      disturb(mouseRef.current.x, mouseRef.current.y, 5, 120);
+    }
+
+    // Wave propagation: average 4 neighbors, subtract previous, dampen
+    const damping = 0.972;
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const i = y * w + x;
+        b[i] = (
+          (a[i - 1] + a[i + 1] + a[i - w] + a[i + w]) / 2 - b[i]
+        ) * damping;
+      }
+    }
+
+    // Swap buffers
+    bufA.current = b;
+    bufB.current = a;
+
+    // Render: clear, then draw displaced refraction
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    const cur = bufA.current;
+
+    // Draw water surface as soft light patches based on height gradients
+    for (let y = 1; y < h - 1; y += 2) {
+      for (let x = 1; x < w - 1; x += 2) {
+        const i = y * w + x;
+        const height = cur[i];
+        if (Math.abs(height) < 0.5) continue;
+
+        // Gradient = normal vector of water surface
+        const dx = cur[i + 1] - cur[i - 1];
+        const dy = cur[i + w] - cur[i - w];
+        const light = Math.max(0, Math.min(1, (dx + dy) / 80 + 0.5));
+        const alpha = Math.min(0.55, Math.abs(height) / 160);
+
+        ctx.fillStyle = `rgba(255,255,255,${(light * alpha).toFixed(3)})`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+    }
+
+    ctx.restore();
+    rafRef.current = requestAnimationFrame(tick);
+  }, [disturb]);
+
+  useEffect(() => {
+    initBuffers();
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [initBuffers, tick]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseRef.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      active: true,
+    };
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    mouseRef.current.active = false;
+    setHovered(false);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    setHovered(true);
+    // Big initial splash on enter
+    const w = W.current, h = H.current;
+    disturb(w / 2, h / 2, 12, 300);
+  }, [disturb]);
+
+  return (
+    <a
+      ref={containerRef}
+      href={href}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        position: "relative",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        borderRadius: "9999px",
+        padding: "9px 22px",
+        fontSize: "12px",
+        letterSpacing: "0.05em",
+        fontWeight: 500,
+        color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.72)",
+        textDecoration: "none",
+        cursor: "pointer",
+        transition: "color 0.3s ease, transform 0.25s ease",
+        transform: hovered ? "scale(1.04)" : "scale(1)",
+        marginBottom: "28px",
+        overflow: "hidden",
+        // Glass rim via layered inset shadows
+        boxShadow: `
+          0 0 0 1px rgba(255,255,255,0.12),
+          inset 0 1px 0 rgba(255,255,255,0.22),
+          inset 0 -1px 0 rgba(0,0,0,0.3),
+          0 4px 24px rgba(0,0,0,0.25),
+          0 0 20px rgba(255,255,255,0.06)
+        `,
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        background: "rgba(255,255,255,0.07)",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
+    >
+      {/* Water simulation canvas — absolute fill, pointer-events none so clicks pass through */}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          borderRadius: "9999px",
+          pointerEvents: "none",
+          mixBlendMode: "screen",
+          opacity: 0.85,
+        }}
+      />
+
+      {/* Top shimmer */}
+      <span style={{
+        position: "absolute", top: 0, left: "15%", right: "15%",
+        height: "1px",
+        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent)",
+        pointerEvents: "none",
+        zIndex: 1,
+      }} />
+
+      {/* Pulse dot */}
+      <span style={{
+        position: "relative", zIndex: 2,
+        height: "6px", width: "6px",
+        borderRadius: "50%",
+        background: hovered ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.6)",
+        display: "inline-block",
+        boxShadow: hovered ? "0 0 8px rgba(255,255,255,0.8)" : "0 0 4px rgba(255,255,255,0.4)",
+        animation: "badgePulse 2.5s ease-in-out infinite",
+        flexShrink: 0,
+        transition: "all 0.3s ease",
+      }} />
+
+      {/* Label */}
+      <span style={{ position: "relative", zIndex: 2 }}>Start Something™</span>
+
+      {/* Arrow */}
+      <span style={{
+        position: "relative", zIndex: 2,
+        opacity: hovered ? 1 : 0,
+        transform: hovered ? "translateX(0px)" : "translateX(-6px)",
+        transition: "all 0.3s ease",
+        fontSize: "11px",
+      }}>→</span>
+    </a>
+  );
+};
+
+// ─── Hero Section ─────────────────────────────────────────────────────────────
 const HeroSection = () => {
   const [index, setIndex] = useState(0);
   const [bgReady, setBgReady] = useState(false);
-  const [badgeHovered, setBadgeHovered] = useState(false);
-  const [badgePressed, setBadgePressed] = useState(false);
-  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
-  const badgeRef = useRef<HTMLAnchorElement>(null);
 
   const words = useMemo(
     () => ["automation.", "operations.", "intelligence.", "robotics.", "platforms."],
@@ -25,16 +250,6 @@ const HeroSection = () => {
     return () => clearTimeout(t);
   }, []);
 
-  const handleBadgeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const rect = badgeRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const id = Date.now();
-    setRipples((prev) => [...prev, { id, x, y }]);
-    setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 600);
-  };
-
   return (
     <section
       style={{
@@ -50,36 +265,6 @@ const HeroSection = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* Liquid glass SVG filter — exact params from 21st.dev */}
-      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
-        <defs>
-          <filter
-            id="container-glass"
-            x="0%" y="0%" width="100%" height="100%"
-            colorInterpolationFilters="sRGB"
-          >
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.05 0.05"
-              numOctaves="1"
-              seed="1"
-              result="turbulence"
-            />
-            <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="blurredNoise"
-              scale="70"
-              xChannelSelector="R"
-              yChannelSelector="B"
-              result="displaced"
-            />
-            <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
-            <feComposite in="finalBlur" in2="finalBlur" operator="over" />
-          </filter>
-        </defs>
-      </svg>
-
       <div style={{
         position: "absolute", inset: 0, zIndex: 0,
         opacity: bgReady ? 1 : 0,
@@ -105,131 +290,7 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        {/* === LIQUID GLASS BADGE === */}
-        <a
-          ref={badgeRef}
-          href="mailto:autobitofficial.ph@gmail.com"
-          onClick={handleBadgeClick}
-          onMouseEnter={() => setBadgeHovered(true)}
-          onMouseLeave={() => { setBadgeHovered(false); setBadgePressed(false); }}
-          onMouseDown={() => setBadgePressed(true)}
-          onMouseUp={() => setBadgePressed(false)}
-          style={{
-            position: "relative",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-            borderRadius: "9999px",
-            padding: "9px 22px",
-            fontSize: "12px",
-            letterSpacing: "0.05em",
-            fontWeight: 500,
-            color: "rgba(255,255,255,0.85)",
-            textDecoration: "none",
-            cursor: "pointer",
-            overflow: "hidden",
-            marginBottom: "28px",
-            transition: "transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
-            transform: badgePressed
-              ? "scale(0.95)"
-              : badgeHovered
-              ? "scale(1.06)"
-              : "scale(1)",
-            // Dark mode glass rim — exact from 21st.dev LiquidButton dark shadow
-            boxShadow: `
-              0 0 8px rgba(0,0,0,0.03),
-              0 2px 6px rgba(0,0,0,0.08),
-              inset 3px 3px 0.5px -3.5px rgba(255,255,255,0.09),
-              inset -3px -3px 0.5px -3.5px rgba(255,255,255,0.85),
-              inset 1px 1px 1px -0.5px rgba(255,255,255,0.6),
-              inset -1px -1px 1px -0.5px rgba(255,255,255,0.6),
-              inset 0 0 6px 6px rgba(255,255,255,0.12),
-              inset 0 0 2px 2px rgba(255,255,255,0.06),
-              0 0 12px rgba(0,0,0,0.15),
-              0 0 ${badgeHovered ? "20px" : "8px"} rgba(255,255,255,${badgeHovered ? "0.12" : "0.04"})
-            `,
-          }}
-        >
-          {/* Liquid glass distorted backdrop — exact from 21st.dev */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "9999px",
-              overflow: "hidden",
-              zIndex: -1,
-              backdropFilter: 'url("#container-glass") blur(2px)',
-              WebkitBackdropFilter: "blur(2px)",
-            }}
-          />
-
-          {/* Top shimmer line */}
-          <div style={{
-            position: "absolute",
-            top: 0, left: "15%", right: "15%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
-            zIndex: 1,
-            borderRadius: "9999px",
-          }} />
-
-          {/* Bottom subtle edge */}
-          <div style={{
-            position: "absolute",
-            bottom: 0, left: "20%", right: "20%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)",
-            zIndex: 1,
-          }} />
-
-          {/* Ripple effects on click */}
-          {ripples.map((r) => (
-            <span
-              key={r.id}
-              style={{
-                position: "absolute",
-                left: r.x, top: r.y,
-                width: "6px", height: "6px",
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.35)",
-                transform: "translate(-50%,-50%) scale(0)",
-                animation: "rippleOut 0.6s ease-out forwards",
-                pointerEvents: "none",
-                zIndex: 3,
-              }}
-            />
-          ))}
-
-          {/* Pulse dot */}
-          <span style={{
-            position: "relative", zIndex: 2,
-            height: "6px", width: "6px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.80)",
-            display: "inline-block",
-            flexShrink: 0,
-            boxShadow: "0 0 8px rgba(255,255,255,0.7)",
-            animation: "badgePulse 2.5s ease-in-out infinite",
-          }} />
-
-          {/* Label */}
-          <span style={{ position: "relative", zIndex: 2 }}>
-            Start Something™
-          </span>
-
-          {/* Arrow slides in on hover */}
-          <span style={{
-            position: "relative", zIndex: 2,
-            fontSize: "11px",
-            opacity: badgeHovered ? 1 : 0,
-            transform: badgeHovered ? "translateX(0px)" : "translateX(-6px)",
-            transition: "all 0.3s ease",
-            maxWidth: badgeHovered ? "16px" : "0px",
-            overflow: "hidden",
-            display: "inline-block",
-          }}>→</span>
-        </a>
+        <WaterBadge href="mailto:autobitofficial.ph@gmail.com" />
 
         {/* Headline */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
@@ -390,25 +451,15 @@ const HeroSection = () => {
 
       <style>{`
         @keyframes badgePulse {
-          0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px rgba(255,255,255,0.7); }
-          50% { opacity: 0.4; transform: scale(0.75); box-shadow: 0 0 3px rgba(255,255,255,0.3); }
-        }
-        @keyframes rippleOut {
-          0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
-          100% { transform: translate(-50%,-50%) scale(18); opacity: 0; }
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(0.75); }
         }
         @media (max-width: 600px) {
-          .hero-stats-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
+          .hero-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .hero-stats-grid > div:nth-child(1),
-          .hero-stats-grid > div:nth-child(2) {
-            border-bottom: 1px solid rgba(255,255,255,0.07) !important;
-          }
+          .hero-stats-grid > div:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
           .hero-stats-grid > div:nth-child(2),
-          .hero-stats-grid > div:nth-child(4) {
-            border-right: none !important;
-          }
+          .hero-stats-grid > div:nth-child(4) { border-right: none !important; }
         }
       `}</style>
     </section>
