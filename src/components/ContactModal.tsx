@@ -21,7 +21,7 @@ const fieldStyle: React.CSSProperties = {
 };
 
 const ContactModal = () => {
-  const { isOpen, closeModal } = useContactModal();
+  const { isOpen, openModal, closeModal } = useContactModal();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
