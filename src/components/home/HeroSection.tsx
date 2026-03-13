@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useSpring } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
@@ -61,7 +61,6 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        {/* JELLY CHIP */}
         <JellyChip />
 
         {/* Headline */}
@@ -234,70 +233,81 @@ const HeroSection = () => {
 };
 
 // ─── JELLY CHIP ──────────────────────────────────────────────────────────────
-// The SHAPE ITSELF is the jelly. When hovered:
-//   • The whole panel squishes and stretches (scaleX/scaleY spring)
-//   • border-radius morphs organically so edges aren't perfectly round
-//   • On release it bounces back with spring physics
-//   • Mouse position tilts it in 3D (rotateX/rotateY)
-//   • Text is INSIDE the jelly — it deforms WITH the panel
+// Shape stays PILL always — no border-radius morphing (that's what caused the snap)
+// Jelly feel = spring physics with overshoot on scale + skew
+// Idle: slow breathing animation so it feels alive even without hover
+// Hover: squish wide, spring back with overshoot wobble
+// MouseMove: mild 3D tilt tracking cursor
+// Press: compress down, release bounces up
 // ─────────────────────────────────────────────────────────────────────────────
 const JellyChip = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
-  const [pressed, setPressed] = useState(false);
 
-  // Spring config — low stiffness + high damping = slow jelly settle
-  const springConfig = { stiffness: 180, damping: 10, mass: 0.8 };
+  // Jelly springs — low stiffness, low damping = lots of overshoot wobble
+  const scaleX = useSpring(1, { stiffness: 120, damping: 8, mass: 0.6 });
+  const scaleY = useSpring(1, { stiffness: 120, damping: 8, mass: 0.6 });
+  const skewX  = useSpring(0, { stiffness: 150, damping: 10, mass: 0.5 });
+  const rotateX = useSpring(0, { stiffness: 180, damping: 14 });
+  const rotateY = useSpring(0, { stiffness: 180, damping: 14 });
 
-  const scaleX = useSpring(1, springConfig);
-  const scaleY = useSpring(1, springConfig);
-  const rotateX = useSpring(0, { stiffness: 200, damping: 20 });
-  const rotateY = useSpring(0, { stiffness: 200, damping: 20 });
+  // Slow idle breathing — barely perceptible, just enough to feel alive
+  useEffect(() => {
+    let frame: number;
+    let t = 0;
+    const breathe = () => {
+      t += 0.012;
+      if (!hovered) {
+        scaleX.set(1 + Math.sin(t) * 0.018);
+        scaleY.set(1 + Math.cos(t * 0.7) * 0.012);
+      }
+      frame = requestAnimationFrame(breathe);
+    };
+    frame = requestAnimationFrame(breathe);
+    return () => cancelAnimationFrame(frame);
+  }, [hovered, scaleX, scaleY]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dx = (e.clientX - cx) / (rect.width / 2);  // -1 to 1
     const dy = (e.clientY - cy) / (rect.height / 2);
-    rotateY.set(dx * 8);
-    rotateX.set(-dy * 8);
+    rotateY.set(dx * 10);
+    rotateX.set(-dy * 6);
+    // Slight skew toward mouse direction = jelly dragging
+    skewX.set(dx * 3);
   };
 
   const handleMouseEnter = () => {
     setHovered(true);
-    // Squish wide on hover — jelly spreading
-    scaleX.set(1.10);
-    scaleY.set(0.92);
-    // Then it bounces back via spring automatically
+    // Wide squish — jelly spreading out as you hover over it
+    scaleX.set(1.12);
+    scaleY.set(0.88);
+    // Spring will overshoot and wobble back naturally
   };
 
   const handleMouseLeave = () => {
     setHovered(false);
-    setPressed(false);
     scaleX.set(1);
     scaleY.set(1);
+    skewX.set(0);
     rotateX.set(0);
     rotateY.set(0);
   };
 
   const handleMouseDown = () => {
-    setPressed(true);
-    // Press squishes it down — compress like pressing jelly
-    scaleX.set(0.93);
-    scaleY.set(1.07);
+    // Compress — like pressing a gel pad
+    scaleX.set(0.90);
+    scaleY.set(1.12);
   };
 
   const handleMouseUp = () => {
-    setPressed(false);
-    // Release — bounces back with overshoot
-    scaleX.set(1.08);
-    scaleY.set(0.94);
-    setTimeout(() => {
-      scaleX.set(1);
-      scaleY.set(1);
-    }, 80);
+    // Release — shoot back up with overshoot
+    scaleX.set(1.15);
+    scaleY.set(0.86);
+    // Spring brings it back naturally with wobble
   };
 
   return (
@@ -309,72 +319,73 @@ const JellyChip = () => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       style={{
+        // Physics transforms — NO border-radius changes
         scaleX,
         scaleY,
+        skewX,
         rotateX,
         rotateY,
-        transformPerspective: 600,
-        // Organic border-radius — not a perfect pill, slightly asymmetric like gel
-        borderRadius: hovered
-          ? "38% 62% 45% 55% / 55% 45% 55% 45%"
-          : "9999px",
+        transformPerspective: 500,
+
+        // Always pill — never changes shape
+        borderRadius: "9999px",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "10px 26px",
+        padding: "9px 24px",
         marginBottom: "28px",
         cursor: "default",
         userSelect: "none" as const,
         position: "relative" as const,
-        transition: "border-radius 0.5s cubic-bezier(0.34,1.56,0.64,1)",
-        // Glass depth — multiple layered shadows simulate a thick gel object
+
+        // Glass appearance
+        background: hovered ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.055)",
+        backdropFilter: "blur(18px) saturate(130%)",
+        WebkitBackdropFilter: "blur(18px) saturate(130%)",
+
+        // Layered shadows = thick glass depth
         boxShadow: hovered
           ? `
-            0 8px 32px rgba(0,0,0,0.25),
-            0 2px 8px rgba(0,0,0,0.15),
-            inset 0 1px 0 rgba(255,255,255,0.55),
-            inset 0 -1px 0 rgba(255,255,255,0.10),
-            inset 1px 0 0 rgba(255,255,255,0.18),
-            inset -1px 0 0 rgba(255,255,255,0.08),
-            0 0 0 1px rgba(255,255,255,0.10),
-            0 0 30px rgba(255,255,255,0.08)
-          `
+              0 6px 24px rgba(0,0,0,0.22),
+              0 1px 6px rgba(0,0,0,0.14),
+              inset 0 1.5px 0 rgba(255,255,255,0.50),
+              inset 0 -1px 0 rgba(255,255,255,0.08),
+              inset 1.5px 0 0 rgba(255,255,255,0.14),
+              inset -1.5px 0 0 rgba(255,255,255,0.06),
+              0 0 0 0.5px rgba(255,255,255,0.12),
+              0 0 28px rgba(255,255,255,0.07)
+            `
           : `
-            0 4px 16px rgba(0,0,0,0.20),
-            0 1px 4px rgba(0,0,0,0.12),
-            inset 0 1px 0 rgba(255,255,255,0.40),
-            inset 0 -1px 0 rgba(255,255,255,0.06),
-            0 0 0 1px rgba(255,255,255,0.07)
-          `,
-        // Frosted gel fill
-        background: hovered
-          ? "rgba(255,255,255,0.10)"
-          : "rgba(255,255,255,0.06)",
-        backdropFilter: "blur(16px) saturate(120%)",
-        WebkitBackdropFilter: "blur(16px) saturate(120%)",
+              0 2px 12px rgba(0,0,0,0.18),
+              0 1px 3px rgba(0,0,0,0.10),
+              inset 0 1px 0 rgba(255,255,255,0.35),
+              inset 0 -0.5px 0 rgba(255,255,255,0.05),
+              0 0 0 0.5px rgba(255,255,255,0.08)
+            `,
       }}
     >
-      {/* Top gloss highlight — thick glass catching light */}
+      {/* Top gloss — light catching the curved glass surface */}
       <div style={{
         position: "absolute",
-        top: "2px", left: "18%", right: "18%",
+        top: "2px", left: "20%", right: "20%",
         height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.60), transparent)",
+        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
         borderRadius: "9999px",
         pointerEvents: "none",
       }} />
 
-      {/* Label — moves with the jelly, it's embedded inside */}
+      {/* Text — embedded in the jelly, moves with it */}
       <span style={{
         fontSize: "11px",
         fontWeight: 500,
         letterSpacing: "0.07em",
         textTransform: "uppercase" as const,
-        color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.60)",
-        transition: "color 0.3s ease",
+        color: hovered ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.58)",
+        transition: "color 0.25s ease",
         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
         position: "relative",
         zIndex: 1,
+        lineHeight: 1,
       }}>
         Start Something™
       </span>
