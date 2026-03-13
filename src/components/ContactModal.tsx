@@ -29,6 +29,13 @@ const ContactModal = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Listen for custom event from buttons that can't use context directly
+  useEffect(() => {
+    const handler = () => openModal();
+    window.addEventListener('open-contact-modal', handler);
+    return () => window.removeEventListener('open-contact-modal', handler);
+  }, [openModal]);
+
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
