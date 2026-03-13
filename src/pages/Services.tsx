@@ -662,7 +662,7 @@ const Services = () => {
                       <span className="svc-tag">{s.uniqueTag}</span>
 
                       <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:8}}>
-                        <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">Get a quote →</a>
+                        <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} className="svc-cta" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Get a quote →</button>
                       </div>
                     </motion.div>
 
