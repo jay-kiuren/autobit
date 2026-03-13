@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useSpring } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
 const HeroSection = () => {
@@ -233,163 +233,173 @@ const HeroSection = () => {
 };
 
 // ─── JELLY CHIP ──────────────────────────────────────────────────────────────
-// Shape stays PILL always — no border-radius morphing (that's what caused the snap)
-// Jelly feel = spring physics with overshoot on scale + skew
-// Idle: slow breathing animation so it feels alive even without hover
-// Hover: squish wide, spring back with overshoot wobble
-// MouseMove: mild 3D tilt tracking cursor
-// Press: compress down, release bounces up
+//
+// THE CORRECT TECHNIQUE (from Codrops + Medium research):
+//   Apply SVG filter directly to the element via CSS filter: url(#id)
+//   This displaces the element's OWN pixels — edges, fill, text all wobble together
+//   feTurbulence generates Perlin noise → feDisplacementMap shifts pixels using that noise
+//   Animate baseFrequency continuously = living jelly breathing
+//   On hover: JS ramps up displacement scale → more aggressive wobble
+//   On mouse leave: scale ramps back down → settles calmly
+//
+// This is fundamentally different from backdrop-filter (which only affects what's behind)
+// Here the chip ITSELF is the distorted jelly object
 // ─────────────────────────────────────────────────────────────────────────────
 const JellyChip = () => {
-  const ref = useRef<HTMLDivElement>(null);
+  const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
+  const scaleRef = useRef(4);
+  const targetScaleRef = useRef(4);
+  const rafRef = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
 
-  // Jelly springs — low stiffness, low damping = lots of overshoot wobble
-  const scaleX = useSpring(1, { stiffness: 120, damping: 8, mass: 0.6 });
-  const scaleY = useSpring(1, { stiffness: 120, damping: 8, mass: 0.6 });
-  const skewX  = useSpring(0, { stiffness: 150, damping: 10, mass: 0.5 });
-  const rotateX = useSpring(0, { stiffness: 180, damping: 14 });
-  const rotateY = useSpring(0, { stiffness: 180, damping: 14 });
-
-  // Slow idle breathing — barely perceptible, just enough to feel alive
+  // Animate displacement scale smoothly toward target
   useEffect(() => {
-    let frame: number;
-    let t = 0;
-    const breathe = () => {
-      t += 0.012;
-      if (!hovered) {
-        scaleX.set(1 + Math.sin(t) * 0.018);
-        scaleY.set(1 + Math.cos(t * 0.7) * 0.012);
+    const tick = () => {
+      const current = scaleRef.current;
+      const target = targetScaleRef.current;
+      const diff = target - current;
+      if (Math.abs(diff) > 0.05) {
+        scaleRef.current = current + diff * 0.06;
+      } else {
+        scaleRef.current = target;
       }
-      frame = requestAnimationFrame(breathe);
+      if (displacementRef.current) {
+        displacementRef.current.setAttribute("scale", String(scaleRef.current.toFixed(2)));
+      }
+      rafRef.current = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(breathe);
-    return () => cancelAnimationFrame(frame);
-  }, [hovered, scaleX, scaleY]);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);  // -1 to 1
-    const dy = (e.clientY - cy) / (rect.height / 2);
-    rotateY.set(dx * 10);
-    rotateX.set(-dy * 6);
-    // Slight skew toward mouse direction = jelly dragging
-    skewX.set(dx * 3);
-  };
-
-  const handleMouseEnter = () => {
+  const handleEnter = () => {
     setHovered(true);
-    // Wide squish — jelly spreading out as you hover over it
-    scaleX.set(1.12);
-    scaleY.set(0.88);
-    // Spring will overshoot and wobble back naturally
+    targetScaleRef.current = 10; // More jelly on hover
   };
 
-  const handleMouseLeave = () => {
+  const handleLeave = () => {
     setHovered(false);
-    scaleX.set(1);
-    scaleY.set(1);
-    skewX.set(0);
-    rotateX.set(0);
-    rotateY.set(0);
+    targetScaleRef.current = 4; // Calm back down
   };
 
-  const handleMouseDown = () => {
-    // Compress — like pressing a gel pad
-    scaleX.set(0.90);
-    scaleY.set(1.12);
+  const handleDown = () => {
+    targetScaleRef.current = 16; // Squish hard on press
   };
 
-  const handleMouseUp = () => {
-    // Release — shoot back up with overshoot
-    scaleX.set(1.15);
-    scaleY.set(0.86);
-    // Spring brings it back naturally with wobble
+  const handleUp = () => {
+    // Bounce back up past rest then settle
+    targetScaleRef.current = 14;
+    setTimeout(() => { targetScaleRef.current = hovered ? 10 : 4; }, 120);
   };
 
   return (
-    <motion.div
-      ref={ref}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      style={{
-        // Physics transforms — NO border-radius changes
-        scaleX,
-        scaleY,
-        skewX,
-        rotateX,
-        rotateY,
-        transformPerspective: 500,
+    <>
+      {/*
+        SVG filter definition — hidden, defines the jelly distortion.
+        type="turbulence" = wave-like ripples (vs fractalNoise which is cloudy)
+        baseFrequency low (0.02) = slow gentle waves, not chaotic static
+        <animate> on baseFrequency = continuously shifting waves = living jelly
+        Filter applied via CSS filter: url(#jelly-chip) on the chip div below
+      */}
+      <svg
+        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
+        aria-hidden="true"
+      >
+        <defs>
+          <filter
+            id="jelly-chip"
+            x="-20%" y="-20%"
+            width="140%" height="140%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feTurbulence
+              type="turbulence"
+              baseFrequency="0.02 0.04"
+              numOctaves="2"
+              seed="8"
+              result="noise"
+            >
+              {/* Animate baseFrequency = the wave pattern slowly shifts = living water */}
+              <animate
+                attributeName="baseFrequency"
+                values="0.02 0.04; 0.03 0.06; 0.025 0.05; 0.02 0.04"
+                keyTimes="0; 0.33; 0.66; 1"
+                dur="5s"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feDisplacementMap
+              ref={displacementRef}
+              in="SourceGraphic"
+              in2="noise"
+              scale="4"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
 
-        // Always pill — never changes shape
-        borderRadius: "9999px",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "9px 24px",
-        marginBottom: "28px",
-        cursor: "default",
-        userSelect: "none" as const,
-        position: "relative" as const,
+      {/*
+        The chip itself.
+        filter: url(#jelly-chip) applies displacement to THIS element directly.
+        The element's own edges, background, and text all get warped together.
+        It is the jelly — not something behind it.
+      */}
+      <div
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        onMouseDown={handleDown}
+        onMouseUp={handleUp}
+        style={{
+          // THE KEY LINE — apply SVG filter to the element itself
+          filter: "url(#jelly-chip)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "9999px",
+          padding: "9px 24px",
+          marginBottom: "28px",
+          cursor: "default",
+          userSelect: "none",
+          background: hovered ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.07)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          transition: "background 0.3s ease",
+          boxShadow: `
+            inset 0 1px 0 rgba(255,255,255,0.40),
+            inset 0 -0.5px 0 rgba(255,255,255,0.05),
+            0 2px 12px rgba(0,0,0,0.20),
+            0 0 0 0.5px rgba(255,255,255,${hovered ? "0.16" : "0.09"})
+          `,
+        }}
+      >
+        {/* Top shimmer — light catching glass edge */}
+        <div style={{
+          position: "absolute",
+          top: "2px", left: "20%", right: "20%",
+          height: "1px",
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), transparent)",
+          borderRadius: "9999px",
+          pointerEvents: "none",
+        }} />
 
-        // Glass appearance
-        background: hovered ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.055)",
-        backdropFilter: "blur(18px) saturate(130%)",
-        WebkitBackdropFilter: "blur(18px) saturate(130%)",
-
-        // Layered shadows = thick glass depth
-        boxShadow: hovered
-          ? `
-              0 6px 24px rgba(0,0,0,0.22),
-              0 1px 6px rgba(0,0,0,0.14),
-              inset 0 1.5px 0 rgba(255,255,255,0.50),
-              inset 0 -1px 0 rgba(255,255,255,0.08),
-              inset 1.5px 0 0 rgba(255,255,255,0.14),
-              inset -1.5px 0 0 rgba(255,255,255,0.06),
-              0 0 0 0.5px rgba(255,255,255,0.12),
-              0 0 28px rgba(255,255,255,0.07)
-            `
-          : `
-              0 2px 12px rgba(0,0,0,0.18),
-              0 1px 3px rgba(0,0,0,0.10),
-              inset 0 1px 0 rgba(255,255,255,0.35),
-              inset 0 -0.5px 0 rgba(255,255,255,0.05),
-              0 0 0 0.5px rgba(255,255,255,0.08)
-            `,
-      }}
-    >
-      {/* Top gloss — light catching the curved glass surface */}
-      <div style={{
-        position: "absolute",
-        top: "2px", left: "20%", right: "20%",
-        height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
-        borderRadius: "9999px",
-        pointerEvents: "none",
-      }} />
-
-      {/* Text — embedded in the jelly, moves with it */}
-      <span style={{
-        fontSize: "11px",
-        fontWeight: 500,
-        letterSpacing: "0.07em",
-        textTransform: "uppercase" as const,
-        color: hovered ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.58)",
-        transition: "color 0.25s ease",
-        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-        position: "relative",
-        zIndex: 1,
-        lineHeight: 1,
-      }}>
-        Start Something™
-      </span>
-    </motion.div>
+        <span style={{
+          fontSize: "11px",
+          fontWeight: 500,
+          letterSpacing: "0.07em",
+          textTransform: "uppercase" as const,
+          color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.62)",
+          transition: "color 0.25s ease",
+          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+          lineHeight: 1,
+          position: "relative",
+          zIndex: 1,
+        }}>
+          Start Something™
+        </span>
+      </div>
+    </>
   );
 };
 
