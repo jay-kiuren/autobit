@@ -556,55 +556,17 @@ const Services = () => {
         /* ── CTA buttons ── */
         .svc-cta {
           background:#2997ff; color:#fff;
-          padding:clamp(11px,1.1vw,15px) clamp(20px,2vw,30px);
-          border-radius:980px; font-size:clamp(12px,0.95vw,13px); font-weight:600;
-          text-decoration:none; display:inline-block; transition:all 0.22s ease;
-          box-shadow:0 4px 18px rgba(41,151,255,0.35);
-          white-space:nowrap;
+          padding:12px 26px;
+          border-radius:980px; font-size:15px; font-weight:500;
+          text-decoration:none; display:inline-block; transition:background 0.2s ease, transform 0.2s ease;
+          white-space:nowrap; letter-spacing:-0.01em;
         }
-        .svc-cta:hover { transform:scale(1.04); box-shadow:0 7px 30px rgba(41,151,255,0.55); }
+        .svc-cta:hover { transform:scale(1.02); background:#0077ed; }
 
         /* ── Description text ── */
         .svc-desc { font-size:clamp(12px,0.95vw,14px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
 
         /* ── Responsive breakpoints ── */
-        @media(max-width:1024px){
-          .svc-grid, .svc-grid-rev { grid-template-columns:1fr; gap:20px; }
-          .svc-glass-inner { height:clamp(180px,36vw,300px); }
-        }
-        @media(max-width:640px){
-          .svc-heading { letter-spacing:-1px; }
-          .svc-glass-inner { height:clamp(160px,50vw,240px); }
-          .svc-frame { border-radius:14px; }
-        }
-
-        /* ── CTA section ── */
-        .cta-section-card {
-          border-radius:clamp(20px,2.5vw,32px);
-          border:1px solid rgba(41,151,255,0.18);
-          background:linear-gradient(145deg,rgba(41,151,255,0.06) 0%,rgba(0,0,0,0.5) 50%,rgba(41,151,255,0.04) 100%);
-          backdrop-filter:blur(40px);
-          position:relative; overflow:hidden;
-          padding:clamp(48px,7vw,96px) clamp(24px,6vw,80px);
-          text-align:center;
-        }
-        .cta-main-btn {
-          background:#2997ff; color:#fff;
-          padding:clamp(14px,1.4vw,18px) clamp(36px,4vw,60px);
-          border-radius:980px; font-size:clamp(13px,1.1vw,15px); font-weight:700;
-          text-decoration:none; display:inline-block; transition:all 0.28s ease;
-          box-shadow:0 0 0 1px rgba(41,151,255,0.5),0 0 40px rgba(41,151,255,0.4),0 0 80px rgba(41,151,255,0.18);
-          letter-spacing:-0.2px; position:relative; z-index:1;
-        }
-        .cta-main-btn:hover {
-          transform:scale(1.06) translateY(-2px);
-          box-shadow:0 0 0 1px rgba(41,151,255,0.7),0 0 60px rgba(41,151,255,0.6),0 0 120px rgba(41,151,255,0.28);
-        }
-        .cta-secondary-btn {
-          color:rgba(255,255,255,0.55); font-size:clamp(13px,1.1vw,15px); font-weight:500;
-          text-decoration:none; transition:color 0.2s; display:inline-flex; align-items:center; gap:5px;
-        }
-        .cta-secondary-btn:hover { color:#2997ff; }
         .cta-stat-pill {
           display:inline-flex; align-items:center; gap:7px;
           background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
