@@ -663,11 +663,15 @@ const Projects = () => {
                         marginTop: "24px",
                         display: "inline-flex", alignItems: "center",
                         background: "#2997ff",
-                        borderRadius: "9999px", padding: "11px 24px",
-                        fontSize: "14px", fontWeight: 600, color: "#fff",
+                        borderRadius: "980px", padding: "12px 26px",
+                        fontSize: "15px", fontWeight: 500, color: "#fff",
                         textDecoration: "none", width: "fit-content",
-                        boxShadow: "0 0 24px rgba(41,151,255,0.28)",
-                      }}>
+                        transition: "background 0.2s ease, transform 0.2s ease",
+                        letterSpacing: "-0.01em",
+                      }}
+                        onMouseEnter={e=>{e.currentTarget.style.background="#0077ed";e.currentTarget.style.transform="scale(1.02)";}}
+                        onMouseLeave={e=>{e.currentTarget.style.background="#2997ff";e.currentTarget.style.transform="scale(1)";}}
+                      >
                         Start a project
                       </a>
                     ) : (

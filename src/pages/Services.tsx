@@ -746,13 +746,18 @@ const Services = () => {
                   viewport={{once:true}} transition={{delay:0.35,duration:0.6}}
                   style={{display:"flex",alignItems:"center",justifyContent:"center",
                     gap:24,flexWrap:"wrap",position:"relative",zIndex:1}}>
-                  <a href="mailto:autobitofficial.ph@gmail.com" className="cta-main-btn">
+                  <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">
                     Start a project →
                   </a>
-                  <a href="/pricing" className="cta-secondary-btn">
-                    See pricing
-                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </a>
+                  <a href="/pricing" style={{
+                    background:"rgba(255,255,255,0.10)",color:"#fff",padding:"12px 26px",
+                    borderRadius:"980px",fontSize:"15px",fontWeight:500,textDecoration:"none",
+                    display:"inline-block",transition:"background 0.2s ease, transform 0.2s ease",
+                    letterSpacing:"-0.01em",border:"none",
+                  }}
+                    onMouseEnter={e=>{e.currentTarget.style.background="#2997ff";e.currentTarget.style.transform="scale(1.02)";}}
+                    onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.10)";e.currentTarget.style.transform="scale(1)";}}
+                  >See pricing</a>
                 </motion.div>
 
                 {/* Fine print */}
