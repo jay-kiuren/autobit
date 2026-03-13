@@ -604,21 +604,21 @@ const Services = () => {
           const FrameDeco = frameDecos[i];
 
           const panelAnim = [
-            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,scale:0.88},animate:{opacity:1,scale:1},transition:{duration:0.7,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.6,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,x:-40,rotate:-2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,y:-40,scale:0.95},animate:{opacity:1,y:0,scale:1},transition:{duration:0.65,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.65,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,scale:0.88},animate:{opacity:1,scale:1},transition:{duration:0.7,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.6,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,x:-40,rotate:-2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,y:-40,scale:0.95},animate:{opacity:1,y:0,scale:1},transition:{duration:0.65,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
           ][i];
 
           const artAnim = [
-            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,y:40},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.15,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,scale:0.9},animate:{opacity:1,scale:1},transition:{duration:0.7,delay:0.1,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,x:50,rotate:2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1]} },
-            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.08,ease:[0.22,1,0.36,1]} },
+            { initial:{opacity:0,x:60},     animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,x:-60},    animate:{opacity:1,x:0},    transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,y:40},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.15,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,scale:0.9},animate:{opacity:1,scale:1},transition:{duration:0.7,delay:0.1,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,x:50,rotate:2},animate:{opacity:1,x:0,rotate:0},transition:{duration:0.7,delay:0.12,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
+            { initial:{opacity:0,y:50},     animate:{opacity:1,y:0},    transition:{duration:0.65,delay:0.08,ease:[0.22,1,0.36,1] as [number,number,number,number]} },
           ][i];
 
           const isActive  = activeIndex===i;
