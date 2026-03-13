@@ -626,7 +626,7 @@ const Services = () => {
 
           return(
             <section key={s.id} id={s.id}
-              ref={el=>{sectionRefs.current[i]=el;}}
+              ref={el=>{sectionRefs.current[i]=el as HTMLDivElement;}}
               style={{
                 background:"#000",position:"relative",overflow:"hidden",
                 padding:"72px 0 52px",
