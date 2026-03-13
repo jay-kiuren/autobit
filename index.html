@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
     <title>Autobit</title>
     <link rel="icon" type="image/png" href="/favicon.ico?v=2" />
     <meta name="description" content="Applied technology company — AI agents, workflow automation, web applications, business systems, robotics, mobile apps." />
     <meta name="author" content="AUTOBIT" />
 
-   <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:title" content="AUTOBIT" />
     <meta property="og:description" content="AI agents, automation, web applications, and intelligent robotics" />
     <meta property="og:image" content="/autobitfb.png" />
@@ -21,11 +20,25 @@
     <meta name="twitter:title" content="AUTOBIT" />
     <meta name="twitter:description" content="ROBOTICS AND INNOVATION" />
     <meta name="twitter:image" content="/autobitfb.png" />
-      
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Facebook SDK (required for Messenger Chat plugin) -->
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({ xfbml: true, version: 'v19.0' });
+      };
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
   </body>
 </html>
