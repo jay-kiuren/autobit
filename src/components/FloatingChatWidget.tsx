@@ -1,5 +1,20 @@
 import { useState, useEffect } from "react";
 
+// Extend Window to include FB SDK types
+declare global {
+  interface Window {
+    FB?: {
+      CustomerChat?: {
+        show: () => void;
+        hide: () => void;
+        showDialog: () => void;
+        hideDialog: () => void;
+      };
+    };
+    fbAsyncInit?: () => void;
+  }
+}
+
 const FB_PAGE_ID = "701374596384613";
 
 const MessengerIcon = () => (
@@ -39,13 +54,66 @@ const WhatsAppIcon = () => (
 export default function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
+  const [fbReady, setFbReady] = useState(false);
+
+  // Wait for FB SDK to load, then inject the hidden customer chat plugin
+  useEffect(() => {
+    const initFB = () => {
+      if (!window.FB) return;
+
+      // Inject the fb-customerchat div if not already present
+      if (!document.getElementById("fb-customerchat")) {
+        const chatbox = document.createElement("div");
+        chatbox.id = "fb-customerchat";
+        chatbox.setAttribute("class", "fb-customerchat");
+        chatbox.setAttribute("page_id", FB_PAGE_ID);
+        chatbox.setAttribute("theme_color", "#0099FF");
+        // Start hidden — we control it ourselves
+        chatbox.setAttribute("minimized", "true");
+        document.body.appendChild(chatbox);
+
+        window.FB.CustomerChat?.hide();
+      }
+
+      setFbReady(true);
+    };
+
+    // FB SDK may already be ready, or we wait for fbAsyncInit
+    if (window.FB) {
+      initFB();
+    } else {
+      const originalInit = window.fbAsyncInit;
+      window.fbAsyncInit = () => {
+        originalInit?.();
+        initFB();
+      };
+    }
+
+    // Poll fallback in case fbAsyncInit already fired before this component mounted
+    const poll = setInterval(() => {
+      if (window.FB) {
+        initFB();
+        clearInterval(poll);
+      }
+    }, 300);
+
+    return () => clearInterval(poll);
+  }, []);
 
   useEffect(() => {
     if (isOpen) setShowPulse(false);
   }, [isOpen]);
 
-  const openMessenger = () => {
-    window.open(`https://m.me/${FB_PAGE_ID}`, "_blank", "noopener,noreferrer");
+  const handleMessengerClick = () => {
+    setIsOpen(false);
+    if (fbReady && window.FB?.CustomerChat) {
+      // Show the chat dialog inline on the page
+      window.FB.CustomerChat.show();
+      window.FB.CustomerChat.showDialog();
+    } else {
+      // Graceful fallback if SDK hasn't loaded yet
+      window.open(`https://m.me/${FB_PAGE_ID}`, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -85,13 +153,13 @@ export default function FloatingChatWidget() {
             </button>
           </div>
 
-          {/* Messenger — active */}
+          {/* Messenger — active, opens in-page chat */}
           <div className="flex items-center gap-2 group">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
               <span>Messenger</span>
             </div>
             <button
-              onClick={openMessenger}
+              onClick={handleMessengerClick}
               aria-label="Chat on Facebook Messenger"
               className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
               style={{
