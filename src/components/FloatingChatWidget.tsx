@@ -36,23 +36,30 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-const openMessengerPopup = () => {
-  const width = 400;
-  const height = 600;
-  // Position popup bottom-right corner of screen
-  const left = window.screen.width - width - 20;
-  const top = window.screen.height - height - 80;
-
-  window.open(
-    `https://www.messenger.com/t/${FB_PAGE_ID}`,
-    "Messenger",
-    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,scrollbars=yes`
-  );
-};
+// Extend window with FB SDK types
+declare global {
+  interface Window {
+    fbAsyncInit: () => void;
+    FB?: {
+      init: (params: { xfbml: boolean; version: string }) => void;
+      CustomerChat?: {
+        show: () => void;
+        hide: () => void;
+        showDialog: () => void;
+        hideDialog: () => void;
+      };
+      XFBML?: {
+        parse: () => void;
+      };
+    };
+  }
+}
 
 export default function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
+  const [sdkReady, setSdkReady] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
 
   useEffect(() => {
     if (isOpen) setShowPulse(false);
@@ -61,16 +68,121 @@ export default function FloatingChatWidget() {
   // Close on Escape key
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
+      if (e.key === "Escape") {
+        setIsOpen(false);
+        if (window.FB?.CustomerChat) {
+          window.FB.CustomerChat.hideDialog();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Initialize Facebook SDK
+  useEffect(() => {
+    // Create fb-customerchat div if it doesn't exist
+    if (!document.getElementById("fb-customerchat")) {
+      const chatbox = document.createElement("div");
+      chatbox.id = "fb-customerchat";
+      chatbox.className = "fb-customerchat";
+      chatbox.setAttribute("page_id", FB_PAGE_ID);
+      chatbox.setAttribute("attribution", "biz_inbox");
+      chatbox.setAttribute("theme_color", "#0099FF");
+      chatbox.setAttribute("logged_in_greeting", "Hi! How can we help you?");
+      chatbox.setAttribute("logged_out_greeting", "Hi! How can we help you?");
+      chatbox.setAttribute("minimized", "true");
+      document.body.appendChild(chatbox);
+    }
+
+    // Load Facebook SDK if not already loaded
+    if (!document.getElementById("facebook-jssdk")) {
+      window.fbAsyncInit = function() {
+        if (window.FB) {
+          window.FB.init({
+            xfbml: true,
+            version: "v18.0"
+          });
+          setSdkReady(true);
+        }
+      };
+
+      const script = document.createElement("script");
+      script.id = "facebook-jssdk";
+      script.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
+      script.async = true;
+      script.defer = true;
+      script.crossOrigin = "anonymous";
+      document.body.appendChild(script);
+    } else if (window.FB) {
+      // SDK already loaded
+      setSdkReady(true);
+    }
+
+    // Poll for SDK readiness
+    const pollInterval = setInterval(() => {
+      if (window.FB?.CustomerChat) {
+        setSdkReady(true);
+        clearInterval(pollInterval);
+      }
+    }, 500);
+
+    return () => clearInterval(pollInterval);
+  }, []);
+
   const handleMessengerClick = () => {
     setIsOpen(false);
-    openMessengerPopup();
+    
+    if (sdkReady && window.FB?.CustomerChat) {
+      try {
+        // Show the chat dialog
+        window.FB.CustomerChat.show();
+        setTimeout(() => {
+          window.FB.CustomerChat.showDialog();
+          setChatVisible(true);
+        }, 300);
+      } catch (error) {
+        console.error("Failed to open chat:", error);
+        // Fallback to popup if embedded fails
+        openMessengerPopup();
+      }
+    } else {
+      // Fallback if SDK not ready
+      openMessengerPopup();
+    }
   };
+
+  const openMessengerPopup = () => {
+    const width = 400;
+    const height = 600;
+    const left = window.screen.width - width - 20;
+    const top = window.screen.height - height - 80;
+
+    window.open(
+      `https://m.me/${FB_PAGE_ID}`,
+      "Messenger",
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,scrollbars=yes`
+    );
+  };
+
+  // Style to hide Facebook's default chat bubble
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .fb_customer_chat_bubble_pop_in {
+        display: none !important;
+      }
+      .fb-customerchat iframe {
+        bottom: 100px !important;
+        right: 20px !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <>
@@ -78,12 +190,16 @@ export default function FloatingChatWidget() {
       {isOpen && (
         <div
           className="fixed inset-0 z-40 sm:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            if (window.FB?.CustomerChat) {
+              window.FB.CustomerChat.hideDialog();
+            }
+          }}
         />
       )}
 
       <div className="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-3">
-
         {/* Sub-buttons */}
         <div
           className="flex flex-col items-end gap-3"
@@ -110,15 +226,23 @@ export default function FloatingChatWidget() {
             </button>
           </div>
 
-          {/* Messenger — opens as popup window */}
+          {/* Messenger — embedded in page */}
           <div className="flex items-center gap-2 group">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
               Messenger
+              {!sdkReady && (
+                <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded-full ml-1">
+                  Loading...
+                </span>
+              )}
             </div>
             <button
               onClick={handleMessengerClick}
+              disabled={!sdkReady}
               aria-label="Chat on Messenger"
-              className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
+              className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-150 ${
+                sdkReady ? 'hover:scale-110 active:scale-95' : 'opacity-50 cursor-not-allowed'
+              }`}
               style={{
                 background: "radial-gradient(circle at 20% 100%, #09F 0%, #A033FF 61%, #FF5280 93%, #FF7061 100%)",
                 boxShadow: "0 4px 20px rgba(160, 51, 255, 0.4)",
@@ -138,7 +262,12 @@ export default function FloatingChatWidget() {
             />
           )}
           <button
-            onClick={() => setIsOpen((o) => !o)}
+            onClick={() => {
+              setIsOpen((o) => !o);
+              if (isOpen && window.FB?.CustomerChat) {
+                window.FB.CustomerChat.hideDialog();
+              }
+            }}
             aria-label={isOpen ? "Close" : "Chat with us"}
             className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
             style={{
