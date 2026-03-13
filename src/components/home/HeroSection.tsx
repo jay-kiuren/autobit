@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColorBends from "@/components/ColorBends";
 
@@ -61,7 +61,7 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        <JellyChip />
+        <GlassChip />
 
         {/* Headline */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
@@ -232,132 +232,127 @@ const HeroSection = () => {
   );
 };
 
-// ─── JELLY CHIP ──────────────────────────────────────────────────────────────
-// Default state: CLEAN — no filter applied, crisp text, proper glass look
-// Hover/press: SVG displacement filter kicks in — edges and fill wobble like gel
-// Filter scale = 0 at rest (invisible), ramps to 8 on hover, 16 on press
-// This prevents the always-on pixelation bug
+// ─── GLASS CHIP ──────────────────────────────────────────────────────────────
+// Pure CSS — no filters, no JS physics
+// Replicates the image: thick 3D gel pill with:
+//   1. Large top-left specular blob (the bright white oval highlight)
+//   2. Thin top edge catch light (1px rim)
+//   3. Frosted semi-transparent fill
+//   4. Soft drop shadow for ground contact depth
+//   5. Inner depth shadow making it look thick/raised
 // ─────────────────────────────────────────────────────────────────────────────
-const JellyChip = () => {
-  const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
-  const currentScale = useRef(0);
-  const targetScale = useRef(0);
-  const rafRef = useRef<number>(0);
+const GlassChip = () => {
   const [hovered, setHovered] = useState(false);
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    const tick = () => {
-      const diff = targetScale.current - currentScale.current;
-      currentScale.current += diff * 0.10;
-      if (displacementRef.current) {
-        displacementRef.current.setAttribute("scale", currentScale.current.toFixed(3));
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, []);
 
   return (
-    <>
-      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} aria-hidden="true">
-        <defs>
-          <filter id="jelly-chip" x="-25%" y="-25%" width="150%" height="150%">
-            <feTurbulence
-              type="turbulence"
-              baseFrequency="0.025 0.04"
-              numOctaves="2"
-              seed="5"
-              result="noise"
-            >
-              <animate
-                attributeName="baseFrequency"
-                values="0.025 0.04;0.035 0.055;0.028 0.045;0.025 0.04"
-                dur="4s"
-                repeatCount="indefinite"
-              />
-            </feTurbulence>
-            <feDisplacementMap
-              ref={displacementRef}
-              in="SourceGraphic"
-              in2="noise"
-              scale="0"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "9999px",
+        padding: "10px 28px",
+        marginBottom: "28px",
+        cursor: "default",
+        userSelect: "none" as const,
+        transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease",
+        transform: hovered ? "scale(1.04) translateY(-1px)" : "scale(1) translateY(0)",
 
-      <div
-        onMouseEnter={() => { setHovered(true); targetScale.current = 7; }}
-        onMouseLeave={() => { setHovered(false); setActive(false); targetScale.current = 0; }}
-        onMouseDown={() => { setActive(true); targetScale.current = 14; }}
-        onMouseUp={() => { setActive(false); targetScale.current = 7; }}
-        style={{
-          // Only apply filter when hovering — clean at rest
-          filter: hovered || active ? "url(#jelly-chip)" : "none",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: "9999px",
-          padding: "9px 24px",
-          marginBottom: "28px",
-          cursor: "default",
-          userSelect: "none" as const,
-          position: "relative" as const,
-          // Clean frosted glass at rest
-          background: hovered
-            ? "rgba(255,255,255,0.10)"
-            : "rgba(255,255,255,0.07)",
-          backdropFilter: "blur(20px) saturate(140%)",
-          WebkitBackdropFilter: "blur(20px) saturate(140%)",
-          transition: "background 0.3s ease, box-shadow 0.3s ease",
-          boxShadow: hovered
-            ? `
-                inset 0 1px 0 rgba(255,255,255,0.50),
-                inset 0 -0.5px 0 rgba(255,255,255,0.06),
-                0 4px 20px rgba(0,0,0,0.22),
-                0 0 0 0.5px rgba(255,255,255,0.14),
-                0 0 24px rgba(255,255,255,0.06)
-              `
-            : `
-                inset 0 1px 0 rgba(255,255,255,0.35),
-                inset 0 -0.5px 0 rgba(255,255,255,0.04),
-                0 2px 10px rgba(0,0,0,0.18),
-                0 0 0 0.5px rgba(255,255,255,0.09)
-              `,
-        }}
-      >
-        {/* Top light shimmer — glass catching light */}
-        <div style={{
-          position: "absolute",
-          top: "2px", left: "22%", right: "22%",
-          height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
-          borderRadius: "9999px",
-          pointerEvents: "none",
-        }} />
+        // Frosted glass body
+        background: "rgba(255,255,255,0.10)",
+        backdropFilter: "blur(20px) saturate(150%)",
+        WebkitBackdropFilter: "blur(20px) saturate(150%)",
 
-        <span style={{
-          fontSize: "11px",
-          fontWeight: 500,
-          letterSpacing: "0.07em",
-          textTransform: "uppercase" as const,
-          color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.62)",
-          transition: "color 0.25s ease",
-          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-          lineHeight: 1,
-          position: "relative",
-          zIndex: 1,
-          // Counter-sharpen text on filter apply so it doesn't blur
-          WebkitFontSmoothing: "antialiased",
-        }}>
-          Start Something™
-        </span>
-      </div>
-    </>
+        // The layered shadow system that creates 3D depth:
+        // 1. Outer drop shadow — object sitting on a surface
+        // 2. Inner top highlight — light hitting the curved top face
+        // 3. Inner bottom depth — underside catching less light
+        // 4. Outer rim — subtle 1px border instead of solid line
+        boxShadow: hovered
+          ? `
+              /* Ground shadow — deeper on hover (lifted) */
+              0 12px 40px rgba(0,0,0,0.45),
+              0 4px 12px rgba(0,0,0,0.30),
+              /* Top face catch light */
+              inset 0 1.5px 0 rgba(255,255,255,0.70),
+              /* Side rim lights */
+              inset 1px 0 0 rgba(255,255,255,0.20),
+              inset -1px 0 0 rgba(255,255,255,0.12),
+              /* Underside shadow — makes it look thick */
+              inset 0 -2px 6px rgba(0,0,0,0.25),
+              /* Outer rim */
+              0 0 0 0.5px rgba(255,255,255,0.18),
+              /* Ambient glow */
+              0 0 30px rgba(255,255,255,0.07)
+            `
+          : `
+              /* Ground shadow */
+              0 6px 24px rgba(0,0,0,0.40),
+              0 2px 6px rgba(0,0,0,0.25),
+              /* Top face catch light */
+              inset 0 1.5px 0 rgba(255,255,255,0.55),
+              /* Side rim */
+              inset 1px 0 0 rgba(255,255,255,0.14),
+              inset -1px 0 0 rgba(255,255,255,0.08),
+              /* Underside depth */
+              inset 0 -2px 5px rgba(0,0,0,0.20),
+              /* Outer rim */
+              0 0 0 0.5px rgba(255,255,255,0.12)
+            `,
+      }}
+    >
+      {/*
+        SPECULAR HIGHLIGHT — the big white oval in the top-left of the image.
+        This is what makes it look like a physical 3D gel object.
+        It's a blurred white ellipse, positioned top-left of the pill.
+      */}
+      <div style={{
+        position: "absolute",
+        top: "3px",
+        left: "14%",
+        width: "38%",
+        height: "45%",
+        background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.20) 50%, transparent 75%)",
+        borderRadius: "9999px",
+        pointerEvents: "none",
+        filter: "blur(2px)",
+        opacity: hovered ? 0.9 : 0.75,
+        transition: "opacity 0.3s ease",
+      }} />
+
+      {/* Secondary smaller specular on right — real glass has multiple light bounces */}
+      <div style={{
+        position: "absolute",
+        bottom: "4px",
+        right: "18%",
+        width: "18%",
+        height: "30%",
+        background: "radial-gradient(ellipse, rgba(255,255,255,0.18) 0%, transparent 70%)",
+        borderRadius: "9999px",
+        pointerEvents: "none",
+        filter: "blur(1px)",
+      }} />
+
+      {/* Text */}
+      <span style={{
+        fontSize: "11px",
+        fontWeight: 500,
+        letterSpacing: "0.07em",
+        textTransform: "uppercase" as const,
+        color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.70)",
+        transition: "color 0.25s ease",
+        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+        lineHeight: 1,
+        position: "relative",
+        zIndex: 1,
+        WebkitFontSmoothing: "antialiased",
+      }}>
+        Start Something™
+      </span>
+    </div>
   );
 };
 
