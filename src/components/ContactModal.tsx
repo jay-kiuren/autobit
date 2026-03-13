@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Paperclip, CheckCircle } from "lucide-react";
-
-interface ContactModalProps {
-  open: boolean;
-  onClose: () => void;
-}
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const sf: React.CSSProperties = {
   fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -13,7 +9,7 @@ const sf: React.CSSProperties = {
   MozOsxFontSmoothing: "grayscale",
 };
 
-const field: React.CSSProperties = {
+const fieldBase: React.CSSProperties = {
   ...sf,
   fontSize: "14px",
   fontWeight: 400,
@@ -28,7 +24,8 @@ const field: React.CSSProperties = {
   transition: "border-color 0.2s ease, background 0.2s ease",
 };
 
-const ContactModal = ({ open, onClose }: ContactModalProps) => {
+const ContactModal = () => {
+  const { open, closeModal } = useContactModal();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -42,13 +39,13 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
   }, [open]);
 
   useEffect(() => {
-    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") closeModal(); };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
-  }, [onClose]);
+  }, [closeModal]);
 
   const reset = () => { setName(""); setEmail(""); setMessage(""); setFile(null); setSent(false); };
-  const handleClose = () => { reset(); onClose(); };
+  const handleClose = () => { reset(); closeModal(); };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +76,7 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
             }}
           />
 
-          {/* Sheet — full width, slides from bottom */}
+          {/* Sheet */}
           <motion.div
             key="sheet"
             initial={{ y: "100%" }}
@@ -94,7 +91,6 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
               display: "flex",
               flexDirection: "column",
               borderRadius: "24px 24px 0 0",
-              // Dark premium surface — NOT gray box
               background: "rgb(10,10,10)",
               borderTop: "1px solid rgba(255,255,255,0.07)",
               overflow: "hidden",
@@ -105,7 +101,7 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
               <div style={{ width: "40px", height: "4px", borderRadius: "9999px", background: "rgba(255,255,255,0.12)" }} />
             </div>
 
-            {/* Close btn */}
+            {/* Close */}
             <button
               onClick={handleClose}
               style={{
@@ -122,19 +118,16 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
               <X size={13} />
             </button>
 
-            {/* Scrollable inner */}
+            {/* Body */}
             <div style={{ flex: 1, overflowY: "auto", padding: "28px 0 56px" }}>
               <div className="cm-grid" style={{
-                maxWidth: "1100px",
-                margin: "0 auto",
+                maxWidth: "1100px", margin: "0 auto",
                 padding: "0 clamp(28px, 6vw, 96px)",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "clamp(40px, 7vw, 110px)",
-                alignItems: "start",
+                display: "grid", gridTemplateColumns: "1fr 1fr",
+                gap: "clamp(40px, 7vw, 110px)", alignItems: "start",
               }}>
 
-                {/* ── Left: Copy ── */}
+                {/* Left */}
                 <div style={{ paddingTop: "16px" }}>
                   <p style={{ ...sf, fontSize: "11px", fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.25)", margin: "0 0 20px 0" }}>
                     New project
@@ -143,28 +136,23 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
                     fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
                     WebkitFontSmoothing: "antialiased",
                     fontSize: "clamp(32px, 4.5vw, 58px)",
-                    fontWeight: 700,
-                    letterSpacing: "-0.038em",
-                    lineHeight: 1.05,
-                    color: "#ffffff",
-                    margin: "0 0 20px 0",
+                    fontWeight: 700, letterSpacing: "-0.038em",
+                    lineHeight: 1.05, color: "#ffffff", margin: "0 0 20px 0",
                   }}>
                     Let's build<br />something.
                   </h2>
                   <p style={{ ...sf, fontSize: "15px", lineHeight: 1.65, color: "rgba(255,255,255,0.42)", margin: "0 0 40px 0", maxWidth: "280px" }}>
                     Describe your problem. We'll scope and price it within 24 hours.
                   </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {["No retainers", "50% deposit to start", "Reply within 24h"].map((t) => (
-                      <div key={t} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "rgba(255,255,255,0.20)", flexShrink: 0 }} />
-                        <span style={{ ...sf, fontSize: "13px", color: "rgba(255,255,255,0.30)" }}>{t}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {["No retainers", "50% deposit to start", "Reply within 24h"].map((t) => (
+                    <div key={t} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                      <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "rgba(255,255,255,0.20)", flexShrink: 0 }} />
+                      <span style={{ ...sf, fontSize: "13px", color: "rgba(255,255,255,0.30)" }}>{t}</span>
+                    </div>
+                  ))}
                 </div>
 
-                {/* ── Right: Form ── */}
+                {/* Right */}
                 <div style={{ paddingTop: "8px" }}>
                   <AnimatePresence mode="wait">
                     {sent ? (
@@ -193,32 +181,22 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
                         exit={{ opacity: 0 }}
                         style={{ display: "flex", flexDirection: "column", gap: "10px" }}
                       >
-                        <input
-                          value={name} onChange={(e) => setName(e.target.value)}
-                          placeholder="Name" type="text" required
-                          style={field}
+                        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" type="text" required style={fieldBase}
                           onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.24)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
                           onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                         />
-                        <input
-                          value={email} onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email" type="email" required
-                          style={field}
+                        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" required style={fieldBase}
                           onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.24)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
                           onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                         />
-                        <textarea
-                          value={message} onChange={(e) => setMessage(e.target.value)}
-                          placeholder="What are you building?" rows={5} required
-                          style={{ ...field, resize: "vertical" as const }}
+                        <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="What are you building?" rows={5} required
+                          style={{ ...fieldBase, resize: "vertical" as const }}
                           onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.24)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
                           onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                         />
 
-                        {/* File attach */}
                         <input ref={fileRef} type="file" accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx" style={{ display: "none" }} onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-                        <button
-                          type="button" onClick={() => fileRef.current?.click()}
+                        <button type="button" onClick={() => fileRef.current?.click()}
                           style={{ ...sf, display: "flex", alignItems: "center", gap: "7px", fontSize: "12px", color: file ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.28)", background: "none", border: "none", cursor: "pointer", padding: "2px 0", width: "fit-content", transition: "color 0.2s" }}
                           onMouseEnter={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.65)"}
                           onMouseLeave={(e) => e.currentTarget.style.color = file ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.28)"}
@@ -227,9 +205,7 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
                           {file ? file.name : "Attach a file (optional)"}
                         </button>
 
-                        {/* Submit */}
-                        <button
-                          type="submit"
+                        <button type="submit"
                           style={{ ...sf, marginTop: "8px", background: "#2997ff", color: "#fff", border: "none", borderRadius: "980px", fontSize: "15px", fontWeight: 500, padding: "14px", width: "100%", cursor: "pointer", transition: "background 0.2s ease, transform 0.15s ease" }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.01)"; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1)"; }}
