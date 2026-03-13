@@ -74,9 +74,7 @@ const Footer = () => (
         display: "grid",
         gridTemplateColumns: "repeat(2, 1fr)",
         gap: "32px 24px",
-      }}
-        className="footer-columns-grid"
-      >
+      }}>
         {footerColumns.map((col) => (
           <div key={col.heading}>
             <h6 style={{

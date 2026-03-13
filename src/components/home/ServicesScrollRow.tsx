@@ -128,7 +128,7 @@ const ServiceCard = ({ card }: { card: CardData }) => {
       <p style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.25)', marginTop: '12px' }}>{card.price}</p>
       <div style={{ display: 'flex', gap: '16px', marginTop: '16px', flexWrap: 'wrap' }}>
         <a href="/services" style={{ fontFamily: font, fontSize: '13px', color: '#2997ff', textDecoration: 'none' }}>Learn more</a>
-        <a href="mailto:autobitofficial.ph@gmail.com" style={{ fontFamily: font, fontSize: '13px', color: '#2997ff', textDecoration: 'none' }}>Get a quote →</a>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} style={{ fontFamily: font, fontSize: '13px', color: '#2997ff', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Get a quote →</button>
       </div>
       {card.visual}
     </div>

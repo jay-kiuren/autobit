@@ -662,7 +662,7 @@ const Services = () => {
                       <span className="svc-tag">{s.uniqueTag}</span>
 
                       <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",marginTop:8}}>
-                        <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">Get a quote →</a>
+                        <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} className="svc-cta" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Get a quote →</button>
                       </div>
                     </motion.div>
 
@@ -746,9 +746,9 @@ const Services = () => {
                   viewport={{once:true}} transition={{delay:0.35,duration:0.6}}
                   style={{display:"flex",alignItems:"center",justifyContent:"center",
                     gap:24,flexWrap:"wrap",position:"relative",zIndex:1}}>
-                  <a href="mailto:autobitofficial.ph@gmail.com" className="svc-cta">
+                  <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} className="svc-cta" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                     Start a project →
-                  </a>
+                  </button>
                   <a href="/pricing" style={{
                     background:"rgba(255,255,255,0.10)",color:"#fff",padding:"12px 26px",
                     borderRadius:"980px",fontSize:"15px",fontWeight:500,textDecoration:"none",
