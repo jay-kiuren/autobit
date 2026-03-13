@@ -243,7 +243,7 @@ const Footer = () => (
           fontWeight: 400,
           color: "rgba(255,255,255,0.28)",
         }}>
-          Copyright 2025 AUTOBIT. All rights reserved.
+          Copyright © 2026 AUTOBIT. All rights reserved.
         </span>
         <span style={{
           ...appleFont,
