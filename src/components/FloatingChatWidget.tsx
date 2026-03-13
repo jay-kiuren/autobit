@@ -1,19 +1,4 @@
-import { useState, useEffect } from "react";
-
-// Extend Window to include FB SDK types
-declare global {
-  interface Window {
-    FB?: {
-      CustomerChat?: {
-        show: () => void;
-        hide: () => void;
-        showDialog: () => void;
-        hideDialog: () => void;
-      };
-    };
-    fbAsyncInit?: () => void;
-  }
-}
+import { useState, useEffect, useRef } from "react";
 
 const FB_PAGE_ID = "701374596384613";
 
@@ -52,92 +37,126 @@ const WhatsAppIcon = () => (
 );
 
 export default function FloatingChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
-  const [fbReady, setFbReady] = useState(false);
-
-  // Wait for FB SDK to load, then inject the hidden customer chat plugin
-  useEffect(() => {
-    const initFB = () => {
-      if (!window.FB) return;
-
-      // Inject the fb-customerchat div if not already present
-      if (!document.getElementById("fb-customerchat")) {
-        const chatbox = document.createElement("div");
-        chatbox.id = "fb-customerchat";
-        chatbox.setAttribute("class", "fb-customerchat");
-        chatbox.setAttribute("page_id", FB_PAGE_ID);
-        chatbox.setAttribute("theme_color", "#0099FF");
-        // Start hidden — we control it ourselves
-        chatbox.setAttribute("minimized", "true");
-        document.body.appendChild(chatbox);
-
-        window.FB.CustomerChat?.hide();
-      }
-
-      setFbReady(true);
-    };
-
-    // FB SDK may already be ready, or we wait for fbAsyncInit
-    if (window.FB) {
-      initFB();
-    } else {
-      const originalInit = window.fbAsyncInit;
-      window.fbAsyncInit = () => {
-        originalInit?.();
-        initFB();
-      };
-    }
-
-    // Poll fallback in case fbAsyncInit already fired before this component mounted
-    const poll = setInterval(() => {
-      if (window.FB) {
-        initFB();
-        clearInterval(poll);
-      }
-    }, 300);
-
-    return () => clearInterval(poll);
-  }, []);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (isOpen) setShowPulse(false);
-  }, [isOpen]);
+    if (menuOpen) setShowPulse(false);
+  }, [menuOpen]);
 
   const handleMessengerClick = () => {
-    setIsOpen(false);
-    if (fbReady && window.FB?.CustomerChat) {
-      // Show the chat dialog inline on the page
-      window.FB.CustomerChat.show();
-      window.FB.CustomerChat.showDialog();
-    } else {
-      // Graceful fallback if SDK hasn't loaded yet
-      window.open(`https://m.me/${FB_PAGE_ID}`, "_blank", "noopener,noreferrer");
-    }
+    setMenuOpen(false);
+    setChatOpen(true);
   };
+
+  const handleCloseChat = () => {
+    setChatOpen(false);
+    setIframeLoaded(false);
+  };
+
+  // The Messenger web chat URL — loads the full chat UI in an iframe
+  const messengerSrc = `https://www.facebook.com/messages/t/${FB_PAGE_ID}`;
 
   return (
     <>
-      {/* Mobile backdrop */}
-      {isOpen && (
+      {/* ── Messenger Chat Panel ── */}
+      <div
+        className="fixed z-50 flex flex-col overflow-hidden"
+        style={{
+          bottom: "96px",
+          right: "20px",
+          width: chatOpen ? "340px" : "0px",
+          height: chatOpen ? "520px" : "0px",
+          maxWidth: "calc(100vw - 32px)",
+          maxHeight: "calc(100svh - 120px)",
+          borderRadius: "18px",
+          boxShadow: chatOpen ? "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08)" : "none",
+          transition: "width 0.3s cubic-bezier(0.4,0,0.2,1), height 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s",
+          background: "#1a1a1a",
+          overflow: "hidden",
+        }}
+      >
+        {/* Chat header */}
+        {chatOpen && (
+          <div
+            className="flex items-center justify-between px-4 py-3 flex-shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #0099ff 0%, #a033ff 100%)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <MessengerIcon />
+              <div>
+                <p className="text-white text-sm font-semibold leading-tight">Autobit</p>
+                <p className="text-white/70 text-xs leading-tight">Messenger</p>
+              </div>
+            </div>
+            <button
+              onClick={handleCloseChat}
+              aria-label="Close chat"
+              className="text-white/80 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Loading spinner */}
+        {chatOpen && !iframeLoaded && (
+          <div className="flex-1 flex flex-col items-center justify-center gap-3" style={{ background: "#111" }}>
+            <div
+              className="w-8 h-8 rounded-full border-2 border-white/10 border-t-blue-400 animate-spin"
+            />
+            <p className="text-white/40 text-xs">Loading Messenger…</p>
+          </div>
+        )}
+
+        {/* iframe — Facebook Messenger web */}
+        {chatOpen && (
+          <iframe
+            ref={iframeRef}
+            src={messengerSrc}
+            title="Messenger Chat"
+            allow="microphone; camera"
+            onLoad={() => setIframeLoaded(true)}
+            style={{
+              flex: 1,
+              width: "100%",
+              border: "none",
+              display: iframeLoaded ? "block" : "none",
+              background: "#fff",
+            }}
+          />
+        )}
+      </div>
+
+      {/* ── Mobile backdrop ── */}
+      {menuOpen && (
         <div
           className="fixed inset-0 z-40 sm:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setMenuOpen(false)}
         />
       )}
 
+      {/* ── FAB stack ── */}
       <div className="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-3">
 
         {/* Sub-buttons */}
         <div
           className="flex flex-col items-end gap-3 transition-all duration-300 origin-bottom"
           style={{
-            opacity: isOpen ? 1 : 0,
-            transform: isOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.92)",
-            pointerEvents: isOpen ? "auto" : "none",
+            opacity: menuOpen ? 1 : 0,
+            transform: menuOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.92)",
+            pointerEvents: menuOpen ? "auto" : "none",
           }}
         >
-          {/* WhatsApp — pending Meta approval */}
+          {/* WhatsApp — pending */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/40 text-xs font-medium px-3 py-1.5 rounded-full shadow-md select-none">
               <span>WhatsApp</span>
@@ -153,14 +172,14 @@ export default function FloatingChatWidget() {
             </button>
           </div>
 
-          {/* Messenger — active, opens in-page chat */}
+          {/* Messenger */}
           <div className="flex items-center gap-2 group">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
               <span>Messenger</span>
             </div>
             <button
               onClick={handleMessengerClick}
-              aria-label="Chat on Facebook Messenger"
+              aria-label="Chat on Messenger"
               className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
               style={{
                 background: "radial-gradient(circle at 20% 100%, #09F 0%, #A033FF 61%, #FF5280 93%, #FF7061 100%)",
@@ -172,33 +191,39 @@ export default function FloatingChatWidget() {
           </div>
         </div>
 
-        {/* Main toggle bubble */}
+        {/* Main toggle — shows X when chat is open */}
         <div className="relative">
-          {showPulse && (
+          {showPulse && !chatOpen && (
             <span
               className="absolute inset-0 rounded-full animate-ping"
               style={{ background: "hsl(211 100% 58% / 0.35)" }}
             />
           )}
           <button
-            onClick={() => setIsOpen((o) => !o)}
-            aria-label={isOpen ? "Close chat" : "Chat with us"}
-            className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+            onClick={() => {
+              if (chatOpen) {
+                handleCloseChat();
+              } else {
+                setMenuOpen((o) => !o);
+              }
+            }}
+            aria-label={chatOpen ? "Close chat" : menuOpen ? "Close menu" : "Chat with us"}
+            className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
             style={{
-              background: isOpen
+              background: menuOpen || chatOpen
                 ? "hsl(240 3% 20%)"
                 : "linear-gradient(135deg, hsl(211 100% 58%) 0%, hsl(220 100% 46%) 100%)",
-              boxShadow: isOpen
+              boxShadow: menuOpen || chatOpen
                 ? "0 4px 24px rgba(0,0,0,0.5)"
                 : "0 4px 24px hsl(211 100% 58% / 0.5)",
-              border: isOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
+              border: menuOpen || chatOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
             }}
           >
             <div
               className="transition-transform duration-300"
-              style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+              style={{ transform: menuOpen || chatOpen ? "rotate(45deg)" : "rotate(0deg)" }}
             >
-              {isOpen ? (
+              {menuOpen || chatOpen ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
