@@ -46,8 +46,10 @@ declare global {
         showDialog: () => void;
         hideDialog: () => void;
       };
-      init: (params: object) => void;
-      XFBML: { parse: () => void };
+      init: (params: { xfbml: boolean; version: string }) => void;
+      XFBML: { 
+        parse: (node?: HTMLElement) => void;
+      };
     };
     fbAsyncInit: () => void;
   }
@@ -57,65 +59,162 @@ export default function FloatingChatWidget() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
   const [sdkReady, setSdkReady] = useState(false);
+  const [initAttempts, setInitAttempts] = useState(0);
 
   useEffect(() => {
     if (menuOpen) setShowPulse(false);
   }, [menuOpen]);
 
-  // Load FB SDK and inject hidden customer chat plugin
+  // Initialize Facebook SDK and Customer Chat
   useEffect(() => {
-    // Inject fb-customerchat div (hidden by default — we call showDialog manually)
-    if (!document.getElementById("fb-customerchat")) {
+    const MAX_ATTEMPTS = 10;
+    let pollInterval: NodeJS.Timeout;
+
+    const createChatElement = () => {
+      // Remove existing chat element if any
+      const existingChat = document.getElementById("fb-customerchat");
+      if (existingChat) {
+        existingChat.remove();
+      }
+
+      // Create fresh chat element
       const chatbox = document.createElement("div");
+      chatbox.id = "fb-customerchat";
       chatbox.className = "fb-customerchat";
       chatbox.setAttribute("attribution", "biz_inbox");
       chatbox.setAttribute("page_id", FB_PAGE_ID);
       chatbox.setAttribute("theme_color", "#0099FF");
       chatbox.setAttribute("logged_in_greeting", "Hi! How can we help you?");
       chatbox.setAttribute("logged_out_greeting", "Hi! How can we help you?");
-      // minimized=true keeps FB's own bubble hidden — we use ours instead
       chatbox.setAttribute("minimized", "true");
       document.body.appendChild(chatbox);
-    }
+      
+      return chatbox;
+    };
 
-    // Inject FB SDK script if not already present
-    if (!document.getElementById("facebook-jssdk")) {
-      window.fbAsyncInit = function () {
-        window.FB!.init({ xfbml: true, version: "v19.0" });
-        setSdkReady(true);
-      };
-      const script = document.createElement("script");
-      script.id = "facebook-jssdk";
-      script.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    } else if (window.FB) {
-      // SDK already loaded (e.g. navigating back to this page)
-      setSdkReady(true);
-    }
+    const initFacebookSDK = () => {
+      return new Promise<void>((resolve) => {
+        // If SDK already loaded
+        if (window.FB && window.FB.XFBML) {
+          resolve();
+          return;
+        }
 
-    // Poll until FB is ready (handles edge cases)
-    const poll = setInterval(() => {
-      if (window.FB?.CustomerChat) {
-        setSdkReady(true);
-        clearInterval(poll);
+        // Set up fbAsyncInit
+        window.fbAsyncInit = function() {
+          if (window.FB) {
+            window.FB.init({
+              xfbml: true,
+              version: "v18.0"
+            });
+            resolve();
+          }
+        };
+
+        // Load SDK script if not present
+        if (!document.getElementById("facebook-jssdk")) {
+          const script = document.createElement("script");
+          script.id = "facebook-jssdk";
+          script.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
+          script.async = true;
+          script.defer = true;
+          script.crossOrigin = "anonymous";
+          document.body.appendChild(script);
+        } else {
+          // Script exists but FB not ready yet, wait for it
+          const checkFB = setInterval(() => {
+            if (window.FB && window.FB.XFBML) {
+              clearInterval(checkFB);
+              resolve();
+            }
+          }, 100);
+        }
+      });
+    };
+
+    const initializeChat = async () => {
+      try {
+        // Create the chat element
+        createChatElement();
+
+        // Initialize SDK
+        await initFacebookSDK();
+
+        // Parse the XFBML to initialize the chat plugin
+        if (window.FB?.XFBML) {
+          window.FB.XFBML.parse();
+        }
+
+        // Poll for Customer Chat availability
+        let attempts = 0;
+        pollInterval = setInterval(() => {
+          attempts++;
+          
+          // Check if Customer Chat is ready
+          if (window.FB?.CustomerChat) {
+            setSdkReady(true);
+            clearInterval(pollInterval);
+          } else if (attempts >= MAX_ATTEMPTS) {
+            // Max attempts reached, still not ready
+            console.warn("Facebook Customer Chat failed to initialize after multiple attempts");
+            clearInterval(pollInterval);
+          }
+        }, 500);
+
+      } catch (error) {
+        console.error("Failed to initialize Facebook Chat:", error);
       }
-    }, 200);
+    };
 
-    return () => clearInterval(poll);
+    initializeChat();
+
+    return () => {
+      if (pollInterval) clearInterval(pollInterval);
+    };
   }, []);
 
   const handleMessengerClick = () => {
     setMenuOpen(false);
+    
+    // If SDK is ready, try to open the chat dialog
     if (sdkReady && window.FB?.CustomerChat) {
-      // Show plugin's chat window directly on the page
-      window.FB.CustomerChat.show();
-      window.FB.CustomerChat.showDialog();
+      try {
+        // First make sure the chat is visible
+        window.FB.CustomerChat.show();
+        
+        // Small delay to ensure show() completes
+        setTimeout(() => {
+          try {
+            // Show the dialog
+            window.FB.CustomerChat.showDialog();
+          } catch (e) {
+            console.warn("Error showing dialog, using fallback:", e);
+            // Fallback to page plugin in popup
+            openMessengerPopup();
+          }
+        }, 300);
+      } catch (e) {
+        console.warn("Error with FB chat:", e);
+        openMessengerPopup();
+      }
     } else {
-      // Fallback: open in new tab if SDK hasn't loaded
-      window.open(`https://m.me/${FB_PAGE_ID}`, "_blank", "noopener,noreferrer");
+      // SDK not ready, use fallback
+      openMessengerPopup();
     }
+  };
+
+  const openMessengerPopup = () => {
+    // Open Messenger in a popup window instead of new tab
+    const width = 400;
+    const height = 600;
+    const left = window.innerWidth - width - 20;
+    const top = window.innerHeight - height - 100;
+    
+    window.open(
+      `https://m.me/${FB_PAGE_ID}`,
+      'Messenger',
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no`
+    );
   };
 
   return (
@@ -159,6 +258,9 @@ export default function FloatingChatWidget() {
           <div className="flex items-center gap-2 group">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
               <span>Messenger</span>
+              {!sdkReady && (
+                <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded-full">Loading...</span>
+              )}
             </div>
             <button
               onClick={handleMessengerClick}
@@ -214,6 +316,13 @@ export default function FloatingChatWidget() {
           </button>
         </div>
       </div>
+
+      {/* Add debug info in development - remove in production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-20 right-5 bg-black text-white text-xs p-2 rounded opacity-50">
+          FB SDK: {sdkReady ? '✅' : '⏳'}
+        </div>
+      )}
     </>
   );
 }
