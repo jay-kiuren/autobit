@@ -18,22 +18,14 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Lock body scroll when open
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // ESC to close
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handler);
@@ -41,169 +33,141 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
   }, [onClose]);
 
   const reset = () => {
-    setName(""); setEmail(""); setMessage("");
-    setFile(null); setSent(false); setError("");
+    setName(""); setEmail(""); setMessage(""); setFile(null); setSent(false);
   };
 
   const handleClose = () => { reset(); onClose(); };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !message) { setError("Please fill in all fields."); return; }
-    setSending(true); setError("");
-    try {
-      // EmailJS — replace with your actual service/template/public key
-      const { default: emailjs } = await import("@emailjs/browser");
-      await emailjs.send(
-        "YOUR_SERVICE_ID",
-        "YOUR_TEMPLATE_ID",
-        { from_name: name, from_email: email, message, file_name: file?.name ?? "none" },
-        "YOUR_PUBLIC_KEY"
-      );
-      setSent(true);
-    } catch {
-      setError("Something went wrong. Email us directly at autobitofficial.ph@gmail.com");
-    } finally {
-      setSending(false);
-    }
+    if (!name || !email || !message) return;
+    const subject = encodeURIComponent(`New project inquiry from ${name}`);
+    const body = encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}${file ? `\n\nAttached file: ${file.name}` : ""}`
+    );
+    window.open(`mailto:autobitofficial.ph@gmail.com?subject=${subject}&body=${body}`, "_blank");
+    setSent(true);
   };
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop — blurred, click to close */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: "easeInOut" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
             onClick={handleClose}
             style={{
               position: "fixed", inset: 0, zIndex: 50,
-              backdropFilter: "blur(20px) brightness(0.35)",
-              WebkitBackdropFilter: "blur(20px) brightness(0.35)",
-              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(22px) brightness(0.30)",
+              WebkitBackdropFilter: "blur(22px) brightness(0.30)",
+              background: "rgba(0,0,0,0.60)",
             }}
           />
 
-          {/* Sheet — slides up from bottom, full width */}
           <motion.div
             key="sheet"
-            initial={{ y: "100%", opacity: 0 }}
+            initial={{ y: "100%", opacity: 0.5 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
-            transition={{
-              duration: 0.65,
-              ease: [0.32, 0.72, 0, 1], // iOS sheet easing
-            }}
+            transition={{ duration: 0.70, ease: [0.32, 0.72, 0, 1] }}
             style={{
               position: "fixed",
               bottom: 0, left: 0, right: 0,
               zIndex: 51,
-              // Full width, not full height
               maxHeight: "82vh",
               borderRadius: "20px 20px 0 0",
-              background: "rgba(14,14,14,0.96)",
+              background: "rgba(13,13,13,0.97)",
               backdropFilter: "blur(40px)",
               WebkitBackdropFilter: "blur(40px)",
               borderTop: "1px solid rgba(255,255,255,0.08)",
-              overflow: "hidden",
               display: "flex",
               flexDirection: "column",
+              overflow: "hidden",
             }}
           >
-            {/* Drag handle */}
-            <div style={{ display: "flex", justifyContent: "center", paddingTop: "14px", paddingBottom: "4px", flexShrink: 0 }}>
-              <div style={{
-                width: "36px", height: "4px",
-                borderRadius: "9999px",
-                background: "rgba(255,255,255,0.15)",
-              }} />
+            <div style={{ display: "flex", justifyContent: "center", paddingTop: "14px", flexShrink: 0 }}>
+              <div style={{ width: "36px", height: "4px", borderRadius: "9999px", background: "rgba(255,255,255,0.14)" }} />
             </div>
 
-            {/* Close button */}
             <button
               onClick={handleClose}
               style={{
-                position: "absolute", top: "18px", right: "24px",
-                width: "30px", height: "30px",
-                borderRadius: "9999px",
-                background: "rgba(255,255,255,0.08)",
-                border: "none", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: "rgba(255,255,255,0.55)",
+                position: "absolute", top: "16px", right: "20px",
+                width: "28px", height: "28px", borderRadius: "9999px",
+                background: "rgba(255,255,255,0.07)", border: "none",
+                cursor: "pointer", display: "flex", alignItems: "center",
+                justifyContent: "center", color: "rgba(255,255,255,0.50)",
                 transition: "background 0.2s ease, color 0.2s ease",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#fff"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "rgba(255,255,255,0.55)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.13)"; e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.50)"; }}
             >
-              <X size={14} />
+              <X size={13} />
             </button>
 
-            {/* Scrollable content */}
-            <div style={{ overflowY: "auto", flex: 1, padding: "20px 0 40px" }}>
-              <div style={{
-                maxWidth: "1000px",
-                margin: "0 auto",
-                padding: "0 clamp(24px, 5vw, 72px)",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "clamp(32px, 5vw, 80px)",
-                alignItems: "start",
-              }}
-                className="contact-modal-grid"
+            <div style={{ flex: 1, overflowY: "auto", padding: "24px 0 48px" }}>
+              <div
+                className="contact-modal-inner"
+                style={{
+                  maxWidth: "1040px",
+                  margin: "0 auto",
+                  padding: "0 clamp(24px, 5vw, 80px)",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "clamp(32px, 6vw, 96px)",
+                  alignItems: "start",
+                }}
               >
-                {/* Left — copy */}
-                <div style={{ paddingTop: "8px" }}>
-                  <p style={{ ...sf, fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.30)", marginBottom: "16px", margin: "0 0 16px 0" }}>
+                {/* Left */}
+                <div style={{ paddingTop: "12px" }}>
+                  <p style={{ ...sf, fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.28)", margin: "0 0 18px 0" }}>
                     New project
                   </p>
                   <h2 style={{
                     ...sf,
                     fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
-                    fontSize: "clamp(28px, 4vw, 52px)",
+                    fontSize: "clamp(30px, 4vw, 54px)",
                     fontWeight: 700,
                     letterSpacing: "-0.035em",
                     lineHeight: 1.06,
                     color: "#ffffff",
-                    margin: "0 0 20px 0",
+                    margin: "0 0 18px 0",
                   }}>
                     Let's build<br />something.
                   </h2>
-                  <p style={{ ...sf, fontSize: "15px", fontWeight: 400, color: "rgba(255,255,255,0.48)", lineHeight: 1.6, margin: "0 0 32px 0", maxWidth: "320px" }}>
+                  <p style={{ ...sf, fontSize: "15px", color: "rgba(255,255,255,0.44)", lineHeight: 1.65, margin: "0 0 36px 0", maxWidth: "300px" }}>
                     Describe your problem. We'll scope and price it within 24 hours.
                   </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    {["No retainers", "50% deposit to start", "Reply within 24h"].map((t) => (
-                      <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: "rgba(255,255,255,0.25)", flexShrink: 0 }} />
-                        <span style={{ ...sf, fontSize: "13px", color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>{t}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {["No retainers", "50% deposit to start", "Reply within 24h"].map((t) => (
+                    <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                      <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "rgba(255,255,255,0.22)", flexShrink: 0 }} />
+                      <span style={{ ...sf, fontSize: "13px", color: "rgba(255,255,255,0.32)" }}>{t}</span>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Right — form */}
+                {/* Right */}
                 <div>
                   <AnimatePresence mode="wait">
                     {sent ? (
                       <motion.div
                         key="success"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-                        style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "60px 20px", textAlign: "center" }}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+                        style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "60px 0", textAlign: "center" as const, gap: "14px" }}
                       >
-                        <CheckCircle size={40} color="rgba(255,255,255,0.70)" strokeWidth={1.5} />
-                        <p style={{ ...sf, fontSize: "18px", fontWeight: 600, color: "#ffffff", margin: 0 }}>Message sent.</p>
-                        <p style={{ ...sf, fontSize: "14px", color: "rgba(255,255,255,0.45)", margin: 0 }}>We'll be in touch within 24 hours.</p>
-                        <button
-                          onClick={reset}
-                          style={{ ...sf, marginTop: "8px", fontSize: "13px", color: "rgba(255,255,255,0.35)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
-                        >
-                          Send another
+                        <CheckCircle size={38} color="rgba(255,255,255,0.65)" strokeWidth={1.4} />
+                        <p style={{ ...sf, fontSize: "18px", fontWeight: 600, color: "#fff", margin: 0 }}>Your mail app opened.</p>
+                        <p style={{ ...sf, fontSize: "13px", color: "rgba(255,255,255,0.40)", margin: 0, maxWidth: "260px" }}>
+                          Hit send there. We'll reply within 24 hours.
+                        </p>
+                        <button onClick={reset} style={{ ...sf, marginTop: "6px", fontSize: "12px", color: "rgba(255,255,255,0.30)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                          Start over
                         </button>
                       </motion.div>
                     ) : (
@@ -213,79 +177,53 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+                        style={{ display: "flex", flexDirection: "column", gap: "11px" }}
                       >
-                        {/* Name */}
-                        <input
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder="Name"
-                          style={{
-                            ...sf,
-                            fontSize: "14px", fontWeight: 400,
-                            background: "rgba(255,255,255,0.05)",
-                            border: "1px solid rgba(255,255,255,0.09)",
-                            borderRadius: "10px",
-                            color: "#ffffff",
-                            padding: "13px 16px",
-                            outline: "none",
-                            transition: "border-color 0.2s ease",
-                            width: "100%",
-                            boxSizing: "border-box",
-                          }}
-                          onFocus={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)"}
-                          onBlur={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}
-                        />
+                        {[
+                          { value: name, setter: setName, placeholder: "Name", type: "text" },
+                          { value: email, setter: setEmail, placeholder: "Email", type: "email" },
+                        ].map(({ value, setter, placeholder, type }) => (
+                          <input
+                            key={placeholder}
+                            type={type}
+                            value={value}
+                            onChange={(e) => setter(e.target.value)}
+                            placeholder={placeholder}
+                            required
+                            style={{
+                              ...sf, fontSize: "14px",
+                              background: "rgba(255,255,255,0.05)",
+                              border: "1px solid rgba(255,255,255,0.08)",
+                              borderRadius: "10px", color: "#fff",
+                              padding: "13px 15px", outline: "none",
+                              width: "100%", boxSizing: "border-box" as const,
+                              transition: "border-color 0.2s ease",
+                            }}
+                            onFocus={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.26)"}
+                            onBlur={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
+                          />
+                        ))}
 
-                        {/* Email */}
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email"
-                          style={{
-                            ...sf,
-                            fontSize: "14px", fontWeight: 400,
-                            background: "rgba(255,255,255,0.05)",
-                            border: "1px solid rgba(255,255,255,0.09)",
-                            borderRadius: "10px",
-                            color: "#ffffff",
-                            padding: "13px 16px",
-                            outline: "none",
-                            transition: "border-color 0.2s ease",
-                            width: "100%",
-                            boxSizing: "border-box",
-                          }}
-                          onFocus={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)"}
-                          onBlur={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}
-                        />
-
-                        {/* Message */}
                         <textarea
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           placeholder="What are you building?"
                           rows={5}
+                          required
                           style={{
-                            ...sf,
-                            fontSize: "14px", fontWeight: 400,
+                            ...sf, fontSize: "14px",
                             background: "rgba(255,255,255,0.05)",
-                            border: "1px solid rgba(255,255,255,0.09)",
-                            borderRadius: "10px",
-                            color: "#ffffff",
-                            padding: "13px 16px",
-                            outline: "none",
-                            resize: "vertical",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                            borderRadius: "10px", color: "#fff",
+                            padding: "13px 15px", outline: "none",
+                            resize: "vertical" as const,
+                            width: "100%", boxSizing: "border-box" as const,
                             transition: "border-color 0.2s ease",
-                            width: "100%",
-                            boxSizing: "border-box",
                           }}
-                          onFocus={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)"}
-                          onBlur={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}
+                          onFocus={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.26)"}
+                          onBlur={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                         />
 
-                        {/* File attach */}
                         <input
                           ref={fileRef}
                           type="file"
@@ -298,51 +236,38 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
                           onClick={() => fileRef.current?.click()}
                           style={{
                             ...sf,
-                            display: "flex", alignItems: "center", gap: "8px",
-                            fontSize: "13px", fontWeight: 400,
-                            color: file ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.35)",
+                            display: "flex", alignItems: "center", gap: "7px",
+                            fontSize: "12px",
+                            color: file ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.30)",
                             background: "none", border: "none", cursor: "pointer",
-                            padding: "4px 0",
+                            padding: "2px 0", width: "fit-content",
                             transition: "color 0.2s ease",
-                            width: "fit-content",
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.75)"}
-                          onMouseLeave={(e) => e.currentTarget.style.color = file ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.35)"}
+                          onMouseEnter={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.70)"}
+                          onMouseLeave={(e) => e.currentTarget.style.color = file ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.30)"}
                         >
-                          <Paperclip size={13} />
+                          <Paperclip size={12} />
                           {file ? file.name : "Attach a file (optional)"}
                         </button>
 
-                        {/* Error */}
-                        {error && (
-                          <p style={{ ...sf, fontSize: "12px", color: "rgba(255,80,80,0.90)", margin: 0 }}>{error}</p>
-                        )}
-
-                        {/* Submit */}
                         <button
                           type="submit"
-                          disabled={sending}
                           style={{
-                            ...sf,
-                            marginTop: "4px",
-                            background: sending ? "rgba(41,151,255,0.55)" : "#2997ff",
-                            color: "#ffffff",
-                            border: "none",
-                            borderRadius: "980px",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            padding: "13px",
-                            width: "100%",
-                            cursor: sending ? "not-allowed" : "pointer",
-                            transition: "background 0.2s ease, transform 0.2s ease",
+                            ...sf, marginTop: "6px",
+                            background: "#2997ff", color: "#fff",
+                            border: "none", borderRadius: "980px",
+                            fontSize: "15px", fontWeight: 500,
+                            padding: "13px", width: "100%",
+                            cursor: "pointer",
+                            transition: "background 0.2s ease",
                           }}
-                          onMouseEnter={(e) => { if (!sending) e.currentTarget.style.background = "#0077ed"; }}
-                          onMouseLeave={(e) => { if (!sending) e.currentTarget.style.background = "#2997ff"; }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = "#0077ed"}
+                          onMouseLeave={(e) => e.currentTarget.style.background = "#2997ff"}
                         >
-                          {sending ? "Sending…" : "Send message"}
+                          Send message
                         </button>
 
-                        <p style={{ ...sf, fontSize: "11px", color: "rgba(255,255,255,0.22)", textAlign: "center", margin: 0 }}>
+                        <p style={{ ...sf, fontSize: "11px", color: "rgba(255,255,255,0.20)", textAlign: "center" as const, margin: 0 }}>
                           We reply within 24 hours.
                         </p>
                       </motion.form>
@@ -352,6 +277,12 @@ const ContactModal = ({ open, onClose }: ContactModalProps) => {
               </div>
             </div>
           </motion.div>
+
+          <style>{`
+            @media (max-width: 680px) {
+              .contact-modal-inner { grid-template-columns: 1fr !important; }
+            }
+          `}</style>
         </>
       )}
     </AnimatePresence>
