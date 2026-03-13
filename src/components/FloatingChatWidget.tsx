@@ -36,194 +36,49 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-// Extend window with FB SDK types
-declare global {
-  interface Window {
-    FB?: {
-      CustomerChat: {
-        show: () => void;
-        hide: () => void;
-        showDialog: () => void;
-        hideDialog: () => void;
-      };
-      init: (params: { xfbml: boolean; version: string }) => void;
-      XFBML: { 
-        parse: (node?: HTMLElement) => void;
-      };
-    };
-    fbAsyncInit: () => void;
-  }
-}
+const openMessengerPopup = () => {
+  const width = 400;
+  const height = 600;
+  // Position popup bottom-right corner of screen
+  const left = window.screen.width - width - 20;
+  const top = window.screen.height - height - 80;
+
+  window.open(
+    `https://www.messenger.com/t/${FB_PAGE_ID}`,
+    "Messenger",
+    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,scrollbars=yes`
+  );
+};
 
 export default function FloatingChatWidget() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
-  const [sdkReady, setSdkReady] = useState(false);
-  const [initAttempts, setInitAttempts] = useState(0);
 
   useEffect(() => {
-    if (menuOpen) setShowPulse(false);
-  }, [menuOpen]);
+    if (isOpen) setShowPulse(false);
+  }, [isOpen]);
 
-  // Initialize Facebook SDK and Customer Chat
+  // Close on Escape key
   useEffect(() => {
-    const MAX_ATTEMPTS = 10;
-    let pollInterval: NodeJS.Timeout;
-
-    const createChatElement = () => {
-      // Remove existing chat element if any
-      const existingChat = document.getElementById("fb-customerchat");
-      if (existingChat) {
-        existingChat.remove();
-      }
-
-      // Create fresh chat element
-      const chatbox = document.createElement("div");
-      chatbox.id = "fb-customerchat";
-      chatbox.className = "fb-customerchat";
-      chatbox.setAttribute("attribution", "biz_inbox");
-      chatbox.setAttribute("page_id", FB_PAGE_ID);
-      chatbox.setAttribute("theme_color", "#0099FF");
-      chatbox.setAttribute("logged_in_greeting", "Hi! How can we help you?");
-      chatbox.setAttribute("logged_out_greeting", "Hi! How can we help you?");
-      chatbox.setAttribute("minimized", "true");
-      document.body.appendChild(chatbox);
-      
-      return chatbox;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
     };
-
-    const initFacebookSDK = () => {
-      return new Promise<void>((resolve) => {
-        // If SDK already loaded
-        if (window.FB && window.FB.XFBML) {
-          resolve();
-          return;
-        }
-
-        // Set up fbAsyncInit
-        window.fbAsyncInit = function() {
-          if (window.FB) {
-            window.FB.init({
-              xfbml: true,
-              version: "v18.0"
-            });
-            resolve();
-          }
-        };
-
-        // Load SDK script if not present
-        if (!document.getElementById("facebook-jssdk")) {
-          const script = document.createElement("script");
-          script.id = "facebook-jssdk";
-          script.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-          script.async = true;
-          script.defer = true;
-          script.crossOrigin = "anonymous";
-          document.body.appendChild(script);
-        } else {
-          // Script exists but FB not ready yet, wait for it
-          const checkFB = setInterval(() => {
-            if (window.FB && window.FB.XFBML) {
-              clearInterval(checkFB);
-              resolve();
-            }
-          }, 100);
-        }
-      });
-    };
-
-    const initializeChat = async () => {
-      try {
-        // Create the chat element
-        createChatElement();
-
-        // Initialize SDK
-        await initFacebookSDK();
-
-        // Parse the XFBML to initialize the chat plugin
-        if (window.FB?.XFBML) {
-          window.FB.XFBML.parse();
-        }
-
-        // Poll for Customer Chat availability
-        let attempts = 0;
-        pollInterval = setInterval(() => {
-          attempts++;
-          
-          // Check if Customer Chat is ready
-          if (window.FB?.CustomerChat) {
-            setSdkReady(true);
-            clearInterval(pollInterval);
-          } else if (attempts >= MAX_ATTEMPTS) {
-            // Max attempts reached, still not ready
-            console.warn("Facebook Customer Chat failed to initialize after multiple attempts");
-            clearInterval(pollInterval);
-          }
-        }, 500);
-
-      } catch (error) {
-        console.error("Failed to initialize Facebook Chat:", error);
-      }
-    };
-
-    initializeChat();
-
-    return () => {
-      if (pollInterval) clearInterval(pollInterval);
-    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const handleMessengerClick = () => {
-    setMenuOpen(false);
-    
-    // If SDK is ready, try to open the chat dialog
-    if (sdkReady && window.FB?.CustomerChat) {
-      try {
-        // First make sure the chat is visible
-        window.FB.CustomerChat.show();
-        
-        // Small delay to ensure show() completes
-        setTimeout(() => {
-          try {
-            // Show the dialog
-            window.FB.CustomerChat.showDialog();
-          } catch (e) {
-            console.warn("Error showing dialog, using fallback:", e);
-            // Fallback to page plugin in popup
-            openMessengerPopup();
-          }
-        }, 300);
-      } catch (e) {
-        console.warn("Error with FB chat:", e);
-        openMessengerPopup();
-      }
-    } else {
-      // SDK not ready, use fallback
-      openMessengerPopup();
-    }
-  };
-
-  const openMessengerPopup = () => {
-    // Open Messenger in a popup window instead of new tab
-    const width = 400;
-    const height = 600;
-    const left = window.innerWidth - width - 20;
-    const top = window.innerHeight - height - 100;
-    
-    window.open(
-      `https://m.me/${FB_PAGE_ID}`,
-      'Messenger',
-      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no`
-    );
+    setIsOpen(false);
+    openMessengerPopup();
   };
 
   return (
     <>
       {/* Mobile backdrop */}
-      {menuOpen && (
+      {isOpen && (
         <div
           className="fixed inset-0 z-40 sm:hidden"
-          onClick={() => setMenuOpen(false)}
+          onClick={() => setIsOpen(false)}
         />
       )}
 
@@ -231,14 +86,15 @@ export default function FloatingChatWidget() {
 
         {/* Sub-buttons */}
         <div
-          className="flex flex-col items-end gap-3 transition-all duration-300 origin-bottom"
+          className="flex flex-col items-end gap-3"
           style={{
-            opacity: menuOpen ? 1 : 0,
-            transform: menuOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.92)",
-            pointerEvents: menuOpen ? "auto" : "none",
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.9)",
+            transition: "opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+            pointerEvents: isOpen ? "auto" : "none",
           }}
         >
-          {/* WhatsApp — pending */}
+          {/* WhatsApp — pending Meta approval */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/40 text-xs font-medium px-3 py-1.5 rounded-full shadow-md select-none">
               <span>WhatsApp</span>
@@ -254,13 +110,10 @@ export default function FloatingChatWidget() {
             </button>
           </div>
 
-          {/* Messenger */}
+          {/* Messenger — opens as popup window */}
           <div className="flex items-center gap-2 group">
             <div className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
-              <span>Messenger</span>
-              {!sdkReady && (
-                <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded-full">Loading...</span>
-              )}
+              Messenger
             </div>
             <button
               onClick={handleMessengerClick}
@@ -276,7 +129,7 @@ export default function FloatingChatWidget() {
           </div>
         </div>
 
-        {/* Main toggle bubble */}
+        {/* Main FAB */}
         <div className="relative">
           {showPulse && (
             <span
@@ -285,24 +138,26 @@ export default function FloatingChatWidget() {
             />
           )}
           <button
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-label={menuOpen ? "Close menu" : "Chat with us"}
+            onClick={() => setIsOpen((o) => !o)}
+            aria-label={isOpen ? "Close" : "Chat with us"}
             className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
             style={{
-              background: menuOpen
+              background: isOpen
                 ? "hsl(240 3% 20%)"
                 : "linear-gradient(135deg, hsl(211 100% 58%) 0%, hsl(220 100% 46%) 100%)",
-              boxShadow: menuOpen
+              boxShadow: isOpen
                 ? "0 4px 24px rgba(0,0,0,0.5)"
                 : "0 4px 24px hsl(211 100% 58% / 0.5)",
-              border: menuOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
+              border: isOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
             }}
           >
             <div
-              className="transition-transform duration-300"
-              style={{ transform: menuOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+              style={{
+                transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+                transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+              }}
             >
-              {menuOpen ? (
+              {isOpen ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
@@ -316,13 +171,6 @@ export default function FloatingChatWidget() {
           </button>
         </div>
       </div>
-
-      {/* Add debug info in development - remove in production */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-20 right-5 bg-black text-white text-xs p-2 rounded opacity-50">
-          FB SDK: {sdkReady ? '✅' : '⏳'}
-        </div>
-      )}
     </>
   );
 }
