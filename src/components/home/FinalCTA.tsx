@@ -47,18 +47,19 @@ const FinalCTA = () => {
         display: 'flex', gap: '12px', marginTop: '36px',
         position: 'relative', zIndex: 2, flexWrap: 'wrap', justifyContent: 'center',
       }}>
-        <a
-          href="mailto:autobitofficial.ph@gmail.com"
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}
           style={{
             background: '#2997ff', color: '#ffffff', padding: '12px 26px',
             borderRadius: '980px', fontSize: '15px', fontWeight: 500,
-            textDecoration: 'none', fontFamily: `'SF Pro Text', ${font}`,
+            cursor: 'pointer', border: 'none',
+            fontFamily: `'SF Pro Text', ${font}`,
             letterSpacing: '-0.01em', display: 'inline-block',
             transition: 'background 0.2s ease, transform 0.2s ease',
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = '#0077ed'; e.currentTarget.style.transform = 'scale(1.02)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = '#2997ff'; e.currentTarget.style.transform = 'scale(1)'; }}
-        >Start a project</a>
+        >Start a project</button>
 
         <a
           href="/projects"

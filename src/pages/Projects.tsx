@@ -659,13 +659,13 @@ const Projects = () => {
                       {card.body}
                     </p>
                     {card.cta ? (
-                      <a href="mailto:autobitofficial.ph@gmail.com" style={{
+                      <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} style={{
                         marginTop: "24px",
                         display: "inline-flex", alignItems: "center",
                         background: "#2997ff",
                         borderRadius: "980px", padding: "12px 26px",
                         fontSize: "15px", fontWeight: 500, color: "#fff",
-                        textDecoration: "none", width: "fit-content",
+                        border: "none", cursor: "pointer", width: "fit-content",
                         transition: "background 0.2s ease, transform 0.2s ease",
                         letterSpacing: "-0.01em",
                       }}
@@ -673,7 +673,7 @@ const Projects = () => {
                         onMouseLeave={e=>{e.currentTarget.style.background="#2997ff";e.currentTarget.style.transform="scale(1)";}}
                       >
                         Start a project
-                      </a>
+                      </button>
                     ) : (
                       <div style={{
                         marginTop: "24px", height: "1px",

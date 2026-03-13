@@ -124,13 +124,14 @@ const HeroSection = () => {
 
         {/* CTAs */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
-          <a
-            href="mailto:autobitofficial.ph@gmail.com"
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}
             style={{
               background: "#2997ff", color: "#ffffff",
               padding: "12px 26px", borderRadius: "980px",
               fontSize: "15px", fontWeight: 500,
-              textDecoration: "none", transition: "background 0.2s ease, transform 0.2s ease",
+              cursor: "pointer", border: "none",
+              transition: "background 0.2s ease, transform 0.2s ease",
               fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "-0.01em",
               display: "inline-block",
@@ -143,7 +144,7 @@ const HeroSection = () => {
               e.currentTarget.style.background = "#2997ff";
               e.currentTarget.style.transform = "scale(1)";
             }}
-          >Start a project</a>
+          >Start a project</button>
 
           <a
             href="/projects"

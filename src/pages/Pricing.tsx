@@ -105,12 +105,12 @@ const Pricing = () => {
                         </li>
                       ))}
                     </ul>
-                    <a
-                      href="mailto:autobitofficial.ph@gmail.com"
-                      className="mt-6 inline-flex items-center justify-center py-3 px-[26px] rounded-[980px] bg-[#2997ff] text-white text-[15px] font-medium hover:bg-[#0077ed] hover:scale-[1.02] transition-all duration-200"
+                    <button
+                      onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}
+                      className="mt-6 inline-flex items-center justify-center py-3 px-[26px] rounded-[980px] bg-[#2997ff] text-white text-[15px] font-medium hover:bg-[#0077ed] hover:scale-[1.02] transition-all duration-200 border-none cursor-pointer"
                     >
                       Get a quote
-                    </a>
+                    </button>
                   </div>
                 </ScrollReveal>
               ))}

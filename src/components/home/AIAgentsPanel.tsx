@@ -72,7 +72,7 @@ const AIAgentsPanel = () => (
         </p>
         <p style={{ fontFamily: font, fontSize: '13px', color: 'rgba(255,255,255,0.25)', marginTop: '16px' }}>From $1,200 · 5–10 days</p>
         <div style={{ display: 'flex', gap: '12px', marginTop: '28px', flexWrap: 'wrap' }}>
-          <a href="mailto:autobitofficial.ph@gmail.com" style={{ background: '#2997ff', color: '#ffffff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>Start a project</a>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} style={{ background: '#2997ff', color: '#ffffff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: font }}>Start a project</button>
           <a href="/services#agents" style={{ background: 'transparent', color: '#2997ff', padding: '12px 28px', borderRadius: '980px', fontSize: '15px', fontWeight: 600, textDecoration: 'none', fontFamily: font }}>Learn more →</a>
         </div>
       </div>
