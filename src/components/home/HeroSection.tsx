@@ -233,38 +233,25 @@ const HeroSection = () => {
 };
 
 // ─── JELLY CHIP ──────────────────────────────────────────────────────────────
-//
-// THE CORRECT TECHNIQUE (from Codrops + Medium research):
-//   Apply SVG filter directly to the element via CSS filter: url(#id)
-//   This displaces the element's OWN pixels — edges, fill, text all wobble together
-//   feTurbulence generates Perlin noise → feDisplacementMap shifts pixels using that noise
-//   Animate baseFrequency continuously = living jelly breathing
-//   On hover: JS ramps up displacement scale → more aggressive wobble
-//   On mouse leave: scale ramps back down → settles calmly
-//
-// This is fundamentally different from backdrop-filter (which only affects what's behind)
-// Here the chip ITSELF is the distorted jelly object
+// Default state: CLEAN — no filter applied, crisp text, proper glass look
+// Hover/press: SVG displacement filter kicks in — edges and fill wobble like gel
+// Filter scale = 0 at rest (invisible), ramps to 8 on hover, 16 on press
+// This prevents the always-on pixelation bug
 // ─────────────────────────────────────────────────────────────────────────────
 const JellyChip = () => {
   const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
-  const scaleRef = useRef(4);
-  const targetScaleRef = useRef(4);
+  const currentScale = useRef(0);
+  const targetScale = useRef(0);
   const rafRef = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
+  const [active, setActive] = useState(false);
 
-  // Animate displacement scale smoothly toward target
   useEffect(() => {
     const tick = () => {
-      const current = scaleRef.current;
-      const target = targetScaleRef.current;
-      const diff = target - current;
-      if (Math.abs(diff) > 0.05) {
-        scaleRef.current = current + diff * 0.06;
-      } else {
-        scaleRef.current = target;
-      }
+      const diff = targetScale.current - currentScale.current;
+      currentScale.current += diff * 0.10;
       if (displacementRef.current) {
-        displacementRef.current.setAttribute("scale", String(scaleRef.current.toFixed(2)));
+        displacementRef.current.setAttribute("scale", currentScale.current.toFixed(3));
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -272,59 +259,22 @@ const JellyChip = () => {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  const handleEnter = () => {
-    setHovered(true);
-    targetScaleRef.current = 10; // More jelly on hover
-  };
-
-  const handleLeave = () => {
-    setHovered(false);
-    targetScaleRef.current = 4; // Calm back down
-  };
-
-  const handleDown = () => {
-    targetScaleRef.current = 16; // Squish hard on press
-  };
-
-  const handleUp = () => {
-    // Bounce back up past rest then settle
-    targetScaleRef.current = 14;
-    setTimeout(() => { targetScaleRef.current = hovered ? 10 : 4; }, 120);
-  };
-
   return (
     <>
-      {/*
-        SVG filter definition — hidden, defines the jelly distortion.
-        type="turbulence" = wave-like ripples (vs fractalNoise which is cloudy)
-        baseFrequency low (0.02) = slow gentle waves, not chaotic static
-        <animate> on baseFrequency = continuously shifting waves = living jelly
-        Filter applied via CSS filter: url(#jelly-chip) on the chip div below
-      */}
-      <svg
-        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
-        aria-hidden="true"
-      >
+      <svg style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} aria-hidden="true">
         <defs>
-          <filter
-            id="jelly-chip"
-            x="-20%" y="-20%"
-            width="140%" height="140%"
-            colorInterpolationFilters="sRGB"
-          >
+          <filter id="jelly-chip" x="-25%" y="-25%" width="150%" height="150%">
             <feTurbulence
               type="turbulence"
-              baseFrequency="0.02 0.04"
+              baseFrequency="0.025 0.04"
               numOctaves="2"
-              seed="8"
+              seed="5"
               result="noise"
             >
-              {/* Animate baseFrequency = the wave pattern slowly shifts = living water */}
               <animate
                 attributeName="baseFrequency"
-                values="0.02 0.04; 0.03 0.06; 0.025 0.05; 0.02 0.04"
-                keyTimes="0; 0.33; 0.66; 1"
-                dur="5s"
+                values="0.025 0.04;0.035 0.055;0.028 0.045;0.025 0.04"
+                dur="4s"
                 repeatCount="indefinite"
               />
             </feTurbulence>
@@ -332,7 +282,7 @@ const JellyChip = () => {
               ref={displacementRef}
               in="SourceGraphic"
               in2="noise"
-              scale="4"
+              scale="0"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -340,20 +290,14 @@ const JellyChip = () => {
         </defs>
       </svg>
 
-      {/*
-        The chip itself.
-        filter: url(#jelly-chip) applies displacement to THIS element directly.
-        The element's own edges, background, and text all get warped together.
-        It is the jelly — not something behind it.
-      */}
       <div
-        onMouseEnter={handleEnter}
-        onMouseLeave={handleLeave}
-        onMouseDown={handleDown}
-        onMouseUp={handleUp}
+        onMouseEnter={() => { setHovered(true); targetScale.current = 7; }}
+        onMouseLeave={() => { setHovered(false); setActive(false); targetScale.current = 0; }}
+        onMouseDown={() => { setActive(true); targetScale.current = 14; }}
+        onMouseUp={() => { setActive(false); targetScale.current = 7; }}
         style={{
-          // THE KEY LINE — apply SVG filter to the element itself
-          filter: "url(#jelly-chip)",
+          // Only apply filter when hovering — clean at rest
+          filter: hovered || active ? "url(#jelly-chip)" : "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
@@ -361,25 +305,37 @@ const JellyChip = () => {
           padding: "9px 24px",
           marginBottom: "28px",
           cursor: "default",
-          userSelect: "none",
-          background: hovered ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.07)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          transition: "background 0.3s ease",
-          boxShadow: `
-            inset 0 1px 0 rgba(255,255,255,0.40),
-            inset 0 -0.5px 0 rgba(255,255,255,0.05),
-            0 2px 12px rgba(0,0,0,0.20),
-            0 0 0 0.5px rgba(255,255,255,${hovered ? "0.16" : "0.09"})
-          `,
+          userSelect: "none" as const,
+          position: "relative" as const,
+          // Clean frosted glass at rest
+          background: hovered
+            ? "rgba(255,255,255,0.10)"
+            : "rgba(255,255,255,0.07)",
+          backdropFilter: "blur(20px) saturate(140%)",
+          WebkitBackdropFilter: "blur(20px) saturate(140%)",
+          transition: "background 0.3s ease, box-shadow 0.3s ease",
+          boxShadow: hovered
+            ? `
+                inset 0 1px 0 rgba(255,255,255,0.50),
+                inset 0 -0.5px 0 rgba(255,255,255,0.06),
+                0 4px 20px rgba(0,0,0,0.22),
+                0 0 0 0.5px rgba(255,255,255,0.14),
+                0 0 24px rgba(255,255,255,0.06)
+              `
+            : `
+                inset 0 1px 0 rgba(255,255,255,0.35),
+                inset 0 -0.5px 0 rgba(255,255,255,0.04),
+                0 2px 10px rgba(0,0,0,0.18),
+                0 0 0 0.5px rgba(255,255,255,0.09)
+              `,
         }}
       >
-        {/* Top shimmer — light catching glass edge */}
+        {/* Top light shimmer — glass catching light */}
         <div style={{
           position: "absolute",
-          top: "2px", left: "20%", right: "20%",
+          top: "2px", left: "22%", right: "22%",
           height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
           borderRadius: "9999px",
           pointerEvents: "none",
         }} />
@@ -395,6 +351,8 @@ const JellyChip = () => {
           lineHeight: 1,
           position: "relative",
           zIndex: 1,
+          // Counter-sharpen text on filter apply so it doesn't blur
+          WebkitFontSmoothing: "antialiased",
         }}>
           Start Something™
         </span>
