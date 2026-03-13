@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactModalProvider } from "@/contexts/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
+import FloatingChatWidget from "@/components/FloatingChatWidget";
 import Index from "./pages/Index";
 import Projects from "./pages/Projects";
 import Services from "./pages/Services";
@@ -23,6 +24,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <ContactModal />
+        <FloatingChatWidget />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
