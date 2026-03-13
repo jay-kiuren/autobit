@@ -1,5 +1,11 @@
-import { Linkedin, Instagram, Facebook, Music2, Github, Mail, Phone } from "lucide-react";
+import { Linkedin, Instagram, Facebook, Music2, Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+
+const XIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
 
 const footerColumns = [
   {
@@ -47,7 +53,7 @@ const socials = [
   { icon: Instagram, href: "https://www.instagram.com/autobitofficial/", label: "Instagram" },
   { icon: Facebook, href: "https://www.facebook.com/AutoBitOfficial", label: "Facebook" },
   { icon: Music2, href: "https://www.tiktok.com/@autobitofficial", label: "TikTok" },
-  { icon: Github, href: "https://github.com/gnobob/AXONIS-Platform", label: "GitHub" },
+  { icon: XIcon, href: "https://x.com/autobitofficial", label: "X" },
 ];
 
 const Footer = () => (

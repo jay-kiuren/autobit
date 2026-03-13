@@ -107,7 +107,7 @@ const Pricing = () => {
                     </ul>
                     <a
                       href="mailto:autobitofficial.ph@gmail.com"
-                      className="mt-6 inline-flex items-center justify-center h-10 rounded-full bg-[rgba(255,255,255,0.08)] text-foreground text-sm font-medium hover:bg-[rgba(255,255,255,0.14)] transition-colors"
+                      className="mt-6 inline-flex items-center justify-center py-3 px-[26px] rounded-[980px] bg-[#2997ff] text-white text-[15px] font-medium hover:bg-[#0077ed] hover:scale-[1.02] transition-all duration-200"
                     >
                       Get a quote
                     </a>
