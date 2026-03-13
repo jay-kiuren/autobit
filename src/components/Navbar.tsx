@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, ArrowRight, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import autobitIcon from "@/assets/autobit-icon.png";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const sfProDisplay = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
 const sfProText = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif";
@@ -72,6 +73,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const { openModal } = useContactModal();
 
   const openDropdown = useCallback((label: string) => {
     clearTimeout(timeoutRef.current);
@@ -106,29 +108,17 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" style={{ background: 'none', border: 'none', outline: 'none', boxShadow: 'none' }}>
-            <img
-              src={autobitIcon}
-              alt=""
-              width={18}
-              height={18}
-              style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }}
-            />
-            {/* fontWeight 700 = same as hero heading. No stroke. 14px. Looks identical on Linux, Mac, Windows */}
+            <img src={autobitIcon} alt="" width={18} height={18} style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }} />
             <span style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-              fontSize: '14px',
-              fontWeight: 700,
-              letterSpacing: '0.10em',
-              color: '#ffffff',
-              textTransform: 'uppercase' as const,
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale',
-              lineHeight: 1,
-              display: 'inline-block',
+              fontSize: '14px', fontWeight: 700, letterSpacing: '0.10em',
+              color: '#ffffff', textTransform: 'uppercase' as const,
+              WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale',
+              lineHeight: 1, display: 'inline-block',
             }}>AUTOBIT</span>
           </Link>
 
-          {/* Center links — desktop */}
+          {/* Center links */}
           <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => (
               <div
@@ -136,37 +126,29 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
                 onMouseEnter={() => item.type === "mega" ? openDropdown(item.label) : undefined}
                 onMouseLeave={item.type === "mega" ? closeDropdown : undefined}
               >
-                <Link
-                  to={item.href}
-                  className="nav-link-item rounded px-2 py-1 flex items-center gap-1.5"
-                  style={navItemStyle}
-                >
+                <Link to={item.href} className="nav-link-item rounded px-2 py-1 flex items-center gap-1.5" style={navItemStyle}>
                   {item.label}
                 </Link>
               </div>
             ))}
           </div>
 
-          {/* Right icons */}
+          {/* Right — FIXED: was <a href="mailto:..."> now calls openModal */}
           <div className="hidden md:flex items-center gap-4">
-            <button className="text-foreground hover:text-foreground/60 transition-colors">
+            <button className="text-foreground hover:text-foreground/60 transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
               <Search size={16} />
             </button>
-            <a
-              href="mailto:autobitofficial.ph@gmail.com"
+            <button
+              onClick={openModal}
               className="flex items-center gap-1.5 hover:text-primary transition-colors"
-              style={navItemStyle}
+              style={{ ...navItemStyle, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
               Start a project <ArrowRight size={16} />
-            </a>
+            </button>
           </div>
 
           {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
+          <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -175,11 +157,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
       {/* Mega dropdown overlay */}
       <div
         className="fixed inset-0 bg-[rgba(0,0,0,0.48)] z-[998] pointer-events-none"
-        style={{
-          top: 44,
-          opacity: isDropdownOpen ? 1 : 0,
-          transition: 'opacity 0.38s cubic-bezier(0.25,0.1,0.25,1)',
-        }}
+        style={{ top: 44, opacity: isDropdownOpen ? 1 : 0, transition: 'opacity 0.38s cubic-bezier(0.25,0.1,0.25,1)' }}
       />
 
       {/* Services mega dropdown */}
@@ -188,8 +166,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         onMouseEnter={() => openDropdown("Services")}
         onMouseLeave={closeDropdown}
         style={{
-          borderRadius: 0,
-          borderTop: 'none',
+          borderRadius: 0, borderTop: 'none',
           opacity: activeDropdown === "Services" ? 1 : 0,
           transform: activeDropdown === "Services" ? 'translateY(0)' : 'translateY(-10px)',
           transition: 'opacity 0.38s cubic-bezier(0.25,0.1,0.25,1), transform 0.38s cubic-bezier(0.25,0.1,0.25,1)',
@@ -201,14 +178,10 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
             <span style={subLabelStyle}>What we build</span>
             {servicesLinks.map((l) => (
               <Link key={l.label} to={l.href} className="block py-3 group">
-                <span
-                  className="inline-block"
-                  style={dropdownLinkStyle}
+                <span className="inline-block" style={dropdownLinkStyle}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
-                >
-                  {l.label}
-                </span>
+                >{l.label}</span>
               </Link>
             ))}
           </div>
@@ -216,14 +189,10 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
             <span style={subLabelStyle}>Specialized</span>
             {specializedLinks.map((l) => (
               <Link key={l.label} to={l.href} className="block py-3 group">
-                <span
-                  className="inline-block"
-                  style={dropdownLinkStyle}
+                <span className="inline-block" style={dropdownLinkStyle}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
-                >
-                  {l.label}
-                </span>
+                >{l.label}</span>
               </Link>
             ))}
           </div>
@@ -242,8 +211,7 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         onMouseEnter={() => openDropdown("Projects")}
         onMouseLeave={closeDropdown}
         style={{
-          borderRadius: 0,
-          borderTop: 'none',
+          borderRadius: 0, borderTop: 'none',
           opacity: activeDropdown === "Projects" ? 1 : 0,
           transform: activeDropdown === "Projects" ? 'translateY(0)' : 'translateY(-10px)',
           transition: 'opacity 0.38s cubic-bezier(0.25,0.1,0.25,1), transform 0.38s cubic-bezier(0.25,0.1,0.25,1)',
@@ -255,14 +223,10 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
             <span style={subLabelStyle}>All projects</span>
             {projectLinks.map((l) => (
               <Link key={l.label} to={l.href} className="flex items-center justify-between py-3 group">
-                <span
-                  className="inline-block"
-                  style={dropdownLinkStyle}
+                <span className="inline-block" style={dropdownLinkStyle}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#f5f5f7')}
-                >
-                  {l.label}
-                </span>
+                >{l.label}</span>
                 {l.badge && <span className="text-[10px] bg-[rgba(255,255,255,0.08)] text-foreground px-2 py-0.5 rounded-full">{l.badge}</span>}
               </Link>
             ))}
@@ -276,62 +240,32 @@ const Navbar = ({ onDropdownChange }: { onDropdownChange?: (active: boolean) => 
         </div>
       </div>
 
-      {/* Mobile fullscreen overlay menu */}
+      {/* Mobile menu — FIXED: was <a href="mailto:..."> now calls openModal */}
       <div
         className="fixed inset-0 z-[9999] md:hidden flex flex-col items-center justify-center"
         style={{
-          background: 'rgba(0,0,0,0.96)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          background: 'rgba(0,0,0,0.96)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
           opacity: mobileOpen ? 1 : 0,
           transform: mobileOpen ? 'translateY(0)' : 'translateY(-20px)',
           transition: 'opacity 0.35s ease, transform 0.35s ease',
           pointerEvents: mobileOpen ? 'auto' : 'none',
         }}
       >
-        <button
-          className="absolute top-4 right-5 text-white"
-          onClick={() => setMobileOpen(false)}
-          aria-label="Close menu"
-          style={{ background: 'none', border: 'none', fontSize: '28px', cursor: 'pointer' }}
-        >
-          ✕
-        </button>
+        <button className="absolute top-4 right-5 text-white" onClick={() => setMobileOpen(false)} aria-label="Close menu" style={{ background: 'none', border: 'none', fontSize: '28px', cursor: 'pointer' }}>✕</button>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
           {navItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.href}
-              onClick={() => setMobileOpen(false)}
-              style={{
-                fontFamily: sfProDisplay,
-                fontSize: '28px',
-                fontWeight: 600,
-                color: '#f5f5f7',
-                textDecoration: 'none',
-                letterSpacing: '-0.3px',
-              }}
-            >
-              {item.label}
-            </Link>
+            <Link key={item.label} to={item.href} onClick={() => setMobileOpen(false)}
+              style={{ fontFamily: sfProDisplay, fontSize: '28px', fontWeight: 600, color: '#f5f5f7', textDecoration: 'none', letterSpacing: '-0.3px' }}
+            >{item.label}</Link>
           ))}
         </div>
-        <a
-          href="mailto:autobitofficial.ph@gmail.com"
+        <button
+          onClick={() => { setMobileOpen(false); openModal(); }}
           className="mt-16"
-          style={{
-            background: '#2997ff',
-            color: '#ffffff',
-            padding: '14px 40px',
-            borderRadius: '980px',
-            fontSize: '17px',
-            fontWeight: 600,
-            textDecoration: 'none',
-            fontFamily: sfProDisplay,
-          }}
+          style={{ background: '#2997ff', color: '#ffffff', padding: '14px 40px', borderRadius: '980px', fontSize: '17px', fontWeight: 600, fontFamily: sfProDisplay, border: 'none', cursor: 'pointer' }}
         >
           Start a project
-        </a>
+        </button>
       </div>
     </>
   );
