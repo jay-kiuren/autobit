@@ -27,10 +27,8 @@ const ContactModal = () => {
 
   const field = (id: string): React.CSSProperties => ({
     width: "100%",
-    // Same hue as sheet but +2% lighter — feels like one material, not a box on a box
-    background: focused === id ? "rgba(255,255,255,0.058)" : "rgba(255,255,255,0.034)",
+    background: focused === id ? "rgba(255,255,255,0.055)" : "rgba(255,255,255,0.032)",
     border: "none",
-    // Single pixel hairline only on focus — invisible at rest
     outline: focused === id ? "1px solid rgba(255,255,255,0.11)" : "1px solid transparent",
     borderRadius: "10px",
     color: "#ffffff",
@@ -68,16 +66,13 @@ const ContactModal = () => {
               background: "#0a0a0a",
               borderRadius: "20px 20px 0 0",
               maxHeight: "82vh", overflowY: "auto",
-              // No border. No top line. Just a deep shadow lift.
               boxShadow: "0 -48px 100px rgba(0,0,0,0.90)",
             }}
           >
-            {/* Drag handle */}
             <div style={{ display: "flex", justifyContent: "center", paddingTop: "12px" }}>
               <div style={{ width: "32px", height: "3px", borderRadius: "9999px", background: "rgba(255,255,255,0.07)" }} />
             </div>
 
-            {/* Close */}
             <button
               onClick={closeModal}
               style={{
@@ -102,7 +97,6 @@ const ContactModal = () => {
               {/* LEFT */}
               <div style={{ paddingRight: "52px" }}>
 
-                {/* Eyebrow — plain, no decoration */}
                 <p style={{
                   fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                   fontSize: "11px", fontWeight: 500,
@@ -131,17 +125,13 @@ const ContactModal = () => {
                   Describe your problem. We scope and price it within 24 hours.
                 </p>
 
-                {/* Facts only. No explanation. No em-dash copy. */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
-                  {[
-                    "50% deposit to start.",
-                    "No retainers.",
-                    "Reply within 24 hours.",
-                  ].map((line) => (
+                {/* Three hard facts. Period. Nothing else. */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {["50% deposit to start.", "No retainers.", "Balance on delivery."].map((line) => (
                     <p key={line} style={{
                       fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                       fontSize: "13px", fontWeight: 400,
-                      color: "rgba(255,255,255,0.38)",
+                      color: "rgba(255,255,255,0.36)",
                       letterSpacing: "-0.01em", margin: 0,
                       WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale",
                     }}>{line}</p>
@@ -162,17 +152,16 @@ const ContactModal = () => {
                         alignItems: "center", justifyContent: "center", gap: "12px",
                       }}
                     >
-                      <CheckCircle size={26} color="rgba(255,255,255,0.50)" strokeWidth={1.6} />
+                      <CheckCircle size={26} color="rgba(255,255,255,0.45)" strokeWidth={1.6} />
                       <p style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "14px", color: "rgba(255,255,255,0.35)",
+                        fontSize: "14px", color: "rgba(255,255,255,0.32)",
                         letterSpacing: "-0.01em", margin: 0,
                         WebkitFontSmoothing: "antialiased",
                       }}>Sent.</p>
                     </motion.div>
                   ) : (
                     <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-
                       <input type="text" placeholder="Name"
                         value={name} onChange={(e) => setName(e.target.value)}
                         onFocus={() => setFocused("name")} onBlur={() => setFocused(null)}
@@ -193,13 +182,13 @@ const ContactModal = () => {
                       <button onClick={() => fileRef.current?.click()} style={{
                         display: "flex", alignItems: "center", gap: "7px",
                         background: "none", border: "none", cursor: "pointer",
-                        color: "rgba(255,255,255,0.22)", padding: "3px 0",
+                        color: "rgba(255,255,255,0.20)", padding: "3px 0",
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                         fontSize: "12px", letterSpacing: "-0.01em",
                         transition: "color 0.15s ease", WebkitFontSmoothing: "antialiased",
                       }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.52)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.22)"; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.50)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.20)"; }}
                       >
                         <Paperclip size={12} />
                         <span>{fileName || "Attach a file"}</span>
@@ -209,8 +198,7 @@ const ContactModal = () => {
 
                       <button onClick={handleSubmit} style={{
                         marginTop: "4px", width: "100%", padding: "14px",
-                        borderRadius: "10px",
-                        background: "#2997ff",
+                        borderRadius: "10px", background: "#2997ff",
                         color: "#ffffff", border: "none",
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                         fontSize: "15px", fontWeight: 500, letterSpacing: "-0.01em",
