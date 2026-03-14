@@ -7,23 +7,38 @@ const ContactModal = () => {
   const { open, closeModal } = useContactModal();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
+  const [contactPref, setContactPref] = useState<"email" | "whatsapp" | "both">("email");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
+    const contact = contactPref === "email"
+      ? `Email: ${email}`
+      : contactPref === "whatsapp"
+      ? `WhatsApp: ${whatsapp}`
+      : `Email: ${email}\nWhatsApp: ${whatsapp}`;
+
     const subject = encodeURIComponent(`New project inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    const body = encodeURIComponent(`Name: ${name}\n${contact}\n\n${message}`);
     window.open(`mailto:autobitofficial.ph@gmail.com?subject=${subject}&body=${body}`);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setName(""); setEmail(""); setMessage(""); setFileName("");
+      setName(""); setEmail(""); setWhatsapp(""); setMessage(""); setFileName("");
+      setContactPref("email");
       closeModal();
     }, 2600);
   };
+
+  const canSubmit = name && message && (
+    contactPref === "email" ? email :
+    contactPref === "whatsapp" ? whatsapp :
+    email && whatsapp
+  );
 
   const field = (id: string): React.CSSProperties => ({
     width: "100%",
@@ -41,6 +56,30 @@ const ContactModal = () => {
     transition: "outline-color 0.15s ease, background 0.15s ease",
     boxSizing: "border-box",
   });
+
+  const prefBtn = (val: typeof contactPref, label: string) => (
+    <button
+      key={val}
+      onClick={() => setContactPref(val)}
+      style={{
+        flex: 1,
+        padding: "8px 0",
+        borderRadius: "8px",
+        background: contactPref === val ? "rgba(255,255,255,0.14)" : "transparent",
+        border: "none",
+        color: contactPref === val ? "#ffffff" : "rgba(255,255,255,0.30)",
+        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+        fontSize: "13px",
+        fontWeight: contactPref === val ? 500 : 400,
+        letterSpacing: "-0.01em",
+        cursor: "pointer",
+        transition: "background 0.15s ease, color 0.15s ease",
+        WebkitFontSmoothing: "antialiased",
+      }}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <AnimatePresence>
@@ -96,7 +135,6 @@ const ContactModal = () => {
 
               {/* LEFT */}
               <div style={{ paddingRight: "52px" }}>
-
                 <p style={{
                   fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                   fontSize: "11px", fontWeight: 500,
@@ -125,7 +163,6 @@ const ContactModal = () => {
                   Describe your problem. We scope and price it within 24 hours.
                 </p>
 
-                {/* Three hard facts. Period. Nothing else. */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {["50% deposit to start.", "No retainers.", "Balance on delivery."].map((line) => (
                     <p key={line} style={{
@@ -162,20 +199,58 @@ const ContactModal = () => {
                     </motion.div>
                   ) : (
                     <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+
                       <input type="text" placeholder="Name"
                         value={name} onChange={(e) => setName(e.target.value)}
                         onFocus={() => setFocused("name")} onBlur={() => setFocused(null)}
                         style={{ ...field("name"), padding: "13px 14px" }}
                       />
-                      <input type="email" placeholder="Email"
-                        value={email} onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setFocused("email")} onBlur={() => setFocused(null)}
-                        style={{ ...field("email"), padding: "13px 14px" }}
-                      />
+
+                      {/* Contact preference selector */}
+                      <div style={{
+                        display: "flex", gap: "4px",
+                        background: "rgba(255,255,255,0.07)",
+                        borderRadius: "10px", padding: "4px",
+                      }}>
+                        {prefBtn("email", "Email")}
+                        {prefBtn("whatsapp", "WhatsApp")}
+                        {prefBtn("both", "Both")}
+                      </div>
+
+                      {/* Conditional contact fields */}
+                      <AnimatePresence mode="wait">
+                        {(contactPref === "email" || contactPref === "both") && (
+                          <motion.div key="email-field"
+                            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.18 }}
+                            style={{ overflow: "hidden" }}
+                          >
+                            <input type="email" placeholder="Email address"
+                              value={email} onChange={(e) => setEmail(e.target.value)}
+                              onFocus={() => setFocused("email")} onBlur={() => setFocused(null)}
+                              style={{ ...field("email"), padding: "13px 14px" }}
+                            />
+                          </motion.div>
+                        )}
+                        {(contactPref === "whatsapp" || contactPref === "both") && (
+                          <motion.div key="wa-field"
+                            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.18 }}
+                            style={{ overflow: "hidden" }}
+                          >
+                            <input type="tel" placeholder="WhatsApp number"
+                              value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)}
+                              onFocus={() => setFocused("wa")} onBlur={() => setFocused(null)}
+                              style={{ ...field("wa"), padding: "13px 14px" }}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
                       <textarea placeholder="What are you building?"
                         value={message} onChange={(e) => setMessage(e.target.value)}
                         onFocus={() => setFocused("msg")} onBlur={() => setFocused(null)}
-                        rows={5}
+                        rows={4}
                         style={{ ...field("msg"), padding: "13px 14px", resize: "none", lineHeight: 1.55 }}
                       />
 
