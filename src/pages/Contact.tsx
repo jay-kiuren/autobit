@@ -20,7 +20,7 @@ const socials = [
   { icon: Linkedin,   href: "https://www.linkedin.com/company/autobit-company", label: "LinkedIn" },
   { icon: Instagram,  href: "https://www.instagram.com/autobitofficial/",        label: "Instagram" },
   { icon: Facebook,   href: "https://www.facebook.com/AutoBitOfficial",          label: "Facebook" },
-  { icon: TikTokIcon, href: "https://www.tiktok.com/@autobitofficial",           label: "TikTok" },
+  { icon: TikTokIcon, href: "https://www.tiktok.com/@autobitofficial.ph",           label: "TikTok" },
   { icon: XIcon,      href: "https://x.com/autobitofficial",                     label: "X" },
 ];
 
