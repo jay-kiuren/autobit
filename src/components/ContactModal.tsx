@@ -27,9 +27,9 @@ const ContactModal = () => {
 
   const fieldStyle = (id: string): React.CSSProperties => ({
     width: "100%",
-    background: focused === id ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.03)",
-    // No border at rest — only a hairline appears on focus
-    border: `1px solid ${focused === id ? "rgba(255,255,255,0.14)" : "transparent"}`,
+    background: focused === id ? "rgba(255,255,255,0.055)" : "rgba(255,255,255,0.032)",
+    border: "none",
+    outline: focused === id ? "1px solid rgba(255,255,255,0.12)" : "1px solid transparent",
     borderRadius: "12px",
     color: "#ffffff",
     fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -38,8 +38,7 @@ const ContactModal = () => {
     letterSpacing: "-0.01em",
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
-    outline: "none",
-    transition: "border-color 0.18s ease, background 0.18s ease",
+    transition: "outline-color 0.18s ease, background 0.18s ease",
     boxSizing: "border-box",
   });
 
@@ -62,7 +61,7 @@ const ContactModal = () => {
             }}
           />
 
-          {/* Sheet — #090909, NO colored top border */}
+          {/* Sheet — pure #090909, no border, no shadow line, just lifts */}
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -72,33 +71,32 @@ const ContactModal = () => {
               position: "fixed", bottom: 0, left: 0, right: 0,
               zIndex: 9999,
               background: "#090909",
-              borderRadius: "24px 24px 0 0",
+              borderRadius: "20px 20px 0 0",
               maxHeight: "82vh",
               overflowY: "auto",
-              // No colored edge — just a physical lift shadow
-              boxShadow: "0 -1px 0 rgba(255,255,255,0.06), 0 -32px 80px rgba(0,0,0,0.70)",
+              boxShadow: "0 -40px 80px rgba(0,0,0,0.80)",
             }}
           >
             {/* Drag handle */}
-            <div style={{ display: "flex", justifyContent: "center", paddingTop: "14px", paddingBottom: "4px" }}>
-              <div style={{ width: "36px", height: "4px", borderRadius: "9999px", background: "rgba(255,255,255,0.09)" }} />
+            <div style={{ display: "flex", justifyContent: "center", paddingTop: "12px", paddingBottom: "0" }}>
+              <div style={{ width: "32px", height: "3px", borderRadius: "9999px", background: "rgba(255,255,255,0.08)" }} />
             </div>
 
             {/* Close */}
             <button
               onClick={closeModal}
               style={{
-                position: "absolute", top: "18px", right: "20px",
-                width: "32px", height: "32px", borderRadius: "50%",
+                position: "absolute", top: "16px", right: "18px",
+                width: "30px", height: "30px", borderRadius: "50%",
                 background: "rgba(255,255,255,0.05)",
                 border: "none",
-                color: "rgba(255,255,255,0.40)",
+                color: "rgba(255,255,255,0.35)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 cursor: "pointer",
                 transition: "background 0.18s ease, color 0.18s ease",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.10)"; e.currentTarget.style.color = "#ffffff"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "rgba(255,255,255,0.40)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.color = "#ffffff"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
             >
               <X size={13} strokeWidth={2} />
             </button>
@@ -111,18 +109,18 @@ const ContactModal = () => {
             }}>
 
               {/* LEFT */}
-              <div style={{ paddingRight: "52px", borderRight: "1px solid rgba(255,255,255,0.04)" }}>
+              <div style={{ paddingRight: "52px" }}>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "22px" }}>
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2997ff", flexShrink: 0 }} />
-                  <span style={{
-                    fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                    fontSize: "10px", fontWeight: 500,
-                    letterSpacing: "0.18em", textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.30)",
-                    WebkitFontSmoothing: "antialiased",
-                  }}>New project</span>
-                </div>
+                {/* Eyebrow — plain text, no dot, no decoration */}
+                <p style={{
+                  fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                  fontSize: "11px", fontWeight: 500,
+                  letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.28)",
+                  margin: "0 0 20px 0",
+                  WebkitFontSmoothing: "antialiased",
+                  MozOsxFontSmoothing: "grayscale",
+                }}>New project</p>
 
                 <h2 style={{
                   fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -138,34 +136,37 @@ const ContactModal = () => {
                 <p style={{
                   fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                   fontSize: "14px", fontWeight: 400,
-                  color: "rgba(255,255,255,0.36)", lineHeight: 1.6,
+                  color: "rgba(255,255,255,0.35)", lineHeight: 1.6,
                   letterSpacing: "-0.01em", margin: "0 0 36px 0",
                   WebkitFontSmoothing: "antialiased",
+                  MozOsxFontSmoothing: "grayscale",
                 }}>
                   Describe your problem. We scope and price it within 24 hours.
                 </p>
 
-                {/* Trust items — professional, no flavor copy */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>
+                {/* Trust items — no bullets, no dots, no decoration */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {[
                     ["50% deposit to start", "Balance on delivery"],
                     ["No retainers", "Pay per project"],
-                    ["Response within 24h", "We keep you updated"],
+                    ["Response within 24h", "We keep you in the loop"],
                   ].map(([main, sub]) => (
-                    <div key={main} style={{ display: "flex", alignItems: "baseline", gap: "9px" }}>
+                    <div key={main} style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
                       <span style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                         fontSize: "13px", fontWeight: 500,
-                        color: "rgba(255,255,255,0.65)",
+                        color: "rgba(255,255,255,0.60)",
                         letterSpacing: "-0.01em",
                         WebkitFontSmoothing: "antialiased",
+                        MozOsxFontSmoothing: "grayscale",
                       }}>{main}</span>
                       <span style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                         fontSize: "12px", fontWeight: 400,
-                        color: "rgba(255,255,255,0.22)",
+                        color: "rgba(255,255,255,0.20)",
                         letterSpacing: "-0.005em",
                         WebkitFontSmoothing: "antialiased",
+                        MozOsxFontSmoothing: "grayscale",
                       }}>— {sub}</span>
                     </div>
                   ))}
@@ -187,23 +188,16 @@ const ContactModal = () => {
                         alignItems: "center", justifyContent: "center", gap: "14px",
                       }}
                     >
-                      <div style={{
-                        width: "50px", height: "50px", borderRadius: "50%",
-                        background: "rgba(41,151,255,0.08)",
-                        border: "1px solid rgba(41,151,255,0.16)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <CheckCircle size={20} color="#2997ff" strokeWidth={1.8} />
-                      </div>
+                      <CheckCircle size={28} color="rgba(255,255,255,0.60)" strokeWidth={1.5} />
                       <p style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "14px", color: "rgba(255,255,255,0.45)",
+                        fontSize: "14px", color: "rgba(255,255,255,0.40)",
                         letterSpacing: "-0.01em", margin: 0, textAlign: "center",
                         WebkitFontSmoothing: "antialiased",
                       }}>Mail app opened.</p>
                     </motion.div>
                   ) : (
-                    <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
+                    <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 
                       <input
                         type="text" placeholder="Name"
@@ -230,46 +224,48 @@ const ContactModal = () => {
                         style={{
                           display: "flex", alignItems: "center", gap: "7px",
                           background: "none", border: "none", cursor: "pointer",
-                          color: "rgba(255,255,255,0.28)", padding: "3px 0",
+                          color: "rgba(255,255,255,0.25)", padding: "3px 0",
                           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                           fontSize: "13px", letterSpacing: "-0.01em",
                           transition: "color 0.18s ease",
                           WebkitFontSmoothing: "antialiased",
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.60)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.28)"; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.55)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.25)"; }}
                       >
                         <Paperclip size={12} />
                         <span>{fileName || "Attach a file (optional)"}</span>
                       </button>
                       <input ref={fileRef} type="file" accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx" style={{ display: "none" }} onChange={(e) => setFileName(e.target.files?.[0]?.name || "")} />
 
+                      {/* Button — always #2997ff, no disabled dim */}
                       <button
                         onClick={handleSubmit}
-                        disabled={!name || !email || !message}
                         style={{
                           marginTop: "4px", width: "100%", padding: "14px",
                           borderRadius: "12px",
-                          background: (!name || !email || !message) ? "rgba(41,151,255,0.30)" : "#2997ff",
+                          background: "#2997ff",
                           color: "#ffffff", border: "none",
                           fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
                           fontSize: "15px", fontWeight: 500,
                           letterSpacing: "-0.01em",
-                          cursor: (!name || !email || !message) ? "not-allowed" : "pointer",
+                          cursor: "pointer",
                           transition: "background 0.18s ease, transform 0.15s ease",
                           WebkitFontSmoothing: "antialiased",
+                          MozOsxFontSmoothing: "grayscale",
                         }}
-                        onMouseEnter={(e) => { if (name && email && message) { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.01)"; } }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = (!name || !email || !message) ? "rgba(41,151,255,0.30)" : "#2997ff"; e.currentTarget.style.transform = "scale(1)"; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.01)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1)"; }}
                       >
                         Send message
                       </button>
 
                       <p style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "11px", color: "rgba(255,255,255,0.18)",
+                        fontSize: "11px", color: "rgba(255,255,255,0.16)",
                         letterSpacing: "0em", margin: "2px 0 0 0", textAlign: "center",
                         WebkitFontSmoothing: "antialiased",
+                        MozOsxFontSmoothing: "grayscale",
                       }}>
                         We reply within 24 hours.
                       </p>
@@ -288,15 +284,19 @@ const ContactModal = () => {
               }
               .modal-grid > div:first-child {
                 padding-right: 0 !important;
-                border-right: none !important;
-                border-bottom: 1px solid rgba(255,255,255,0.04) !important;
                 padding-bottom: 28px !important;
                 margin-bottom: 28px !important;
+                border-bottom: 1px solid rgba(255,255,255,0.04) !important;
               }
               .modal-grid > div:last-child { padding-left: 0 !important; }
             }
             input::placeholder, textarea::placeholder {
-              color: rgba(255,255,255,0.20);
+              color: rgba(255,255,255,0.18);
+              font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            }
+            input, textarea {
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
             }
           `}</style>
         </>
