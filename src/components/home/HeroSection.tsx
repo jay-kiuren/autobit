@@ -63,8 +63,6 @@ const HeroSection = () => {
         display: "flex", flexDirection: "column", alignItems: "center",
       }}>
 
-        <GlassChip />
-
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, marginBottom: "20px" }}>
           <h1 style={{
             fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -135,14 +133,8 @@ const HeroSection = () => {
               letterSpacing: "-0.01em",
               display: "inline-block",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#0077ed";
-              e.currentTarget.style.transform = "scale(1.02)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#2997ff";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.02)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1)"; }}
           >Start a project</button>
 
           <a
@@ -158,14 +150,8 @@ const HeroSection = () => {
               display: "inline-block",
               border: "none",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#2997ff";
-              e.currentTarget.style.transform = "scale(1.02)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.10)";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1.02)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.10)"; e.currentTarget.style.transform = "scale(1)"; }}
           >See our work</a>
         </div>
 
@@ -222,34 +208,6 @@ const HeroSection = () => {
         }
       `}</style>
     </section>
-  );
-};
-
-const GlassChip = () => {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position: "relative", display: "inline-flex", alignItems: "center",
-        justifyContent: "center", borderRadius: "9999px", padding: "10px 28px",
-        marginBottom: "28px", cursor: "default", userSelect: "none" as const,
-        transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease",
-        transform: hovered ? "scale(1.04) translateY(-1px)" : "scale(1) translateY(0)",
-        background: "rgba(255,255,255,0.10)",
-        backdropFilter: "blur(20px) saturate(150%)", WebkitBackdropFilter: "blur(20px) saturate(150%)",
-        boxShadow: hovered
-          ? `0 12px 40px rgba(0,0,0,0.45),0 4px 12px rgba(0,0,0,0.30),inset 0 1.5px 0 rgba(255,255,255,0.70),inset 1px 0 0 rgba(255,255,255,0.20),inset -1px 0 0 rgba(255,255,255,0.12),inset 0 -2px 6px rgba(0,0,0,0.25),0 0 0 0.5px rgba(255,255,255,0.18),0 0 30px rgba(255,255,255,0.07)`
-          : `0 6px 24px rgba(0,0,0,0.40),0 2px 6px rgba(0,0,0,0.25),inset 0 1.5px 0 rgba(255,255,255,0.55),inset 1px 0 0 rgba(255,255,255,0.14),inset -1px 0 0 rgba(255,255,255,0.08),inset 0 -2px 5px rgba(0,0,0,0.20),0 0 0 0.5px rgba(255,255,255,0.12)`,
-      }}
-    >
-      <div style={{ position: "absolute", top: "3px", left: "14%", width: "38%", height: "45%", background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.20) 50%, transparent 75%)", borderRadius: "9999px", pointerEvents: "none", filter: "blur(2px)", opacity: hovered ? 0.9 : 0.75, transition: "opacity 0.3s ease" }} />
-      <div style={{ position: "absolute", bottom: "4px", right: "18%", width: "18%", height: "30%", background: "radial-gradient(ellipse, rgba(255,255,255,0.18) 0%, transparent 70%)", borderRadius: "9999px", pointerEvents: "none", filter: "blur(1px)" }} />
-      <span style={{ fontSize: "11px", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase" as const, color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.70)", transition: "color 0.25s ease", fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", lineHeight: 1, position: "relative", zIndex: 1, WebkitFontSmoothing: "antialiased" }}>
-        Start Something™
-      </span>
-    </div>
   );
 };
 
