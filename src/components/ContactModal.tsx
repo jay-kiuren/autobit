@@ -1,7 +1,14 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Paperclip, CheckCircle } from "lucide-react";
+import { X, Paperclip, CheckCircle, AlertCircle, Loader } from "lucide-react";
 import { useContactModal } from "@/contexts/ContactModalContext";
+
+const FORMSPREE_ENDPOINTS = [
+  "https://formspree.io/f/xjgabyvr",
+  "https://formspree.io/f/xvzwbrog",
+];
+
+type SendStatus = "idle" | "sending" | "success" | "error";
 
 const ContactModal = () => {
   const { open, closeModal } = useContactModal();
@@ -10,35 +17,62 @@ const ContactModal = () => {
   const [whatsapp, setWhatsapp] = useState("");
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<SendStatus>("idle");
   const [focused, setFocused] = useState<string | null>(null);
   const [contactPref, setContactPref] = useState<"email" | "whatsapp" | "both">("email");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    const contact = contactPref === "email"
-      ? `Email: ${email}`
-      : contactPref === "whatsapp"
-      ? `WhatsApp: ${whatsapp}`
-      : `Email: ${email}\nWhatsApp: ${whatsapp}`;
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setStatus("sending");
 
-    const subject = encodeURIComponent(`New project inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\n${contact}\n\n${message}`);
-    window.open(`mailto:autobitofficial.ph@gmail.com?subject=${subject}&body=${body}`);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setName(""); setEmail(""); setWhatsapp(""); setMessage(""); setFileName("");
-      setContactPref("email");
-      closeModal();
-    }, 2600);
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("message", message);
+      if (contactPref === "email" || contactPref === "both") formData.append("email", email);
+      if (contactPref === "whatsapp" || contactPref === "both") formData.append("whatsapp", whatsapp);
+      if (file) formData.append("attachment", file);
+
+      // Send to both endpoints in parallel
+      const results = await Promise.allSettled(
+        FORMSPREE_ENDPOINTS.map((url) =>
+          fetch(url, {
+            method: "POST",
+            headers: { Accept: "application/json" },
+            body: formData,
+          }).then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+          })
+        )
+      );
+
+      const anySuccess = results.some((r) => r.status === "fulfilled");
+
+      if (anySuccess) {
+        setStatus("success");
+        setTimeout(() => {
+          setStatus("idle");
+          setName(""); setEmail(""); setWhatsapp(""); setMessage("");
+          setFileName(""); setFile(null);
+          setContactPref("email");
+          closeModal();
+        }, 3200);
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
 
-  const canSubmit = name && message && (
-    contactPref === "email" ? email :
-    contactPref === "whatsapp" ? whatsapp :
-    email && whatsapp
-  );
+  const canSubmit =
+    status === "idle" &&
+    name &&
+    message &&
+    (contactPref === "email" ? email : contactPref === "whatsapp" ? whatsapp : email && whatsapp);
 
   const field = (id: string): React.CSSProperties => ({
     width: "100%",
@@ -88,12 +122,13 @@ const ContactModal = () => {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.45, ease: "easeInOut" }}
-            onClick={closeModal}
+            onClick={status === "sending" ? undefined : closeModal}
             style={{
               position: "fixed", inset: 0, zIndex: 9998,
               background: "rgba(0,0,0,0.78)",
               backdropFilter: "blur(28px) brightness(0.25)",
               WebkitBackdropFilter: "blur(28px) brightness(0.25)",
+              cursor: status === "sending" ? "default" : "pointer",
             }}
           />
 
@@ -112,21 +147,23 @@ const ContactModal = () => {
               <div style={{ width: "32px", height: "3px", borderRadius: "9999px", background: "rgba(255,255,255,0.07)" }} />
             </div>
 
-            <button
-              onClick={closeModal}
-              style={{
-                position: "absolute", top: "16px", right: "18px",
-                width: "28px", height: "28px", borderRadius: "50%",
-                background: "rgba(255,255,255,0.05)", border: "none",
-                color: "rgba(255,255,255,0.32)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", transition: "background 0.15s ease, color 0.15s ease",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.color = "#fff"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "rgba(255,255,255,0.32)"; }}
-            >
-              <X size={12} strokeWidth={2.2} />
-            </button>
+            {status !== "sending" && (
+              <button
+                onClick={closeModal}
+                style={{
+                  position: "absolute", top: "16px", right: "18px",
+                  width: "28px", height: "28px", borderRadius: "50%",
+                  background: "rgba(255,255,255,0.05)", border: "none",
+                  color: "rgba(255,255,255,0.32)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", transition: "background 0.15s ease, color 0.15s ease",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.color = "#fff"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "rgba(255,255,255,0.32)"; }}
+              >
+                <X size={12} strokeWidth={2.2} />
+              </button>
+            )}
 
             <div className="modal-grid" style={{
               display: "grid", gridTemplateColumns: "1fr 1fr",
@@ -179,9 +216,43 @@ const ContactModal = () => {
               {/* RIGHT */}
               <div style={{ paddingLeft: "52px" }}>
                 <AnimatePresence mode="wait">
-                  {submitted ? (
+
+                  {/* SENDING STATE */}
+                  {status === "sending" && (
                     <motion.div
-                      key="ok"
+                      key="sending"
+                      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      style={{
+                        height: "100%", minHeight: "300px",
+                        display: "flex", flexDirection: "column",
+                        alignItems: "center", justifyContent: "center", gap: "16px",
+                      }}
+                    >
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      >
+                        <Loader size={24} color="rgba(255,255,255,0.35)" strokeWidth={1.8} />
+                      </motion.div>
+                      <p style={{
+                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontSize: "14px", color: "rgba(255,255,255,0.32)",
+                        letterSpacing: "-0.01em", margin: 0,
+                        WebkitFontSmoothing: "antialiased",
+                      }}>Sending your message…</p>
+                      <p style={{
+                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontSize: "12px", color: "rgba(255,255,255,0.16)",
+                        letterSpacing: "-0.01em", margin: 0,
+                        WebkitFontSmoothing: "antialiased",
+                      }}>Please wait, this only takes a moment.</p>
+                    </motion.div>
+                  )}
+
+                  {/* SUCCESS STATE */}
+                  {status === "success" && (
+                    <motion.div
+                      key="success"
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       style={{
                         height: "100%", minHeight: "300px",
@@ -189,15 +260,76 @@ const ContactModal = () => {
                         alignItems: "center", justifyContent: "center", gap: "12px",
                       }}
                     >
-                      <CheckCircle size={26} color="rgba(255,255,255,0.45)" strokeWidth={1.6} />
+                      <motion.div
+                        initial={{ scale: 0.6, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 220, damping: 18 }}
+                      >
+                        <CheckCircle size={32} color="rgba(255,255,255,0.50)" strokeWidth={1.5} />
+                      </motion.div>
                       <p style={{
                         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "14px", color: "rgba(255,255,255,0.32)",
+                        fontSize: "15px", fontWeight: 500,
+                        color: "rgba(255,255,255,0.75)",
                         letterSpacing: "-0.01em", margin: 0,
                         WebkitFontSmoothing: "antialiased",
-                      }}>Sent.</p>
+                      }}>Message sent!</p>
+                      <p style={{
+                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontSize: "13px", color: "rgba(255,255,255,0.28)",
+                        letterSpacing: "-0.01em", margin: 0, textAlign: "center",
+                        WebkitFontSmoothing: "antialiased",
+                      }}>We'll get back to you within 24 hours.<br />Closing shortly…</p>
                     </motion.div>
-                  ) : (
+                  )}
+
+                  {/* ERROR STATE */}
+                  {status === "error" && (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      style={{
+                        height: "100%", minHeight: "300px",
+                        display: "flex", flexDirection: "column",
+                        alignItems: "center", justifyContent: "center", gap: "14px",
+                      }}
+                    >
+                      <AlertCircle size={28} color="rgba(255,80,80,0.65)" strokeWidth={1.6} />
+                      <p style={{
+                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontSize: "14px", fontWeight: 500,
+                        color: "rgba(255,255,255,0.55)",
+                        letterSpacing: "-0.01em", margin: 0,
+                        WebkitFontSmoothing: "antialiased",
+                      }}>Something went wrong.</p>
+                      <p style={{
+                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontSize: "12px", color: "rgba(255,255,255,0.22)",
+                        letterSpacing: "-0.01em", margin: 0, textAlign: "center",
+                        WebkitFontSmoothing: "antialiased",
+                      }}>Please check your connection and try again.</p>
+                      <button
+                        onClick={() => setStatus("idle")}
+                        style={{
+                          marginTop: "4px", padding: "10px 24px",
+                          borderRadius: "8px", background: "rgba(255,255,255,0.07)",
+                          color: "rgba(255,255,255,0.55)", border: "none",
+                          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                          fontSize: "13px", fontWeight: 500, letterSpacing: "-0.01em",
+                          cursor: "pointer",
+                          transition: "background 0.15s ease",
+                          WebkitFontSmoothing: "antialiased",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
+                      >
+                        Try again
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {/* FORM */}
+                  {status === "idle" && (
                     <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 
                       <input type="text" placeholder="Name"
@@ -268,26 +400,40 @@ const ContactModal = () => {
                         <Paperclip size={12} />
                         <span>{fileName || "Attach a file"}</span>
                       </button>
-                      <input ref={fileRef} type="file" accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx"
-                        style={{ display: "none" }} onChange={(e) => setFileName(e.target.files?.[0]?.name || "")} />
+                      <input
+                        ref={fileRef} type="file"
+                        accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          setFile(f);
+                          setFileName(f?.name || "");
+                        }}
+                      />
 
-                      <button onClick={handleSubmit} style={{
-                        marginTop: "4px", width: "100%", padding: "14px",
-                        borderRadius: "10px", background: "#2997ff",
-                        color: "#ffffff", border: "none",
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "15px", fontWeight: 500, letterSpacing: "-0.01em",
-                        cursor: "pointer",
-                        transition: "background 0.15s ease, transform 0.12s ease",
-                        WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale",
-                      }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.01)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1)"; }}
+                      <button
+                        onClick={handleSubmit}
+                        disabled={!canSubmit}
+                        style={{
+                          marginTop: "4px", width: "100%", padding: "14px",
+                          borderRadius: "10px",
+                          background: canSubmit ? "#2997ff" : "rgba(255,255,255,0.07)",
+                          color: canSubmit ? "#ffffff" : "rgba(255,255,255,0.22)",
+                          border: "none",
+                          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                          fontSize: "15px", fontWeight: 500, letterSpacing: "-0.01em",
+                          cursor: canSubmit ? "pointer" : "default",
+                          transition: "background 0.15s ease, transform 0.12s ease, color 0.15s ease",
+                          WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale",
+                        }}
+                        onMouseEnter={(e) => { if (canSubmit) { e.currentTarget.style.background = "#0077ed"; e.currentTarget.style.transform = "scale(1.01)"; } }}
+                        onMouseLeave={(e) => { if (canSubmit) { e.currentTarget.style.background = "#2997ff"; e.currentTarget.style.transform = "scale(1)"; } }}
                       >
                         Send message
                       </button>
                     </motion.div>
                   )}
+
                 </AnimatePresence>
               </div>
             </div>
