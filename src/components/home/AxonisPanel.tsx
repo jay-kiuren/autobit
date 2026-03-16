@@ -1,28 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-// ─── DESIGN RATIONALE ─────────────────────────────────────────────────────────
-//
-// The AXONIS 3D map (Cesium + Google Photorealistic Tiles) lives in
-// /public/axonis-demo.html — an iframe preloads it the moment the page mounts,
-// so by the time the user scrolls here, the 3D city is already alive.
-//
-// COLOR GRADING SYSTEM:
-// AXONIS uses cyan (#00c8ff) on navy (#000d1a). Autobit uses white on black.
-// These are complementary but fight each other at full saturation.
-// Solution: CSS filter saturate(0.50) brightness(0.78) on the iframe container
-// — this "grades" it like a cinematographer pulling the cyan toward a neutral
-// cool-gray. The dashboard reads as sophisticated intelligence, not gaming HUD.
-// Then layered vignettes pull black from all edges, keeping the center lit.
-//
-// SCROLL CHAPTERS (280vh total):
-// 0–25%   → Intro: title emerges from black. Dashboard behind at 30% opacity.
-// 25–60%  → Dashboard scale-in centered, color grade lifts to 70%.
-//            "Every sensor. Every millisecond." centered overlay.
-// 60–100% → Full immersive. Overlay text fades. CTA emerges at bottom.
-//
-// ─────────────────────────────────────────────────────────────────────────────
-
 const sf: React.CSSProperties = {
   fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
   WebkitFontSmoothing: "antialiased",
