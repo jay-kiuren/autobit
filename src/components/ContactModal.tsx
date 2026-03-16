@@ -23,6 +23,12 @@ const ContactModal = () => {
   const [contactPref, setContactPref] = useState<"email" | "whatsapp" | "both">("email");
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const removeFile = () => {
+    setFile(null);
+    setFileName("");
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setStatus("sending");
@@ -35,7 +41,6 @@ const ContactModal = () => {
       if (contactPref === "whatsapp" || contactPref === "both") formData.append("whatsapp", whatsapp);
       if (file) formData.append("attachment", file);
 
-      // Send to both endpoints in parallel
       const results = await Promise.allSettled(
         FORMSPREE_ENDPOINTS.map((url) =>
           fetch(url, {
@@ -96,23 +101,17 @@ const ContactModal = () => {
       key={val}
       onClick={() => setContactPref(val)}
       style={{
-        flex: 1,
-        padding: "8px 0",
-        borderRadius: "8px",
+        flex: 1, padding: "8px 0", borderRadius: "8px",
         background: contactPref === val ? "rgba(255,255,255,0.14)" : "transparent",
         border: "none",
         color: contactPref === val ? "#ffffff" : "rgba(255,255,255,0.30)",
         fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-        fontSize: "13px",
-        fontWeight: contactPref === val ? 500 : 400,
-        letterSpacing: "-0.01em",
-        cursor: "pointer",
+        fontSize: "13px", fontWeight: contactPref === val ? 500 : 400,
+        letterSpacing: "-0.01em", cursor: "pointer",
         transition: "background 0.15s ease, color 0.15s ease",
         WebkitFontSmoothing: "antialiased",
       }}
-    >
-      {label}
-    </button>
+    >{label}</button>
   );
 
   return (
@@ -137,8 +136,7 @@ const ContactModal = () => {
             transition={{ duration: 0.68, ease: [0.32, 0.72, 0, 1] }}
             style={{
               position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999,
-              background: "#0a0a0a",
-              borderRadius: "20px 20px 0 0",
+              background: "#0a0a0a", borderRadius: "20px 20px 0 0",
               maxHeight: "82vh", overflowY: "auto",
               boxShadow: "0 -48px 100px rgba(0,0,0,0.90)",
             }}
@@ -169,7 +167,6 @@ const ContactModal = () => {
               display: "grid", gridTemplateColumns: "1fr 1fr",
               padding: "28px 44px 52px 44px",
             }}>
-
               {/* LEFT */}
               <div style={{ paddingRight: "52px" }}>
                 <p style={{
@@ -204,8 +201,7 @@ const ContactModal = () => {
                   {["50% deposit to start.", "No retainers.", "Balance on delivery."].map((line) => (
                     <p key={line} style={{
                       fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                      fontSize: "13px", fontWeight: 400,
-                      color: "rgba(255,255,255,0.36)",
+                      fontSize: "13px", fontWeight: 400, color: "rgba(255,255,255,0.36)",
                       letterSpacing: "-0.01em", margin: 0,
                       WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale",
                     }}>{line}</p>
@@ -217,118 +213,46 @@ const ContactModal = () => {
               <div style={{ paddingLeft: "52px" }}>
                 <AnimatePresence mode="wait">
 
-                  {/* SENDING STATE */}
                   {status === "sending" && (
-                    <motion.div
-                      key="sending"
+                    <motion.div key="sending"
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{
-                        height: "100%", minHeight: "300px",
-                        display: "flex", flexDirection: "column",
-                        alignItems: "center", justifyContent: "center", gap: "16px",
-                      }}
+                      style={{ height: "100%", minHeight: "300px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px" }}
                     >
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      >
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
                         <Loader size={24} color="rgba(255,255,255,0.35)" strokeWidth={1.8} />
                       </motion.div>
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "14px", color: "rgba(255,255,255,0.32)",
-                        letterSpacing: "-0.01em", margin: 0,
-                        WebkitFontSmoothing: "antialiased",
-                      }}>Sending your message…</p>
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "12px", color: "rgba(255,255,255,0.16)",
-                        letterSpacing: "-0.01em", margin: 0,
-                        WebkitFontSmoothing: "antialiased",
-                      }}>Please wait, this only takes a moment.</p>
+                      <p style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.32)", letterSpacing: "-0.01em", margin: 0, WebkitFontSmoothing: "antialiased" }}>Sending…</p>
                     </motion.div>
                   )}
 
-                  {/* SUCCESS STATE */}
                   {status === "success" && (
-                    <motion.div
-                      key="success"
+                    <motion.div key="success"
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{
-                        height: "100%", minHeight: "300px",
-                        display: "flex", flexDirection: "column",
-                        alignItems: "center", justifyContent: "center", gap: "12px",
-                      }}
+                      style={{ height: "100%", minHeight: "300px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px" }}
                     >
-                      <motion.div
-                        initial={{ scale: 0.6, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 220, damping: 18 }}
-                      >
+                      <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 220, damping: 18 }}>
                         <CheckCircle size={32} color="rgba(255,255,255,0.50)" strokeWidth={1.5} />
                       </motion.div>
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "15px", fontWeight: 500,
-                        color: "rgba(255,255,255,0.75)",
-                        letterSpacing: "-0.01em", margin: 0,
-                        WebkitFontSmoothing: "antialiased",
-                      }}>Message sent!</p>
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "13px", color: "rgba(255,255,255,0.28)",
-                        letterSpacing: "-0.01em", margin: 0, textAlign: "center",
-                        WebkitFontSmoothing: "antialiased",
-                      }}>We'll get back to you within 24 hours.<br />Closing shortly…</p>
+                      <p style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "15px", fontWeight: 500, color: "rgba(255,255,255,0.75)", letterSpacing: "-0.01em", margin: 0, WebkitFontSmoothing: "antialiased" }}>Message sent.</p>
+                      <p style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.28)", letterSpacing: "-0.01em", margin: 0, textAlign: "center", WebkitFontSmoothing: "antialiased" }}>We'll get back to you within 24 hours.</p>
                     </motion.div>
                   )}
 
-                  {/* ERROR STATE */}
                   {status === "error" && (
-                    <motion.div
-                      key="error"
+                    <motion.div key="error"
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{
-                        height: "100%", minHeight: "300px",
-                        display: "flex", flexDirection: "column",
-                        alignItems: "center", justifyContent: "center", gap: "14px",
-                      }}
+                      style={{ height: "100%", minHeight: "300px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "14px" }}
                     >
                       <AlertCircle size={28} color="rgba(255,80,80,0.65)" strokeWidth={1.6} />
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "14px", fontWeight: 500,
-                        color: "rgba(255,255,255,0.55)",
-                        letterSpacing: "-0.01em", margin: 0,
-                        WebkitFontSmoothing: "antialiased",
-                      }}>Something went wrong.</p>
-                      <p style={{
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "12px", color: "rgba(255,255,255,0.22)",
-                        letterSpacing: "-0.01em", margin: 0, textAlign: "center",
-                        WebkitFontSmoothing: "antialiased",
-                      }}>Please check your connection and try again.</p>
-                      <button
-                        onClick={() => setStatus("idle")}
-                        style={{
-                          marginTop: "4px", padding: "10px 24px",
-                          borderRadius: "8px", background: "rgba(255,255,255,0.07)",
-                          color: "rgba(255,255,255,0.55)", border: "none",
-                          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                          fontSize: "13px", fontWeight: 500, letterSpacing: "-0.01em",
-                          cursor: "pointer",
-                          transition: "background 0.15s ease",
-                          WebkitFontSmoothing: "antialiased",
-                        }}
+                      <p style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "14px", fontWeight: 500, color: "rgba(255,255,255,0.55)", letterSpacing: "-0.01em", margin: 0, WebkitFontSmoothing: "antialiased" }}>Something went wrong.</p>
+                      <p style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.22)", letterSpacing: "-0.01em", margin: 0, textAlign: "center", WebkitFontSmoothing: "antialiased" }}>Check your connection and try again.</p>
+                      <button onClick={() => setStatus("idle")} style={{ marginTop: "4px", padding: "10px 24px", borderRadius: "8px", background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.55)", border: "none", fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif", fontSize: "13px", fontWeight: 500, letterSpacing: "-0.01em", cursor: "pointer", transition: "background 0.15s ease", WebkitFontSmoothing: "antialiased" }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
-                      >
-                        Try again
-                      </button>
+                      >Try again</button>
                     </motion.div>
                   )}
 
-                  {/* FORM */}
                   {status === "idle" && (
                     <motion.div key="form" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 
@@ -338,24 +262,17 @@ const ContactModal = () => {
                         style={{ ...field("name"), padding: "13px 14px" }}
                       />
 
-                      {/* Contact preference selector */}
-                      <div style={{
-                        display: "flex", gap: "4px",
-                        background: "rgba(255,255,255,0.07)",
-                        borderRadius: "10px", padding: "4px",
-                      }}>
+                      <div style={{ display: "flex", gap: "4px", background: "rgba(255,255,255,0.07)", borderRadius: "10px", padding: "4px" }}>
                         {prefBtn("email", "Email")}
                         {prefBtn("whatsapp", "WhatsApp")}
                         {prefBtn("both", "Both")}
                       </div>
 
-                      {/* Conditional contact fields */}
                       <AnimatePresence mode="wait">
                         {(contactPref === "email" || contactPref === "both") && (
                           <motion.div key="email-field"
                             initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.18 }}
-                            style={{ overflow: "hidden" }}
+                            transition={{ duration: 0.18 }} style={{ overflow: "hidden" }}
                           >
                             <input type="email" placeholder="Email address"
                               value={email} onChange={(e) => setEmail(e.target.value)}
@@ -367,8 +284,7 @@ const ContactModal = () => {
                         {(contactPref === "whatsapp" || contactPref === "both") && (
                           <motion.div key="wa-field"
                             initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.18 }}
-                            style={{ overflow: "hidden" }}
+                            transition={{ duration: 0.18 }} style={{ overflow: "hidden" }}
                           >
                             <input type="tel" placeholder="WhatsApp number"
                               value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)}
@@ -386,23 +302,46 @@ const ContactModal = () => {
                         style={{ ...field("msg"), padding: "13px 14px", resize: "none", lineHeight: 1.55 }}
                       />
 
-                      <button onClick={() => fileRef.current?.click()} style={{
-                        display: "flex", alignItems: "center", gap: "7px",
-                        background: "none", border: "none", cursor: "pointer",
-                        color: "rgba(255,255,255,0.20)", padding: "3px 0",
-                        fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
-                        fontSize: "12px", letterSpacing: "-0.01em",
-                        transition: "color 0.15s ease", WebkitFontSmoothing: "antialiased",
-                      }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.50)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.20)"; }}
-                      >
-                        <Paperclip size={12} />
-                        <span>{fileName || "Attach a file"}</span>
-                      </button>
+                      {/* File attach row — X appears only when file is selected */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <button onClick={() => fileRef.current?.click()} style={{
+                          display: "flex", alignItems: "center", gap: "7px",
+                          background: "none", border: "none", cursor: "pointer",
+                          color: fileName ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.20)",
+                          padding: "3px 0", flex: 1, textAlign: "left" as const,
+                          fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                          fontSize: "12px", letterSpacing: "-0.01em",
+                          transition: "color 0.15s ease", WebkitFontSmoothing: "antialiased",
+                        }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.60)"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = fileName ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.20)"; }}
+                        >
+                          <Paperclip size={12} />
+                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }}>
+                            {fileName || "Attach a file"}
+                          </span>
+                        </button>
+
+                        {fileName && (
+                          <button onClick={removeFile} style={{
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            width: "18px", height: "18px", borderRadius: "50%",
+                            background: "rgba(255,255,255,0.08)", border: "none",
+                            color: "rgba(255,255,255,0.40)", cursor: "pointer", flexShrink: 0,
+                            transition: "background 0.15s ease, color 0.15s ease",
+                          }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; e.currentTarget.style.color = "#fff"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "rgba(255,255,255,0.40)"; }}
+                          >
+                            <X size={10} strokeWidth={2.5} />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Images and documents only */}
                       <input
                         ref={fileRef} type="file"
-                        accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx"
+                        accept="image/jpeg,image/png,image/webp,image/gif,.pdf,.doc,.docx"
                         style={{ display: "none" }}
                         onChange={(e) => {
                           const f = e.target.files?.[0] ?? null;
