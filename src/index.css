@@ -1,39 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
   :root {
     --background: 0 0% 0%;
     --foreground: 240 6% 97%;
-
     --card: 240 3% 12%;
     --card-foreground: 240 6% 97%;
-
     --popover: 240 3% 12%;
     --popover-foreground: 240 6% 97%;
-
     --primary: 211 100% 58%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 240 2% 12%;
     --secondary-foreground: 240 6% 97%;
-
     --muted: 240 2% 16%;
     --muted-foreground: 240 4% 65%;
-
     --accent: 240 2% 16%;
     --accent-foreground: 240 6% 97%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 0 0% 100% / 0.08;
     --input: 0 0% 100% / 0.12;
     --ring: 211 100% 58%;
-
     --radius: 18px;
-
     /* AUTOBIT custom tokens */
     --bg-primary: 0 0% 0%;
     --bg-secondary: 240 3% 12%;
@@ -41,22 +30,17 @@
     --bg-card: 240 3% 12%;
     --bg-card-hover: 240 2% 18%;
     --bg-nav: 0 0% 0% / 0.72;
-
     --text-primary: 240 6% 97%;
     --text-secondary: 240 4% 65%;
     --text-muted: 240 3% 44%;
     --text-link: 211 100% 58%;
     --text-link-hover: 206 100% 72%;
-
     --border-subtle: 0 0% 100% / 0.08;
     --border-normal: 0 0% 100% / 0.12;
-
     --shadow-card: 0 4px 16px rgba(0,0,0,0.4);
     --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6);
-
     --radius-lg: 18px;
     --radius-sm: 12px;
-
     --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 240 6% 97%;
     --sidebar-primary: 211 100% 58%;
@@ -67,45 +51,59 @@
     --sidebar-ring: 211 100% 58%;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
   }
-
   html {
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
   }
-
   body {
     @apply bg-background text-foreground antialiased;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', sans-serif;
   }
-
   h1, h2, h3, h4, h5, h6 {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
 
+  /* ── GLOBAL CURSOR FIX ──────────────────────────────────────────────────
+     Kills the I-beam on all non-interactive elements sitewide.
+     Inputs/textareas keep text cursor. Buttons/links keep pointer.
+  ──────────────────────────────────────────────────────────────────────── */
+  *:not(input):not(textarea):not([contenteditable="true"]) {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  button,
+  a,
+  [role="button"],
+  label[for] {
+    cursor: pointer;
+  }
+}
 @layer utilities {
   .text-body {
     @apply text-[17px] font-normal leading-[1.4];
     color: hsl(var(--text-secondary));
   }
-
   .text-caption {
     @apply text-xs font-normal leading-[1.4];
     color: hsl(var(--text-muted));
   }
-
   .text-eyebrow {
     @apply text-[17px] font-normal;
     color: hsl(var(--text-secondary));
   }
-
   .text-link-blue {
     color: hsl(var(--text-link));
     transition: color 0.2s ease;
@@ -113,31 +111,25 @@
   .text-link-blue:hover {
     color: hsl(var(--text-link-hover));
   }
-
   .bg-card-surface {
     background-color: hsl(var(--bg-card));
   }
-
   .bg-card-surface-hover:hover {
     background-color: hsl(var(--bg-card-hover));
   }
-
   .bg-tertiary {
     background-color: hsl(var(--bg-tertiary));
   }
-
   .nav-blur {
     background: hsl(var(--bg-nav));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
-
   .mega-blur {
     background: hsl(var(--bg-nav));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(40px);
   }
-
   .card-hover-effect {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -145,14 +137,12 @@
     transform: scale(1.02);
     box-shadow: var(--shadow-card-hover);
   }
-
   .section-container {
     @apply mx-auto w-full;
     max-width: 1440px;
     padding-left: 40px;
     padding-right: 40px;
   }
-
   .scrollbar-hidden {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -160,8 +150,6 @@
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
-
-  /* Nav link hover: subtle bg pill, zero border/outline */
   .nav-link-item {
     transition: background-color 0.2s ease;
     border: none;
