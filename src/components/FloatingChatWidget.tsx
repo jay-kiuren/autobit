@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-const FB_PAGE_ID = "701374596384613";
-const WA_PHONE = "639382861265"; // +63 format, no +
+const WA_PHONE = "639382861265";
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
 const MessengerIcon = () => (
   <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
@@ -37,14 +38,13 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-// WhatsApp in-page chat panel
+// ─── WhatsApp in-page panel ────────────────────────────────────────────────────
+
 function WhatsAppPanel({ onClose }: { onClose: () => void }) {
   const [message, setMessage] = useState("");
-  const [iframeError, setIframeError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Focus input when panel opens
     setTimeout(() => inputRef.current?.focus(), 300);
   }, []);
 
@@ -82,9 +82,7 @@ function WhatsAppPanel({ onClose }: { onClose: () => void }) {
       {/* Header */}
       <div
         className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
-        style={{
-          background: "linear-gradient(135deg, #075E54 0%, #128C7E 100%)",
-        }}
+        style={{ background: "linear-gradient(135deg, #075E54 0%, #128C7E 100%)" }}
       >
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
@@ -121,7 +119,6 @@ function WhatsAppPanel({ onClose }: { onClose: () => void }) {
           background: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\") #0e1a17",
         }}
       >
-        {/* Greeting bubble */}
         <div className="flex justify-start">
           <div
             className="text-xs text-white/80 px-3 py-2 rounded-2xl rounded-tl-sm max-w-[85%] leading-relaxed"
@@ -131,8 +128,6 @@ function WhatsAppPanel({ onClose }: { onClose: () => void }) {
             <span className="block text-right text-white/30 text-[10px] mt-1">AUTOBIT</span>
           </div>
         </div>
-
-        {/* Quick reply chips */}
         <div className="flex flex-col gap-1.5 mt-1">
           {quickMessages.map((msg) => (
             <button
@@ -151,7 +146,7 @@ function WhatsAppPanel({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      {/* Input area */}
+      {/* Input */}
       <div
         className="flex items-center gap-2 px-3 py-2.5 flex-shrink-0"
         style={{ background: "#1a1a1a", borderTop: "1px solid rgba(255,255,255,0.06)" }}
@@ -196,22 +191,20 @@ function WhatsAppPanel({ onClose }: { onClose: () => void }) {
   );
 }
 
-// Simple popup opener for Messenger
-const openMessengerPopup = () => {
-  const width = 400;
-  const height = 600;
-  const left = window.screen.width - width - 20;
-  const top = window.screen.height - height - 80;
-  window.open(
-    `https://m.me/${FB_PAGE_ID}`,
-    "Messenger",
-    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,scrollbars=yes`
-  );
-};
+// ─── Main widget ───────────────────────────────────────────────────────────────
+
+// Extend window type for FB SDK globals
+declare global {
+  interface Window {
+    __toggleFBMessenger?: () => void;
+    __fbMessengerOpen?: boolean;
+  }
+}
 
 export default function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [whatsappOpen, setWhatsappOpen] = useState(false);
+  const [messengerOpen, setMessengerOpen] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
   const [isMessengerHovered, setIsMessengerHovered] = useState(false);
   const [isWhatsappHovered, setIsWhatsappHovered] = useState(false);
@@ -220,42 +213,88 @@ export default function FloatingChatWidget() {
     if (isOpen) setShowPulse(false);
   }, [isOpen]);
 
-  // Close on Escape key
+  // Sync when user closes FB chat via its own X button
+  useEffect(() => {
+    const onFbClosed = () => setMessengerOpen(false);
+    window.addEventListener("fb-messenger-closed", onFbClosed);
+    return () => window.removeEventListener("fb-messenger-closed", onFbClosed);
+  }, []);
+
+  // Escape key closes everything
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-        setWhatsappOpen(false);
+      if (e.key !== "Escape") return;
+      setIsOpen(false);
+      setWhatsappOpen(false);
+      if (messengerOpen && window.__toggleFBMessenger) {
+        window.__toggleFBMessenger();
+        setMessengerOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [messengerOpen]);
 
   const handleMessengerClick = () => {
     setIsOpen(false);
     setWhatsappOpen(false);
-    openMessengerPopup();
+
+    if (window.__toggleFBMessenger) {
+      window.__toggleFBMessenger();
+      setMessengerOpen((o) => !o);
+    } else {
+      // FB SDK still loading — retry after short delay
+      setTimeout(() => {
+        if (window.__toggleFBMessenger) {
+          window.__toggleFBMessenger();
+          setMessengerOpen(true);
+        }
+      }, 1500);
+    }
   };
 
   const handleWhatsAppClick = () => {
     setIsOpen(false);
+    // Close Messenger if open
+    if (messengerOpen && window.__toggleFBMessenger) {
+      window.__toggleFBMessenger();
+      setMessengerOpen(false);
+    }
     setWhatsappOpen((o) => !o);
+  };
+
+  const anyPanelOpen = whatsappOpen || messengerOpen;
+
+  const closeFAB = () => {
+    if (whatsappOpen) { setWhatsappOpen(false); return; }
+    if (messengerOpen) {
+      if (window.__toggleFBMessenger) window.__toggleFBMessenger();
+      setMessengerOpen(false);
+      return;
+    }
+    setIsOpen((o) => !o);
   };
 
   return (
     <>
       {/* Mobile backdrop */}
-      {(isOpen || whatsappOpen) && (
+      {(isOpen || anyPanelOpen) && (
         <div
           className="fixed inset-0 z-40 sm:hidden"
-          onClick={() => { setIsOpen(false); setWhatsappOpen(false); }}
+          onClick={() => {
+            setIsOpen(false);
+            setWhatsappOpen(false);
+            if (messengerOpen && window.__toggleFBMessenger) {
+              window.__toggleFBMessenger();
+              setMessengerOpen(false);
+            }
+          }}
         />
       )}
 
       <div className="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-3">
 
-        {/* WhatsApp in-page panel */}
+        {/* WhatsApp panel */}
         <div
           style={{
             opacity: whatsappOpen ? 1 : 0,
@@ -268,24 +307,24 @@ export default function FloatingChatWidget() {
           <WhatsAppPanel onClose={() => setWhatsappOpen(false)} />
         </div>
 
-        {/* Sub-buttons (only when FAB is open and WhatsApp panel is closed) */}
+        {/* Sub-buttons */}
         <div
           className="flex flex-col items-end gap-3"
           style={{
-            opacity: isOpen && !whatsappOpen ? 1 : 0,
-            transform: isOpen && !whatsappOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.9)",
+            opacity: isOpen && !anyPanelOpen ? 1 : 0,
+            transform: isOpen && !anyPanelOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.9)",
             transition: "opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
-            pointerEvents: isOpen && !whatsappOpen ? "auto" : "none",
+            pointerEvents: isOpen && !anyPanelOpen ? "auto" : "none",
           }}
         >
           {/* WhatsApp button */}
           <div
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2"
             onMouseEnter={() => setIsWhatsappHovered(true)}
             onMouseLeave={() => setIsWhatsappHovered(false)}
           >
             <div
-              className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md transition-opacity duration-200 select-none"
+              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md transition-opacity duration-200 select-none"
               style={{ opacity: isWhatsappHovered ? 1 : 0 }}
             >
               WhatsApp
@@ -296,7 +335,7 @@ export default function FloatingChatWidget() {
               className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
               style={{
                 background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
-                boxShadow: "0 4px 20px rgba(37, 211, 102, 0.4)",
+                boxShadow: "0 4px 20px rgba(37,211,102,0.4)",
               }}
             >
               <WhatsAppIcon />
@@ -305,12 +344,12 @@ export default function FloatingChatWidget() {
 
           {/* Messenger button */}
           <div
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2"
             onMouseEnter={() => setIsMessengerHovered(true)}
             onMouseLeave={() => setIsMessengerHovered(false)}
           >
             <div
-              className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md transition-opacity duration-200 select-none"
+              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full shadow-md transition-opacity duration-200 select-none"
               style={{ opacity: isMessengerHovered ? 1 : 0 }}
             >
               Messenger
@@ -321,7 +360,7 @@ export default function FloatingChatWidget() {
               className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
               style={{
                 background: "radial-gradient(circle at 20% 100%, #09F 0%, #A033FF 61%, #FF5280 93%, #FF7061 100%)",
-                boxShadow: "0 4px 20px rgba(160, 51, 255, 0.4)",
+                boxShadow: "0 4px 20px rgba(160,51,255,0.4)",
               }}
             >
               <MessengerIcon />
@@ -338,32 +377,26 @@ export default function FloatingChatWidget() {
             />
           )}
           <button
-            onClick={() => {
-              if (whatsappOpen) {
-                setWhatsappOpen(false);
-              } else {
-                setIsOpen((o) => !o);
-              }
-            }}
-            aria-label={isOpen || whatsappOpen ? "Close" : "Chat with us"}
+            onClick={closeFAB}
+            aria-label={isOpen || anyPanelOpen ? "Close" : "Chat with us"}
             className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
             style={{
-              background: isOpen || whatsappOpen
+              background: isOpen || anyPanelOpen
                 ? "hsl(240 3% 20%)"
                 : "linear-gradient(135deg, hsl(211 100% 58%) 0%, hsl(220 100% 46%) 100%)",
-              boxShadow: isOpen || whatsappOpen
+              boxShadow: isOpen || anyPanelOpen
                 ? "0 4px 24px rgba(0,0,0,0.5)"
                 : "0 4px 24px hsl(211 100% 58% / 0.5)",
-              border: isOpen || whatsappOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
+              border: isOpen || anyPanelOpen ? "1px solid rgba(255,255,255,0.1)" : "none",
             }}
           >
             <div
               style={{
                 transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-                transform: isOpen || whatsappOpen ? "rotate(45deg)" : "rotate(0deg)",
+                transform: isOpen || anyPanelOpen ? "rotate(45deg)" : "rotate(0deg)",
               }}
             >
-              {isOpen || whatsappOpen ? (
+              {isOpen || anyPanelOpen ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
