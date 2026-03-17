@@ -7,22 +7,86 @@
     <link rel="icon" type="image/png" href="/favicon.ico?v=2" />
     <meta name="description" content="Applied technology company — AI agents, workflow automation, web applications, business systems, robotics, mobile apps." />
     <meta name="author" content="AUTOBIT" />
-    
+
+    <!-- Open Graph -->
     <meta property="og:title" content="AUTOBIT" />
     <meta property="og:description" content="AI agents, automation, web applications, and intelligent robotics" />
     <meta property="og:image" content="/autobitfb.png" />
     <meta property="og:url" content="https://autobitofficial.netlify.app/" />
     <meta property="og:type" content="website" />
-    
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AUTOBIT" />
     <meta name="twitter:description" content="ROBOTICS AND INNOVATION" />
     <meta name="twitter:image" content="/autobitfb.png" />
   </head>
+
   <body>
     <!-- FB Customer Chat root — required by SDK -->
     <div id="fb-root"></div>
+
+    <!--
+      Facebook Customer Chat Plugin
+      minimized="true" hides the default FB bubble.
+      Our custom FAB button in FloatingChatWidget.tsx calls
+      window.__fbMessengerOpen() to show/hide it programmatically.
+    -->
+    <div
+      class="fb-customerchat"
+      attribution="setup_tool"
+      page_id="701374596384613"
+      theme_color="#1877f2"
+      logged_in_greeting="Hi! How can AUTOBIT help you today?"
+      logged_out_greeting="Hi! How can AUTOBIT help you today?"
+      minimized="true"
+    ></div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Facebook SDK -->
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          xfbml  : true,
+          version: 'v19.0'
+        });
+
+        // Expose a global toggle so FloatingChatWidget can open/close
+        // the real embedded chat iframe without any redirect
+        window.__fbMessengerOpen = false;
+        window.__toggleFBMessenger = function () {
+          var iframe = document.querySelector('.fb_dialog iframe, iframe[title*="Messenger"]');
+          if (window.__fbMessengerOpen) {
+            FB.CustomerChat.hide();
+            window.__fbMessengerOpen = false;
+          } else {
+            FB.CustomerChat.show(true); // true = open the dialog immediately
+            window.__fbMessengerOpen = true;
+          }
+        };
+
+        // Sync state if user closes the FB chat via its own X button
+        FB.Event.subscribe('customerchat.dialogClose', function () {
+          window.__fbMessengerOpen = false;
+          // Notify React widget to update its state
+          window.dispatchEvent(new CustomEvent('fb-messenger-closed'));
+        });
+
+        FB.Event.subscribe('customerchat.dialogOpen', function () {
+          window.__fbMessengerOpen = true;
+        });
+      };
+
+      (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
   </body>
 </html>
