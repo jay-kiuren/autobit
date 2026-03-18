@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { frameDecos } from "./components/FrameDecorations";
 import { services } from "./data";
 
 interface ServiceSectionsProps {
@@ -30,8 +29,8 @@ const artAnims = [
 const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSectionsProps) => (
   <>
     {services.map((s, i) => {
-      const { Art } = s;
-      const FrameDeco = frameDecos[i];
+      // Art and FrameDeco now come directly from each panel file via data.ts
+      const { Art, FrameDeco } = s;
       const panelAnim = panelAnims[i];
       const artAnim = artAnims[i];
       const isActive = activeIndex === i;
