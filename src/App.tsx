@@ -7,12 +7,12 @@ import { ContactModalProvider } from "@/contexts/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
 import FloatingChatWidget from "@/components/FloatingChatWidget";
 import Index from "./pages/Index";
-import Projects from "./pages/Projects";
-import Services from "./pages/Services";
-import Team from "./pages/Team";
-import Contact from "./pages/Contact";
-import Pricing from "./pages/Pricing";
-import News from "./pages/News";
+import Projects from "./pages/projects";
+import Services from "./pages/services";
+import Team from "./pages/team";
+import Contact from "./pages/contact";
+import Pricing from "./pages/pricing";
+import News from "./pages/news";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
