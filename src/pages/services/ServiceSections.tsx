@@ -29,12 +29,26 @@ const artAnims = [
 const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSectionsProps) => (
   <>
     {services.map((s, i) => {
-      // Art and FrameDeco now come directly from each panel file via data.ts
       const { Art, FrameDeco } = s;
-      const panelAnim = panelAnims[i];
-      const artAnim = artAnims[i];
-      const isActive = activeIndex === i;
+      const isActive  = activeIndex === i;
       const isReverse = i % 2 === 1;
+
+      // ── If the panel has a custom full layout, use it ──────────────────────
+      if ((s as any).FullPanel) {
+        const FullPanel = (s as any).FullPanel;
+        return (
+          <FullPanel
+            key={s.id}
+            active={isActive}
+            animKey={animKeys[i]}
+            sectionRef={(el: HTMLDivElement | null) => { sectionRefs.current[i] = el; }}
+          />
+        );
+      }
+
+      // ── Default 2-col grid layout ──────────────────────────────────────────
+      const panelAnim = panelAnims[i];
+      const artAnim   = artAnims[i];
 
       return (
         <section key={s.id} id={s.id}
