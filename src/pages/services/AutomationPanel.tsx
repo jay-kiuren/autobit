@@ -182,8 +182,8 @@ export const AutomationFullPanel = ({
     <section
       id="automation"
       ref={el => {
-        (innerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-        sectionRef(el);
+        (innerRef as React.MutableRefObject<HTMLDivElement | null>).current = el as HTMLDivElement | null;
+        sectionRef(el as HTMLDivElement | null);
       }}
       style={{
         background: "#000",
