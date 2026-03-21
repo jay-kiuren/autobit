@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, Children, cloneElement, isValidElement, ReactElement } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 export function ScrollRow({ label, count, children }: {
@@ -20,6 +20,17 @@ export function ScrollRow({ label, count, children }: {
   const scroll = (dir: "left" | "right") => {
     rowRef.current?.scrollBy({ left: dir === "right" ? 340 : -340, behavior: "smooth" });
   };
+
+  const wrappedChildren = Children.map(children, (child) => {
+    if (isValidElement(child)) {
+      return (
+        <div style={{ scrollSnapAlign: "start" }}>
+          {child}
+        </div>
+      );
+    }
+    return child;
+  });
 
   return (
     <div style={{ marginBottom: "72px" }}>
@@ -93,9 +104,10 @@ export function ScrollRow({ label, count, children }: {
           paddingRight: "40px",
           paddingBottom: "16px",
           WebkitOverflowScrolling: "touch",
+          scrollSnapType: "x mandatory",
         }}
       >
-        {children}
+        {wrappedChildren}
       </div>
     </div>
   );

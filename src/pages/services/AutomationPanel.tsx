@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { IconGear } from "../components/Icons";
+import { IconGear } from "./components/Icons";
 
 const ACCENT = "#2997ff";
 
@@ -182,8 +182,8 @@ export const AutomationFullPanel = ({
     <section
       id="automation"
       ref={el => {
-        (innerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-        sectionRef(el);
+        (innerRef as React.MutableRefObject<HTMLDivElement | null>).current = el as HTMLDivElement | null;
+        sectionRef(el as HTMLDivElement | null);
       }}
       style={{
         background: "#000",

@@ -8,7 +8,7 @@
 // To edit the frame style   → edit the `BusinessSystemsFrameDeco` component below.
 
 import { motion } from "framer-motion";
-import { IconLink } from "../components/Icons";
+import { IconLink } from "./components/Icons";
 
 // ── Frame decoration ──────────────────────────────────────────────────────────
 export const BusinessSystemsFrameDeco = ({ accent }: { accent: string }) => (

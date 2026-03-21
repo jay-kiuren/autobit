@@ -8,7 +8,7 @@
 // To edit the frame style   → edit the `MobileFrameDeco` component below.
 
 import { motion } from "framer-motion";
-import { IconSmartphone } from "../components/Icons";
+import { IconSmartphone } from "./components/Icons";
 
 // ── Frame decoration ──────────────────────────────────────────────────────────
 export const MobileFrameDeco = ({ accent }: { accent: string }) => (
