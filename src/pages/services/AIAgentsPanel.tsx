@@ -8,7 +8,7 @@
 // To edit the frame style   → edit the `AIAgentsFrameDeco` component below.
 
 import { motion } from "framer-motion";
-import { IconBot } from "../components/Icons";
+import { IconBot } from "./components/Icons";
 
 // ── Frame decoration ──────────────────────────────────────────────────────────
 export const AIAgentsFrameDeco = ({ accent }: { accent: string }) => (

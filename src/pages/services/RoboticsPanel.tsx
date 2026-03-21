@@ -8,7 +8,7 @@
 // To edit the frame style   → edit the `RoboticsFrameDeco` component below.
 
 import { motion } from "framer-motion";
-import { IconCpu } from "../components/Icons";
+import { IconCpu } from "./components/Icons";
 
 // ── Frame decoration ──────────────────────────────────────────────────────────
 export const RoboticsFrameDeco = ({ accent }: { accent: string }) => (

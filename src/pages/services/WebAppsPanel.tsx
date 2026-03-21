@@ -8,7 +8,7 @@
 // To edit the frame style   → edit the `WebAppsFrameDeco` component below.
 
 import { motion } from "framer-motion";
-import { IconMonitor } from "../components/Icons";
+import { IconMonitor } from "./components/Icons";
 
 // ── Frame decoration ──────────────────────────────────────────────────────────
 export const WebAppsFrameDeco = ({ accent }: { accent: string }) => (

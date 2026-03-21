@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { IconGear } from "../components/Icons";
+import { IconGear } from "./components/Icons";
 
 const ACCENT = "#2997ff";
 
