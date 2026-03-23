@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactModalProvider } from "@/contexts/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
 import FloatingChatWidget from "@/components/FloatingChatWidget";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Projects from "./pages/projects";
 import Services from "./pages/services";
@@ -23,9 +24,10 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <ContactModal />
-        <FloatingChatWidget />
         <BrowserRouter>
+          <ScrollToTop />
+          <ContactModal />
+          <FloatingChatWidget />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/projects" element={<Projects />} />
