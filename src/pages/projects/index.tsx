@@ -1,10 +1,13 @@
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import HeroSection from "./sections/HeroSection";
-import PlatformSection from "./sections/PlatformSection";
-import RoboticsSection from "./sections/RoboticsSection";
-import WhySection from "./sections/WhySection";
+import HeroSection from "./sections/Panel01";
+import PlatformSection from "./sections/Panel02";
+import RoboticsSection from "./sections/Panel03";
+import AgentSection from "./sections/Panel04";      // add this
+import DashboardSection from "./sections/Panel05";  // add this
+import AppSection from "./sections/Panel06";        // add this
+import WhySection from "./sections/Panel07";
 
 const Projects = () => {
   const [navDropdownActive, setNavDropdownActive] = useState(false);

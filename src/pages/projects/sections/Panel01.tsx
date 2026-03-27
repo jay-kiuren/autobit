@@ -77,7 +77,7 @@ const HeroSection = () => (
           margin: 0,
         }}
       >
-        From award-winning prototypes to live platforms — built and deployed by Autobit.
+        autobit ni oy. 
       </motion.p>
     </div>
 
