@@ -140,6 +140,16 @@ export const WebAppsFullPanel = ({
         justifyContent:"center",padding:"80px 0 60px",zIndex:4,marginBottom:-36,
       }}>
 
+      {/* Section background photo */}
+      <img
+        src="https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1600&q=80"
+        alt=""
+        style={{position:"absolute",inset:0,width:"100%",height:"100%",
+          objectFit:"cover",objectPosition:"center",
+          filter:"brightness(0.06) saturate(0.3)",
+          pointerEvents:"none",
+        }}
+      />
       {/* Purple ambient */}
       <div style={{position:"absolute",top:"10%",right:"-8%",width:"60%",height:"80%",
         background:`radial-gradient(ellipse at 70% 50%,${ACCENT}0a 0%,transparent 65%)`,
@@ -219,10 +229,25 @@ export const WebAppsFullPanel = ({
             height:"clamp(220px,30vw,380px)",
             position:"relative",
           }}>
-          <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
-            background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:1,
+          {/* Background photo — multi-screen web dev workspace */}
+          <img
+            src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1400&q=80"
+            alt=""
+            style={{position:"absolute",inset:0,width:"100%",height:"100%",
+              objectFit:"cover",objectPosition:"center 30%",
+              filter:"brightness(0.18) saturate(0.5)",
+            }}
+          />
+          <div style={{position:"absolute",inset:0,
+            background:`linear-gradient(135deg,${ACCENT}12 0%,transparent 55%)`,
+            pointerEvents:"none",zIndex:1,
           }}/>
-          <WebAppsArt active={active} animKey={animKey}/>
+          <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
+            background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:2,
+          }}/>
+          <div style={{position:"relative",zIndex:2,width:"100%",height:"100%"}}>
+            <WebAppsArt active={active} animKey={animKey}/>
+          </div>
         </motion.div>
 
         {/* Stack tag + CTA */}

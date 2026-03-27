@@ -83,6 +83,16 @@ export const MobileFullPanel = ({
       justifyContent:"center",padding:"80px 0 80px",zIndex:7,
     }}>
 
+    {/* Section background photo — subtle lifestyle */}
+    <img
+      src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600&q=80"
+      alt=""
+      style={{position:"absolute",inset:0,width:"100%",height:"100%",
+        objectFit:"cover",objectPosition:"center",
+        filter:"brightness(0.07) saturate(0.3)",
+        pointerEvents:"none",
+      }}
+    />
     {/* Cyan ambient — top left */}
     <div style={{position:"absolute",top:"-5%",left:"-5%",width:"50%",height:"65%",
       background:`radial-gradient(ellipse at 25% 25%,${ACCENT}06 0%,transparent 65%)`,
@@ -184,15 +194,29 @@ export const MobileFullPanel = ({
             <div style={{position:"absolute",top:12,left:"50%",transform:"translateX(-50%)",
               width:64,height:18,background:"#000",borderRadius:9,zIndex:10,
             }}/>
+            {/* Phone background photo — person using mobile app */}
+            <img
+              src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80"
+              alt=""
+              style={{position:"absolute",inset:0,width:"100%",height:"100%",
+                objectFit:"cover",objectPosition:"center top",
+                filter:"brightness(0.18) saturate(0.4)",
+              }}
+            />
+            <div style={{position:"absolute",inset:0,
+              background:`linear-gradient(180deg,${ACCENT}08 0%,rgba(0,0,0,0.5) 100%)`,
+              pointerEvents:"none",zIndex:1,
+            }}/>
             {/* Screen content area */}
             <div style={{position:"absolute",inset:0,padding:"40px 10px 10px",
               display:"flex",alignItems:"center",justifyContent:"center",
+              zIndex:2,
             }}>
               <MobileArt active={active} animKey={animKey}/>
             </div>
             {/* Home indicator */}
             <div style={{position:"absolute",bottom:10,left:"50%",transform:"translateX(-50%)",
-              width:48,height:4,background:"rgba(255,255,255,0.2)",borderRadius:2,
+              width:48,height:4,background:"rgba(255,255,255,0.2)",borderRadius:2,zIndex:3,
             }}/>
           </div>
         </motion.div>

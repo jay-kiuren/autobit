@@ -151,6 +151,16 @@ export const AutomationFullPanel = ({
         zIndex:2,marginBottom:-36,
       }}>
 
+      {/* Section background photo */}
+      <img
+        src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=1600&q=80"
+        alt=""
+        style={{position:"absolute",inset:0,width:"100%",height:"100%",
+          objectFit:"cover",objectPosition:"center",
+          filter:"brightness(0.06) saturate(0.3)",
+          pointerEvents:"none",
+        }}
+      />
       <div style={{position:"absolute",top:"10%",right:"-10%",width:"65%",height:"80%",
         background:`radial-gradient(ellipse at 70% 50%,${ACCENT}07 0%,transparent 65%)`,
         pointerEvents:"none"}}/>
@@ -272,9 +282,25 @@ export const AutomationFullPanel = ({
           style={{borderRadius:"clamp(14px,1.5vw,20px)",border:"1px solid rgba(255,255,255,0.07)",
             background:"rgba(255,255,255,0.012)",overflow:"hidden",
             height:"clamp(180px,22vw,300px)",position:"relative"}}>
+          {/* Background photo — people working with automated workflows */}
+          <img
+            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80"
+            alt=""
+            style={{position:"absolute",inset:0,width:"100%",height:"100%",
+              objectFit:"cover",objectPosition:"center 40%",
+              filter:"brightness(0.22) saturate(0.5)",
+            }}
+          />
+          {/* Accent tint overlay */}
+          <div style={{position:"absolute",inset:0,
+            background:`linear-gradient(135deg,${ACCENT}14 0%,transparent 55%,rgba(0,0,0,0.3) 100%)`,
+            pointerEvents:"none",zIndex:1,
+          }}/>
           <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
-            background:`linear-gradient(90deg,transparent,${ACCENT}38,transparent)`,zIndex:1}}/>
-          <PipelineCanvas active={active} animKey={animKey}/>
+            background:`linear-gradient(90deg,transparent,${ACCENT}38,transparent)`,zIndex:2}}/>
+          <div style={{position:"relative",zIndex:2,width:"100%",height:"100%"}}>
+            <PipelineCanvas active={active} animKey={animKey}/>
+          </div>
         </motion.div>
 
         <motion.div

@@ -118,6 +118,16 @@ export const BusinessSystemsFullPanel = ({
       justifyContent:"center",padding:"80px 0 60px",zIndex:5,marginBottom:-36,
     }}>
 
+    {/* Section background photo */}
+    <img
+      src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1600&q=80"
+      alt=""
+      style={{position:"absolute",inset:0,width:"100%",height:"100%",
+        objectFit:"cover",objectPosition:"center",
+        filter:"brightness(0.06) saturate(0.3)",
+        pointerEvents:"none",
+      }}
+    />
     {/* Amber ambient */}
     <div style={{position:"absolute",bottom:"5%",left:"-5%",width:"55%",height:"70%",
       background:`radial-gradient(ellipse at 30% 70%,${ACCENT}06 0%,transparent 65%)`,
@@ -147,10 +157,25 @@ export const BusinessSystemsFullPanel = ({
             height:"clamp(240px,32vw,420px)",
             position:"relative",
           }}>
-          <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
-            background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:1,
+          {/* Background photo — enterprise operations / analytics */}
+          <img
+            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80"
+            alt=""
+            style={{position:"absolute",inset:0,width:"100%",height:"100%",
+              objectFit:"cover",objectPosition:"center",
+              filter:"brightness(0.18) saturate(0.45)",
+            }}
+          />
+          <div style={{position:"absolute",inset:0,
+            background:`linear-gradient(135deg,${ACCENT}10 0%,transparent 55%)`,
+            pointerEvents:"none",zIndex:1,
           }}/>
-          <BusinessSystemsArt active={active} animKey={animKey}/>
+          <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
+            background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:2,
+          }}/>
+          <div style={{position:"relative",zIndex:2,width:"100%",height:"100%"}}>
+            <BusinessSystemsArt active={active} animKey={animKey}/>
+          </div>
         </motion.div>
 
         {/* Right: text */}

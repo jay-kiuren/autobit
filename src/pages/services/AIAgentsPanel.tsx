@@ -73,14 +73,31 @@ const tabs = [
 
 const ChatDemo = ({ tab, active }: { tab: typeof tabs[0]; active: boolean }) => (
   <div style={{
-    background:"rgba(12,12,14,0.95)",
+    background:"rgba(12,12,14,0.92)",
     borderRadius:16,
     border:`1px solid rgba(255,255,255,0.07)`,
     overflow:"hidden",
     height:"100%",
     display:"flex",
     flexDirection:"column",
+    position:"relative",
   }}>
+    {/* Background photo — AI/chat interface context */}
+    <img
+      src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1200&q=80"
+      alt=""
+      style={{position:"absolute",inset:0,width:"100%",height:"100%",
+        objectFit:"cover",objectPosition:"center",
+        filter:"brightness(0.12) saturate(0.4)",
+      }}
+    />
+    {/* Tint */}
+    <div style={{position:"absolute",inset:0,
+      background:`linear-gradient(160deg,${ACCENT}10 0%,transparent 60%)`,
+      pointerEvents:"none",zIndex:1,
+    }}/>
+    {/* Content above photo */}
+    <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",flex:1,overflow:"hidden"}}>
     {/* Header */}
     <div style={{
       padding:"14px 18px",
@@ -148,6 +165,7 @@ const ChatDemo = ({ tab, active }: { tab: typeof tabs[0]; active: boolean }) => 
       <span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontFamily:"monospace"}}>{tab.stat.label}</span>
       <span style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,0.75)",fontFamily:"monospace"}}>{tab.stat.value}</span>
     </div>
+    </div>{/* end content wrapper */}
   </div>
 );
 
@@ -190,6 +208,16 @@ export const AIAgentsFullPanel = ({
         justifyContent:"center",padding:"80px 0 60px",zIndex:3,marginBottom:-36,
       }}>
 
+      {/* Section background photo */}
+      <img
+        src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80"
+        alt=""
+        style={{position:"absolute",inset:0,width:"100%",height:"100%",
+          objectFit:"cover",objectPosition:"center",
+          filter:"brightness(0.06) saturate(0.3)",
+          pointerEvents:"none",
+        }}
+      />
       {/* Subtle green ambient */}
       <div style={{position:"absolute",top:"5%",left:"-5%",width:"55%",height:"85%",
         background:`radial-gradient(ellipse at 35% 50%,${ACCENT}06 0%,transparent 65%)`,

@@ -99,6 +99,16 @@ export const RoboticsFullPanel = ({
       justifyContent:"center",padding:"80px 0 60px",zIndex:6,marginBottom:-36,
     }}>
 
+    {/* Section background photo */}
+    <img
+      src="https://images.unsplash.com/photo-1563203369-26f2e4a5ccf7?w=1600&q=80"
+      alt=""
+      style={{position:"absolute",inset:0,width:"100%",height:"100%",
+        objectFit:"cover",objectPosition:"center",
+        filter:"brightness(0.07) saturate(0.3)",
+        pointerEvents:"none",
+      }}
+    />
     {/* Red ambient — subtle, bottom right */}
     <div style={{position:"absolute",bottom:"-10%",right:"-5%",width:"55%",height:"70%",
       background:`radial-gradient(ellipse at 75% 80%,${ACCENT}06 0%,transparent 65%)`,
@@ -207,10 +217,25 @@ export const RoboticsFullPanel = ({
           height:"clamp(200px,28vw,360px)",
           position:"relative",
         }}>
-        <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
-          background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:1,
+        {/* Background photo — industrial factory / warehouse floor */}
+        <img
+          src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1400&q=80"
+          alt=""
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",
+            objectFit:"cover",objectPosition:"center 40%",
+            filter:"brightness(0.16) saturate(0.4)",
+          }}
+        />
+        <div style={{position:"absolute",inset:0,
+          background:`linear-gradient(135deg,${ACCENT}10 0%,transparent 55%)`,
+          pointerEvents:"none",zIndex:1,
         }}/>
-        <RoboticsArt active={active} animKey={animKey}/>
+        <div style={{position:"absolute",top:0,left:"8%",right:"8%",height:1,
+          background:`linear-gradient(90deg,transparent,${ACCENT}50,transparent)`,zIndex:2,
+        }}/>
+        <div style={{position:"relative",zIndex:2,width:"100%",height:"100%"}}>
+          <RoboticsArt active={active} animKey={animKey}/>
+        </div>
       </motion.div>
 
     </div>
