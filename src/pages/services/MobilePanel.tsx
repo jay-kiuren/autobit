@@ -214,9 +214,9 @@ export const MobileFullPanel = ({
               style={{
                 padding:"16px 18px",
                 background:"rgba(255,255,255,0.022)",
-                border:`1px solid rgba(100,210,255,0.1)`,
+                border:"1px solid rgba(255,255,255,0.07)",
                 borderRadius:14,
-                borderLeft:`2px solid ${ACCENT}`,
+                borderLeft:"2px solid rgba(255,255,255,0.15)",
               }}>
               <div style={{fontSize:13,fontWeight:700,color:"#f5f5f7",marginBottom:4}}>{f.title}</div>
               <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",lineHeight:1.55}}>{f.desc}</div>
@@ -244,7 +244,7 @@ export const MobileFullPanel = ({
             textAlign:"center",
           }}>
             <div style={{fontSize:"clamp(22px,3vw,38px)",fontWeight:800,
-              color:ACCENT,letterSpacing:"-1px",lineHeight:1,marginBottom:8,
+              color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,
             }}>{s.value}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>{s.label}</div>
           </div>

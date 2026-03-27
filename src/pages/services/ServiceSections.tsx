@@ -60,7 +60,7 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
             zIndex: i + 2,
           }}>
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 48% 52% at ${isReverse ? "28%" : "72%"} 50%,${s.accent}08 0%,transparent 70%)`, opacity: isActive ? 1 : 0, transition: "opacity 0.8s ease" }} />
-          <div style={{ position: "absolute", top: "50%", right: isReverse ? "auto" : "0", left: isReverse ? "0" : "auto", transform: "translateY(-50%)", fontSize: "clamp(55px,10vw,140px)", fontWeight: 800, color: s.accent, opacity: 0.03, userSelect: "none", pointerEvents: "none", lineHeight: 1, letterSpacing: "-0.06em" }}>
+          <div style={{ position: "absolute", top: "50%", right: isReverse ? "auto" : "0", left: isReverse ? "0" : "auto", transform: "translateY(-50%)", fontSize: "clamp(55px,10vw,140px)", fontWeight: 800, color: "rgba(255,255,255,1)", opacity: 0.015, userSelect: "none", pointerEvents: "none", lineHeight: 1, letterSpacing: "-0.06em" }}>
             {String(i + 1).padStart(2, "0")}
           </div>
 
@@ -74,7 +74,7 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
                   initial={panelAnim.initial} whileInView={panelAnim.animate}
                   viewport={{ once: false, amount: 0.2 }} transition={panelAnim.transition}>
 
-                  <div className="svc-badge" style={{ background: `${s.accent}18`, color: s.accent, border: `1px solid ${s.accent}40` }}>
+                  <div className="svc-badge" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.1)" }}>
                     {s.badge}
                   </div>
 
@@ -91,9 +91,9 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
                   style={{ direction: "ltr", order: isReverse ? 1 : 2 }}
                   initial={artAnim.initial} whileInView={artAnim.animate}
                   viewport={{ once: false, amount: 0.2 }} transition={artAnim.transition}>
-                  <div className="svc-glass" style={{ background: `linear-gradient(135deg,${s.accent}1e 0%,rgba(255,255,255,0.02) 50%,${s.accent}0c 100%)`, boxShadow: `0 0 0 1px rgba(255,255,255,0.07),0 20px 52px rgba(0,0,0,0.55),0 4px 16px ${s.accent}14` }}>
+                  <div className="svc-glass" style={{ background: "linear-gradient(135deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.02) 50%,rgba(255,255,255,0.02) 100%)", boxShadow: "0 0 0 1px rgba(255,255,255,0.07),0 20px 52px rgba(0,0,0,0.55)" }}>
                     <div className="svc-glass-inner">
-                      <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: 1, background: `linear-gradient(90deg,transparent,${s.accent}60,transparent)` }} />
+                      <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: 1, background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)" }} />
                       <Art active={isActive} animKey={animKeys[i]} />
                     </div>
                   </div>

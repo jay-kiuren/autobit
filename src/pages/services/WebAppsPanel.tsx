@@ -124,9 +124,9 @@ export const WebAppsFullPanel = ({
   const inView = useInView(ref, { amount: 0.2 });
 
   const bigStats = [
-    {value:"284,500", unit:"₱ data points tracked",      color:ACCENT},
-    {value:"< 187",   unit:"ms average load time",       color:"#64d2ff"},
-    {value:"99.9",    unit:"% uptime guaranteed",        color:"#30d158"},
+    {value:"284,500", unit:"₱ data points tracked"},
+    {value:"< 187",   unit:"ms average load time"},
+    {value:"99.9",    unit:"% uptime guaranteed"},
   ];
 
   return (
@@ -195,7 +195,7 @@ export const WebAppsFullPanel = ({
               textAlign:"center",
             }}>
               <div style={{fontSize:"clamp(32px,4.5vw,60px)",fontWeight:800,
-                color:s.color,letterSpacing:"-2px",lineHeight:1,marginBottom:10,
+                color:"#f5f5f7",letterSpacing:"-2px",lineHeight:1,marginBottom:10,
               }}>
                 {inView ? s.value : "—"}
               </div>

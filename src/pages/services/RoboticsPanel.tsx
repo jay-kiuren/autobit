@@ -127,7 +127,7 @@ export const RoboticsFullPanel = ({
               background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
               borderRadius:980,padding:"4px 13px",marginBottom:22,
             }}>
-              <motion.div style={{width:6,height:6,borderRadius:"50%",background:ACCENT}}
+              <motion.div style={{width:6,height:6,borderRadius:"50%",background:"rgba(255,255,255,0.4)"}}
                 animate={{opacity:[1,0.3,1]}} transition={{duration:1.1,repeat:Infinity}}/>
               <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>ROBOTICS & PHYSICAL AI</span>
             </div>
@@ -167,13 +167,13 @@ export const RoboticsFullPanel = ({
             </div>
           </div>
 
-          {/* Right: minimal stat cards — Apple icon+statement style */}
+          {/* Right: minimal stat cards */}
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
             {[
-              {icon:"⚡", stat:"12ms",    label:"On-device inference latency"},
-              {icon:"🔒", stat:"0",       label:"Cloud dependencies required"},
-              {icon:"📡", stat:"99.98%",  label:"System uptime in production"},
-              {icon:"🎯", stat:"98.4%",   label:"Object detection confidence"},
+              {stat:"12ms",    label:"On-device inference latency"},
+              {stat:"0",       label:"Cloud dependencies required"},
+              {stat:"99.98%",  label:"System uptime in production"},
+              {stat:"98.4%",   label:"Object detection confidence"},
             ].map((s,i)=>(
               <motion.div key={i}
                 initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}}
@@ -181,13 +181,12 @@ export const RoboticsFullPanel = ({
                 style={{
                   display:"flex",alignItems:"center",gap:16,
                   background:"rgba(255,255,255,0.022)",
-                  border:`1px solid rgba(255,59,48,0.12)`,
+                  border:"1px solid rgba(255,255,255,0.07)",
                   borderRadius:14,padding:"16px 20px",
                 }}>
-                <div style={{fontSize:20,lineHeight:1}}>{s.icon}</div>
                 <div>
                   <div style={{fontSize:"clamp(18px,2.2vw,28px)",fontWeight:800,
-                    color:ACCENT,letterSpacing:"-0.5px",lineHeight:1,
+                    color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1,
                   }}>{s.stat}</div>
                   <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",marginTop:3,fontFamily:"monospace"}}>{s.label}</div>
                 </div>

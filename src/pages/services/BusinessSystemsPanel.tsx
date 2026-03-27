@@ -177,22 +177,22 @@ export const BusinessSystemsFullPanel = ({
             Inventory, HR, finance, and scheduling — unified in one platform. Every module talks to every other. No more spreadsheets. No more silos.
           </p>
 
-          {/* Module pills — Apple ecosystem icons style */}
+          {/* Module pills */}
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:28}}>
             {[
-              {label:"Inventory", color:"#ff9f0a"},
-              {label:"HR",        color:"#30d158"},
-              {label:"Finance",   color:"#bf5af2"},
-              {label:"Schedule",  color:"#64d2ff"},
-              {label:"Reports",   color:"#ff375f"},
+              {label:"Inventory"},
+              {label:"HR"},
+              {label:"Finance"},
+              {label:"Schedule"},
+              {label:"Reports"},
             ].map((m,i)=>(
               <div key={i} style={{
                 display:"flex",alignItems:"center",gap:6,
-                background:`${m.color}12`,border:`1px solid ${m.color}30`,
+                background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",
                 borderRadius:980,padding:"5px 12px",
-                fontSize:11,fontWeight:600,color:m.color,
+                fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.7)",
               }}>
-                <div style={{width:5,height:5,borderRadius:"50%",background:m.color}}/>
+                <div style={{width:5,height:5,borderRadius:"50%",background:"rgba(255,255,255,0.35)"}}/>
                 {m.label}
               </div>
             ))}
@@ -229,10 +229,10 @@ export const BusinessSystemsFullPanel = ({
           border:`1px solid rgba(255,255,255,0.06)`,
         }}>
         {[
-          {value:"4,820",  label:"Items tracked",    color:"#ff9f0a"},
-          {value:"34",     label:"Staff managed",    color:"#30d158"},
-          {value:"₱2.1M",  label:"Monthly revenue",  color:"#bf5af2"},
-          {value:"< 1hr",  label:"Report generation",color:"#64d2ff"},
+          {value:"4,820",  label:"Items tracked"},
+          {value:"34",     label:"Staff managed"},
+          {value:"₱2.1M",  label:"Monthly revenue"},
+          {value:"< 1hr",  label:"Report generation"},
         ].map((s,i)=>(
           <div key={i} style={{
             background:"rgba(255,255,255,0.018)",
@@ -241,7 +241,7 @@ export const BusinessSystemsFullPanel = ({
             textAlign:"center",
           }}>
             <div style={{fontSize:"clamp(22px,3vw,40px)",fontWeight:800,
-              color:s.color,letterSpacing:"-1px",lineHeight:1,marginBottom:8,
+              color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,
             }}>{s.value}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>{s.label}</div>
           </div>
