@@ -146,7 +146,7 @@ export const WebAppsFullPanel = ({
         pointerEvents:"none",
       }}/>
       <div style={{position:"absolute",top:0,left:0,right:0,height:1,
-        background:`linear-gradient(90deg,transparent,${ACCENT}44,transparent)`,
+        background:`linear-gradient(90deg,transparent,${ACCENT}28,transparent)`,
       }}/>
 
       <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
@@ -159,10 +159,10 @@ export const WebAppsFullPanel = ({
           style={{textAlign:"center",marginBottom:"clamp(40px,6vw,72px)"}}>
 
           <div style={{display:"inline-flex",alignItems:"center",gap:6,
-            background:`${ACCENT}16`,border:`1px solid ${ACCENT}38`,
+            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
             borderRadius:980,padding:"4px 13px",marginBottom:20,
           }}>
-            <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:ACCENT}}>WEB APPLICATIONS</span>
+            <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>WEB APPLICATIONS</span>
           </div>
 
           <h2 style={{fontSize:"clamp(36px,5.5vw,76px)",fontWeight:800,
@@ -239,9 +239,9 @@ export const WebAppsFullPanel = ({
             React · Firebase · Vercel · Supabase
           </span>
           <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
-            style={{background:ACCENT,color:"#fff",border:"none",cursor:"pointer",
+            style={{background:"#2997ff",color:"#fff",border:"none",cursor:"pointer",
               padding:"12px 28px",borderRadius:980,fontSize:14,fontWeight:600,
-              boxShadow:`0 4px 20px ${ACCENT}35`,transition:"all 0.22s ease",
+              boxShadow:"0 4px 20px rgba(41,151,255,0.26)",transition:"all 0.22s ease",
             }}
             onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1)";}}

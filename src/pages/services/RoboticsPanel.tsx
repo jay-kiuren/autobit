@@ -101,11 +101,11 @@ export const RoboticsFullPanel = ({
 
     {/* Red ambient — subtle, bottom right */}
     <div style={{position:"absolute",bottom:"-10%",right:"-5%",width:"55%",height:"70%",
-      background:`radial-gradient(ellipse at 75% 80%,${ACCENT}08 0%,transparent 65%)`,
+      background:`radial-gradient(ellipse at 75% 80%,${ACCENT}06 0%,transparent 65%)`,
       pointerEvents:"none",
     }}/>
     <div style={{position:"absolute",top:0,left:0,right:0,height:1,
-      background:`linear-gradient(90deg,transparent,${ACCENT}44,transparent)`,
+      background:`linear-gradient(90deg,transparent,${ACCENT}28,transparent)`,
     }}/>
 
     <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
@@ -124,12 +124,12 @@ export const RoboticsFullPanel = ({
           {/* Left: minimal statement */}
           <div>
             <div style={{display:"inline-flex",alignItems:"center",gap:6,
-              background:`${ACCENT}16`,border:`1px solid ${ACCENT}38`,
+              background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
               borderRadius:980,padding:"4px 13px",marginBottom:22,
             }}>
               <motion.div style={{width:6,height:6,borderRadius:"50%",background:ACCENT}}
                 animate={{opacity:[1,0.3,1]}} transition={{duration:1.1,repeat:Infinity}}/>
-              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:ACCENT}}>ROBOTICS & PHYSICAL AI</span>
+              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>ROBOTICS & PHYSICAL AI</span>
             </div>
 
             <h2 style={{fontSize:"clamp(32px,4.8vw,68px)",fontWeight:800,
@@ -155,9 +155,9 @@ export const RoboticsFullPanel = ({
 
             <div>
               <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
-                style={{background:ACCENT,color:"#fff",border:"none",cursor:"pointer",
+                style={{background:"#2997ff",color:"#fff",border:"none",cursor:"pointer",
                   padding:"13px 30px",borderRadius:980,fontSize:15,fontWeight:600,
-                  boxShadow:`0 4px 24px ${ACCENT}38`,transition:"all 0.22s ease",
+                  boxShadow:"0 4px 24px rgba(41,151,255,0.28)",transition:"all 0.22s ease",
                 }}
                 onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
                 onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1)";}}
