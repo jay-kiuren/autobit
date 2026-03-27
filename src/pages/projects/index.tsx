@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import HeroSection from "./sections/Panel01";
 import PlatformSection from "./sections/Panel02";
 import RoboticsSection from "./sections/Panel03";
-import AgentSection from "./sections/Panel04";      // add this
-import DashboardSection from "./sections/Panel05";  // add this
-import AppSection from "./sections/Panel06";        // add this
+import AgentSection from "./sections/Panel04";
+import DashboardSection from "./sections/Panel05";
+import AppSection from "./sections/Panel06";
 import WhySection from "./sections/Panel07";
 
 const Projects = () => {
@@ -27,6 +27,9 @@ const Projects = () => {
         <HeroSection />
         <PlatformSection />
         <RoboticsSection />
+        <AgentSection />
+        <DashboardSection />
+        <AppSection />
         <WhySection />
       </main>
       <Footer />
