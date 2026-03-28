@@ -119,16 +119,12 @@ export const AIAgentsFullPanel = ({
         justifyContent:"center",padding:"80px 0 60px",zIndex:3,marginBottom:-36,fontFamily:FONT}}>
 
       {/* Section bg stays, no hard top line */}
-      <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80" alt=""
-        style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-          filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
-      {/* Top feather */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-        background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-        pointerEvents:"none",zIndex:6}}/>
-      <div style={{position:"absolute",top:"5%",left:"-5%",width:"55%",height:"85%",
-        background:`radial-gradient(ellipse at 35% 50%,${ACCENT}05 0%,transparent 65%)`,
-        pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",top:"8%",right:"-5%",width:"50%",height:"70%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 80% 35%,${ACCENT}11 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",bottom:"0%",left:"-5%",width:"42%",height:"50%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 15% 90%,${ACCENT}09 0%,transparent 60%)`,zIndex:0}}/>
+
 
       <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
         width:"100%",position:"relative",zIndex:1}}>
@@ -197,7 +193,7 @@ export const AIAgentsFullPanel = ({
         <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}}
           viewport={{once:false,amount:0.2}} transition={{duration:0.6,delay:0.2}}
           style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",
-            background:"rgba(255,255,255,0.018)",
+            background:"rgba(10,10,14,0.95)",
             borderRadius:16,overflow:"hidden"}}>
           {[
             {value:"0ms",  label:"Average response time"},

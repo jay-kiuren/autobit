@@ -44,12 +44,12 @@ const PipelineCanvas = ({ active, animKey }: { active: boolean; animKey: number 
         <filter id="pkt-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
       {/* Main rail */}
-      <line x1={55} y1={88} x2={700} y2={88} stroke="rgba(255,255,255,0.07)" strokeWidth={1.5}/>
-      <path d="M 250 88 L 250 145 L 560 145 L 560 88" stroke="rgba(255,255,255,0.04)" strokeWidth={1.5} fill="none"/>
+      <line x1={55} y1={88} x2={700} y2={88} stroke="rgba(255,255,255,0.18)" strokeWidth={1.5}/>
+      <path d="M 250 88 L 250 145 L 560 145 L 560 88" stroke="rgba(255,255,255,0.1)" strokeWidth={1.5} fill="none"/>
       {/* Connectors */}
       {[135,285,435,585].map((x,i)=>(
         <motion.g key={i} initial={{opacity:0}} animate={active?{opacity:1}:{opacity:0}} transition={{delay:0.8+i*0.06}}>
-          <line x1={x} y1={88} x2={x+70} y2={88} stroke="rgba(255,255,255,0.06)" strokeWidth={1} strokeDasharray="4 3"/>
+          <line x1={x} y1={88} x2={x+70} y2={88} stroke="rgba(255,255,255,0.18)" strokeWidth={1} strokeDasharray="4 3"/>
           <path d={`M${x+66} 85 L${x+70} 88 L${x+66} 91`} stroke="rgba(255,255,255,0.14)" strokeWidth={1.2} fill="none"/>
         </motion.g>
       ))}
@@ -66,7 +66,7 @@ const PipelineCanvas = ({ active, animKey }: { active: boolean; animKey: number 
             fill={i===0?`${ACCENT}10`:i===4?"rgba(48,209,88,0.07)":"rgba(255,255,255,0.03)"}
             stroke="none"/>
           <text x={n.x+40} y={85} textAnchor="middle" fontSize={10}
-            fill={i===0?"rgba(255,255,255,0.82)":i===4?"rgba(255,255,255,0.75)":"rgba(255,255,255,0.5)"}
+            fill={i===0?"rgba(255,255,255,0.92)":i===4?"rgba(255,255,255,0.88)":"rgba(255,255,255,0.7)"}
             fontWeight={600} fontFamily={FONT}>{n.label}</text>
           <text x={n.x+40} y={100} textAnchor="middle" fontSize={7.5} fill="rgba(255,255,255,0.2)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{n.sub}</text>
         </motion.g>
@@ -74,7 +74,7 @@ const PipelineCanvas = ({ active, animKey }: { active: boolean; animKey: number 
       {/* Branch nodes */}
       {branch.map((n,i)=>(
         <motion.g key={i} initial={{opacity:0,y:8}} animate={active?{opacity:1,y:0}:{opacity:0,y:8}} transition={{delay:0.6+i*0.1}}>
-          <rect x={n.x} y={130} width={80} height={28} rx={7} fill="rgba(255,255,255,0.02)" stroke="none"/>
+          <rect x={n.x} y={130} width={80} height={28} rx={7} fill="rgba(255,255,255,0.07)" stroke="none"/>
           <text x={n.x+40} y={148} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.2)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{n.label}</text>
         </motion.g>
       ))}
@@ -137,19 +137,12 @@ export const AutomationFullPanel = ({
       }}>
 
       {/* Section bg photo stays */}
-      <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=1600&q=80" alt=""
-        style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-          filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",top:"5%",right:"-8%",width:"55%",height:"65%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 80% 30%,${ACCENT}12 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",bottom:"-5%",left:"10%",width:"65%",height:"45%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 40% 85%,${ACCENT}0a 0%,transparent 60%)`,zIndex:0}}/>
 
-      {/* Top feather fade — no hard line */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-        background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-        pointerEvents:"none",zIndex:6}}/>
-
-      {/* Ambient glow */}
-      <div style={{position:"absolute",top:"10%",right:"-10%",width:"65%",height:"80%",
-        background:`radial-gradient(ellipse at 70% 50%,${ACCENT}06 0%,transparent 65%)`,
-        pointerEvents:"none"}}/>
 
       {/* LIVE badge */}
       <motion.div initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} transition={{delay:0.3}}
@@ -209,7 +202,7 @@ export const AutomationFullPanel = ({
           {/* Live terminal — no background image */}
           <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}}
             viewport={{once:false,amount:0.3}} transition={{duration:0.75,delay:0.15,ease:[0.22,1,0.36,1]}}
-            style={{background:"rgba(8,8,10,0.98)",borderRadius:16,overflow:"hidden"}}>
+            style={{background:"linear-gradient(145deg,rgba(18,18,28,0.96) 0%,rgba(8,8,14,0.99) 100%)",borderRadius:16,overflow:"hidden",outline:"1px solid rgba(255,255,255,0.07)"}}>
             <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)",
               background:"rgba(255,255,255,0.02)",display:"flex",alignItems:"center",gap:6}}>
               {["#ff375f","#ff9f0a","#30d158"].map((c,i)=>(
@@ -259,7 +252,7 @@ export const AutomationFullPanel = ({
           viewport={{once:false,amount:0.15}}
           transition={{duration:0.85,delay:0.18,ease:[0.22,1,0.36,1]}}
           style={{borderRadius:"clamp(14px,1.5vw,20px)",
-            background:"rgba(255,255,255,0.018)",overflow:"hidden",
+            background:"rgba(10,10,14,0.95)",overflow:"hidden",
             height:"clamp(180px,22vw,300px)",position:"relative",
             transform:"translateZ(0)"}}>
           <PipelineCanvas active={active} animKey={animKey}/>
@@ -271,8 +264,8 @@ export const AutomationFullPanel = ({
           viewport={{once:false,amount:0.2}} transition={{duration:0.65,delay:0.35}}
           style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",
             marginTop:"clamp(10px,1.5vw,16px)",
-            background:"rgba(255,255,255,0.018)",
-            borderRadius:"clamp(10px,1.2vw,16px)",overflow:"hidden"}}>
+            background:"rgba(14,14,20,0.95)",
+            borderRadius:"clamp(10px,1.2vw,16px)",overflow:"hidden"}}> 
           {[
             {label:"Runs / day",  value:runs.toLocaleString(), unit:"tasks"  },
             {label:"Time saved",  value:`${saved}`,            unit:"hrs/wk" },

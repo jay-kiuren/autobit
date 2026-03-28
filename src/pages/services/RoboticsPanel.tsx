@@ -66,16 +66,12 @@ export const RoboticsFullPanel = ({
       justifyContent:"center",padding:"80px 0 60px",zIndex:6,marginBottom:-36,fontFamily:FONT}}>
 
     {/* Section bg stays */}
-    <img src="https://images.unsplash.com/photo-1563203369-26f2e4a5ccf7?w=1600&q=80" alt=""
-      style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-        filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
-    {/* Top feather */}
-    <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-      background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-      pointerEvents:"none",zIndex:6}}/>
-    <div style={{position:"absolute",bottom:"-10%",right:"-5%",width:"55%",height:"70%",
-      background:`radial-gradient(ellipse at 75% 80%,${ACCENT}05 0%,transparent 65%)`,
-      pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",bottom:"-5%",right:"-5%",width:"60%",height:"60%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 75% 75%,${ACCENT}12 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",top:"-5%",left:"-5%",width:"38%",height:"45%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 15% 15%,${ACCENT}0a 0%,transparent 60%)`,zIndex:0}}/>
+
 
     <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
       width:"100%",position:"relative",zIndex:1}}>
@@ -132,7 +128,7 @@ export const RoboticsFullPanel = ({
                 initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}}
                 viewport={{once:false}} transition={{delay:0.15+i*0.1,duration:0.5}}
                 style={{display:"flex",alignItems:"center",gap:16,
-                  background:"rgba(255,255,255,0.022)",
+                  background:"rgba(14,14,20,0.95)",
                   borderRadius:14,padding:"16px 20px"}}>
                 <div>
                   <div style={{fontSize:"clamp(16px,1.8vw,24px)",fontWeight:700,
@@ -149,7 +145,7 @@ export const RoboticsFullPanel = ({
       <motion.div initial={{opacity:0,y:32}} whileInView={{opacity:1,y:0}}
         viewport={{once:false,amount:0.15}} transition={{duration:0.8,delay:0.2,ease:[0.22,1,0.36,1]}}
         style={{borderRadius:"clamp(14px,1.5vw,22px)",
-          background:"rgba(255,255,255,0.018)",
+          background:"rgba(10,10,14,0.95)",
           overflow:"hidden",height:"clamp(200px,28vw,360px)",position:"relative",
           transform:"translateZ(0)"}}>
         <RoboticsArt active={active} animKey={animKey}/>
