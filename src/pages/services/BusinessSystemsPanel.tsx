@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { IconLink } from "./components/Icons";
 
 const ACCENT = "#ff9f0a";
-const FONT   = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const BusinessSystemsFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -34,7 +34,7 @@ export const BusinessSystemsArt = ({ active, animKey }: { active: boolean; animK
         transition={{delay:i*0.12,duration:0.45}}>
         <circle cx={n.cx} cy={n.cy} r={n.r} fill={`${n.color}10`} stroke={n.color} strokeWidth={1.5} strokeOpacity={0.45}/>
         <text x={n.cx} y={n.cy-3} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.65)" fontWeight={600} fontFamily={FONT}>{n.label}</text>
-        <text x={n.cx} y={n.cy+9} textAnchor="middle" fontSize={7} fill={`${n.color}88`} fontFamily="monospace">{n.sub}</text>
+        <text x={n.cx} y={n.cy+9} textAnchor="middle" fontSize={7} fill={`${n.color}88`} fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{n.sub}</text>
       </motion.g>
     ))}
 
@@ -70,7 +70,7 @@ export const BusinessSystemsArt = ({ active, animKey }: { active: boolean; animK
     ].map((a,i)=>(
       <motion.g key={i} initial={{opacity:0}} animate={active?{opacity:1}:{opacity:0}} transition={{delay:1.2+i*0.15}}>
         <circle cx={a.x} cy={328} r={3.5} fill={a.color}/>
-        <text x={a.x+9} y={331} fontSize={8} fill="rgba(255,255,255,0.42)" fontFamily="monospace">{a.text}</text>
+        <text x={a.x+9} y={331} fontSize={8} fill="rgba(255,255,255,0.42)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{a.text}</text>
       </motion.g>
     ))}
   </svg>
@@ -115,7 +115,7 @@ export const BusinessSystemsFullPanel = ({
         <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}}
           viewport={{once:false,amount:0.3}} transition={{duration:0.7,delay:0.15,ease:[0.22,1,0.36,1]}}>
           <div style={{display:"inline-flex",alignItems:"center",
-            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
+            background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:22}}>
             <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>BUSINESS SYSTEMS</span>
           </div>
@@ -141,8 +141,8 @@ export const BusinessSystemsFullPanel = ({
           </div>
           <span style={{display:"inline-block",fontSize:10,fontWeight:500,
             letterSpacing:"0.05em",padding:"4px 11px",borderRadius:6,
-            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",
-            color:"rgba(255,255,255,0.38)",fontFamily:"monospace",marginBottom:28}}>
+            background:"rgba(255,255,255,0.05)",
+            color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
             ERP · POS · Operations · Reporting
           </span>
           <div>
@@ -173,7 +173,7 @@ export const BusinessSystemsFullPanel = ({
             borderRight:i<3?"1px solid rgba(255,255,255,0.05)":"none",textAlign:"center"}}>
             <div style={{fontSize:"clamp(22px,3vw,40px)",fontWeight:800,
               color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,fontFamily:FONT}}>{s.value}</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>{s.label}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
           </div>
         ))}
       </motion.div>

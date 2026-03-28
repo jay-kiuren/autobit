@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { IconCpu } from "./components/Icons";
 
 const ACCENT = "#ff375f";
-const FONT   = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const RoboticsFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -17,8 +17,8 @@ export const RoboticsArt = ({ active, animKey }: { active: boolean; animKey: num
     <circle cx={16} cy={15} r={5} fill="#ff375f" opacity={0.8}/>
     <motion.circle cx={16} cy={15} r={5} fill="#ff375f"
       animate={active?{opacity:[0.8,0.2,0.8]}:{opacity:0.2}} transition={{duration:1,repeat:Infinity}}/>
-    <text x={26} y={19} fontSize={9} fill="#ff375f" fontFamily="monospace">● REC  AXONIS EDGE v2.4</text>
-    <text x={500} y={19} fontSize={9} fill="rgba(255,255,255,0.28)" fontFamily="monospace">04:22:18  30fps  12ms</text>
+    <text x={26} y={19} fontSize={9} fill="#ff375f" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">● REC  AXONIS EDGE v2.4</text>
+    <text x={500} y={19} fontSize={9} fill="rgba(255,255,255,0.28)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">04:22:18  30fps  12ms</text>
     {/* Scan line */}
     <motion.line x1={0} y1={30} x2={700} y2={30} stroke="#ff375f" strokeWidth={1.2} opacity={0.35}
       animate={active?{y1:[30,320,30],y2:[30,320,30]}:{}} transition={{duration:2.8,repeat:Infinity,ease:"linear"}}/>
@@ -50,8 +50,8 @@ export const RoboticsArt = ({ active, animKey }: { active: boolean; animKey: num
       {x:570,l:"Model",  v:"YOLOv8"},
     ].map((s,i)=>(
       <motion.g key={i} initial={{opacity:0}} animate={active?{opacity:1}:{opacity:0}} transition={{delay:0.9+i*0.08}}>
-        <text x={s.x} y={333} fontSize={7} fill="rgba(255,255,255,0.22)" fontFamily="monospace">{s.l}</text>
-        <text x={s.x} y={349} fontSize={10} fill={i===2?"#ff375f":"rgba(255,255,255,0.6)"} fontWeight={700} fontFamily="monospace">{s.v}</text>
+        <text x={s.x} y={333} fontSize={7} fill="rgba(255,255,255,0.22)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{s.l}</text>
+        <text x={s.x} y={349} fontSize={10} fill={i===2?"#ff375f":"rgba(255,255,255,0.6)"} fontWeight={700} fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{s.v}</text>
       </motion.g>
     ))}
   </svg>
@@ -88,7 +88,7 @@ export const RoboticsFullPanel = ({
 
           <div>
             <div style={{display:"inline-flex",alignItems:"center",gap:6,
-              background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
+              background:"rgba(255,255,255,0.05)",
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
               <motion.div style={{width:6,height:6,borderRadius:"50%",background:"rgba(255,255,255,0.4)"}}
                 animate={{opacity:[1,0.3,1]}} transition={{duration:1.1,repeat:Infinity}}/>
@@ -105,8 +105,8 @@ export const RoboticsFullPanel = ({
             </p>
             <span style={{display:"inline-block",fontSize:10,fontWeight:500,
               letterSpacing:"0.05em",padding:"4px 11px",borderRadius:6,
-              background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",
-              color:"rgba(255,255,255,0.38)",fontFamily:"monospace",marginBottom:28}}>
+              background:"rgba(255,255,255,0.05)",
+              color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
               YOLO · PLC · Edge Inference · OpenCV
             </span>
             <div>
@@ -137,7 +137,7 @@ export const RoboticsFullPanel = ({
                 <div>
                   <div style={{fontSize:"clamp(18px,2.2vw,28px)",fontWeight:800,
                     color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1,fontFamily:FONT}}>{s.stat}</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",marginTop:3,fontFamily:"monospace"}}>{s.label}</div>
+                  <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",marginTop:3,fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
                 </div>
               </motion.div>
             ))}

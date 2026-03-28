@@ -61,8 +61,7 @@ const FrameDecoTerminal = ({ accent }: { accent: string }) => (
 const FrameDecoDouble = ({ accent }: { accent: string }) => (
   <>
     {/* Inner inset border */}
-    <div style={{position:"absolute",inset:10,borderRadius:14,
-      border:`1px solid ${accent}18`,pointerEvents:"none",
+    <div style={{position:"absolute",inset:10,borderRadius:14,pointerEvents:"none",
     }}/>
     {/* Corner dots */}
     {[[10,10],[null,10],[10,null],[null,null]].map(([t,l],i)=>(

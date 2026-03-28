@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { IconMonitor } from "./components/Icons";
 
 const ACCENT = "#bf5af2";
-const FONT   = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const WebAppsFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -21,7 +21,7 @@ export const WebAppsArt = ({ active, animKey }: { active: boolean; animKey: numb
     <rect width={700} height={38} rx={14} fill="rgba(255,255,255,0.025)"/>
     <rect y={26} width={700} height={12} fill="rgba(255,255,255,0.025)"/>
     {["#ff375f","#ff9f0a","#30d158"].map((c,i)=><circle key={i} cx={16+i*18} cy={19} r={5} fill={c} opacity={0.65}/>)}
-    <text x={340} y={23} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.25)" fontFamily="monospace">autobit-dashboard · v2.4.1</text>
+    <text x={340} y={23} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.25)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">autobit-dashboard · v2.4.1</text>
     {/* Sidebar */}
     <rect x={0} y={38} width={58} height={322} fill="rgba(255,255,255,0.015)"/>
     {[0,1,2,3,4].map(i=>(
@@ -119,7 +119,7 @@ export const WebAppsFullPanel = ({
           viewport={{once:false,amount:0.3}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}
           style={{textAlign:"center",marginBottom:"clamp(40px,6vw,72px)"}}>
           <div style={{display:"inline-flex",alignItems:"center",
-            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
+            background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:20}}>
             <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>WEB APPLICATIONS</span>
           </div>
@@ -155,7 +155,7 @@ export const WebAppsFullPanel = ({
                 {inView ? s.value : "—"}
               </div>
               <div style={{fontSize:12,color:"rgba(255,255,255,0.3)",lineHeight:1.5,
-                fontFamily:"monospace",letterSpacing:"0.02em"}}>{s.unit}</div>
+                fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",letterSpacing:"0.02em"}}>{s.unit}</div>
             </div>
           ))}
         </motion.div>
@@ -181,8 +181,8 @@ export const WebAppsFullPanel = ({
             gap:24,flexWrap:"wrap",marginTop:32}}>
           <span style={{fontSize:10,fontWeight:500,letterSpacing:"0.05em",
             padding:"4px 12px",borderRadius:6,
-            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",
-            color:"rgba(255,255,255,0.38)",fontFamily:"monospace"}}>
+            background:"rgba(255,255,255,0.05)",
+            color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>
             React · Firebase · Vercel · Supabase
           </span>
           <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}

@@ -1,6 +1,6 @@
 export const servicesStyles = `
   /* ── Base container — fluid at all sizes ── */
-  .svc-c { max-width:1320px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+  .svc-c { max-width:1320px; margin:0 auto; padding:0 clamp(16px,4vw,48px); font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif; }
 
   /* ── Grid layouts ── */
   .svc-grid       { display:grid; grid-template-columns:1fr 1.15fr; gap:clamp(24px,4vw,56px); align-items:center; }
@@ -10,13 +10,12 @@ export const servicesStyles = `
   .svc-heading {
     font-size:clamp(22px,2.8vw,44px);
     font-weight:800; letter-spacing:-1.5px; line-height:1.04;
-    color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
+    color:#f5f5f7; margin:0 0 16px; white-space:pre-line; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
   }
 
   /* ── Frame card — base ── */
   .svc-frame {
     border-radius:clamp(16px,2vw,24px);
-    border:1px solid rgba(255,255,255,0.07);
     background:rgba(255,255,255,0.016);
     padding:clamp(22px,3.2vw,44px) clamp(22px,3.2vw,44px) clamp(18px,2.4vw,32px);
     position:relative; overflow:hidden;
@@ -28,7 +27,6 @@ export const servicesStyles = `
     border-radius:19px;
     background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
     backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-    border:1px solid rgba(255,255,255,0.06);
     height:clamp(200px,28vw,360px);
     display:flex; align-items:center; justify-content:center;
     position:relative; overflow:hidden;
@@ -47,8 +45,8 @@ export const servicesStyles = `
   .svc-tag {
     display:inline-block; font-size:clamp(8px,0.8vw,10px); font-weight:500; letter-spacing:0.05em;
     padding:3px 9px; border-radius:6px;
-    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
-    color:rgba(255,255,255,0.4); font-family:monospace;
+    background:rgba(255,255,255,0.05);
+    color:rgba(255,255,255,0.4); font-family:'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
     margin-bottom:clamp(10px,1.5vw,18px);
   }
 
@@ -63,18 +61,18 @@ export const servicesStyles = `
     background:#2997ff; color:#fff;
     padding:12px 26px;
     border-radius:980px; font-size:15px; font-weight:500;
-    text-decoration:none; display:inline-block; transition:background 0.2s ease, transform 0.2s ease;
+    text-decoration:none; display:inline-block; transition:background 0.2s ease, transform 0.2s ease; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
     white-space:nowrap; letter-spacing:-0.01em;
   }
   .svc-cta:hover { transform:scale(1.02); background:#0077ed; }
 
   /* ── Description text ── */
-  .svc-desc { font-size:clamp(12px,0.95vw,14px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; }
+  .svc-desc { font-size:clamp(12px,0.95vw,14px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; }
 
   /* ── Responsive breakpoints ── */
   .cta-stat-pill {
     display:inline-flex; align-items:center; gap:7px;
-    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+    background:rgba(255,255,255,0.05);
     border-radius:980px; padding:6px 16px;
     font-size:clamp(11px,0.9vw,13px); color:rgba(255,255,255,0.55); font-weight:500;
     white-space:nowrap;

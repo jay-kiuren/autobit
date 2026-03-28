@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { IconSmartphone } from "./components/Icons";
 
 const ACCENT = "#64d2ff";
-const FONT   = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const MobileFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -140,7 +140,7 @@ export const MobileFullPanel = ({
         <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}}
           viewport={{once:false,amount:0.3}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}>
           <div style={{display:"inline-flex",alignItems:"center",
-            background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
+            background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:22}}>
             <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>MOBILE APPLICATIONS</span>
           </div>
@@ -158,7 +158,7 @@ export const MobileFullPanel = ({
               <div key={i} style={{background:"rgba(255,255,255,0.03)",
                 borderRadius:12,padding:"10px 14px",textAlign:"center",minWidth:72}}>
                 <div style={{fontSize:12,fontWeight:700,color:"#f5f5f7",marginBottom:2,fontFamily:FONT}}>{p.label}</div>
-                <div style={{fontSize:9,color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>{p.sub}</div>
+                <div style={{fontSize:9,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{p.sub}</div>
               </div>
             ))}
           </div>
@@ -240,7 +240,7 @@ export const MobileFullPanel = ({
             borderRight:i<2?"1px solid rgba(255,255,255,0.05)":"none",textAlign:"center"}}>
             <div style={{fontSize:"clamp(22px,3vw,38px)",fontWeight:800,
               color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,fontFamily:FONT}}>{s.value}</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>{s.label}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
           </div>
         ))}
       </motion.div>

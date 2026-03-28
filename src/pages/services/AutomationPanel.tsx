@@ -5,7 +5,7 @@ import { IconGear } from "./components/Icons";
 
 const ACCENT    = "#2997ff";
 const CTA_COLOR = "#2997ff";
-const FONT      = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const AutomationFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -68,14 +68,14 @@ const PipelineCanvas = ({ active, animKey }: { active: boolean; animKey: number 
           <text x={n.x+40} y={85} textAnchor="middle" fontSize={10}
             fill={i===0?"rgba(255,255,255,0.82)":i===4?"rgba(255,255,255,0.75)":"rgba(255,255,255,0.5)"}
             fontWeight={600} fontFamily={FONT}>{n.label}</text>
-          <text x={n.x+40} y={100} textAnchor="middle" fontSize={7.5} fill="rgba(255,255,255,0.2)" fontFamily="monospace">{n.sub}</text>
+          <text x={n.x+40} y={100} textAnchor="middle" fontSize={7.5} fill="rgba(255,255,255,0.2)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{n.sub}</text>
         </motion.g>
       ))}
       {/* Branch nodes */}
       {branch.map((n,i)=>(
         <motion.g key={i} initial={{opacity:0,y:8}} animate={active?{opacity:1,y:0}:{opacity:0,y:8}} transition={{delay:0.6+i*0.1}}>
           <rect x={n.x} y={130} width={80} height={28} rx={7} fill="rgba(255,255,255,0.02)" stroke="none"/>
-          <text x={n.x+40} y={148} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.2)" fontFamily="monospace">{n.label}</text>
+          <text x={n.x+40} y={148} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.2)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{n.label}</text>
         </motion.g>
       ))}
       {/* Flowing packets — NO scan line */}
@@ -92,7 +92,7 @@ const PipelineCanvas = ({ active, animKey }: { active: boolean; animKey: number 
           transition={{delay:t.d,duration:2.8,times:[0,0.1,0.8,1],repeat:Infinity,repeatDelay:2}}>
           <rect x={6} y={t.y} width={172} height={18} rx={6} fill="rgba(48,209,88,0.07)" stroke="none"/>
           <circle cx={17} cy={t.y+9} r={3} fill="#30d158" opacity={0.6}/>
-          <text x={26} y={t.y+13} fontSize={8} fill="rgba(255,255,255,0.42)" fontFamily="monospace">{t.text}</text>
+          <text x={26} y={t.y+13} fontSize={8} fill="rgba(255,255,255,0.42)" fontFamily="'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace">{t.text}</text>
         </motion.g>
       ))}
     </svg>
@@ -155,7 +155,7 @@ export const AutomationFullPanel = ({
       <motion.div initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} transition={{delay:0.3}}
         style={{position:"absolute",top:20,right:"clamp(16px,4vw,48px)",
           display:"flex",alignItems:"center",gap:6,
-          background:"rgba(41,151,255,0.06)",border:`1px solid ${ACCENT}20`,
+          background:"rgba(41,151,255,0.06)",
           borderRadius:980,padding:"5px 14px",zIndex:7}}>
         <motion.div style={{width:6,height:6,borderRadius:"50%",background:ACCENT}}
           animate={{opacity:[1,0.2,1]}} transition={{duration:1.1,repeat:Infinity}}/>
@@ -172,7 +172,7 @@ export const AutomationFullPanel = ({
           <motion.div initial={{opacity:0,x:-44}} whileInView={{opacity:1,x:0}}
             viewport={{once:false,amount:0.3}} transition={{duration:0.75,ease:[0.22,1,0.36,1]}}>
             <div style={{display:"inline-flex",alignItems:"center",gap:6,
-              background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",
+              background:"rgba(255,255,255,0.04)",
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
               <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.38)"}}>
                 WORKFLOW AUTOMATION
@@ -189,8 +189,8 @@ export const AutomationFullPanel = ({
             </p>
             <span style={{display:"inline-block",fontSize:10,fontWeight:500,
               letterSpacing:"0.05em",padding:"4px 11px",borderRadius:6,
-              background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",
-              color:"rgba(255,255,255,0.26)",fontFamily:"monospace",marginBottom:28}}>
+              background:"rgba(255,255,255,0.04)",
+              color:"rgba(255,255,255,0.26)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
               n8n · Zapier · Make · Airtable · Notion
             </span>
             <div>
@@ -215,11 +215,11 @@ export const AutomationFullPanel = ({
               {["#ff375f","#ff9f0a","#30d158"].map((c,i)=>(
                 <div key={i} style={{width:9,height:9,borderRadius:"50%",background:c,opacity:0.5}}/>
               ))}
-              <span style={{fontFamily:"monospace",fontSize:9,color:"rgba(255,255,255,0.16)",marginLeft:8,letterSpacing:"0.08em"}}>
+              <span style={{fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",fontSize:9,color:"rgba(255,255,255,0.16)",marginLeft:8,letterSpacing:"0.08em"}}>
                 autobit-automation · activity log
               </span>
             </div>
-            <div style={{padding:"16px 18px",fontFamily:"monospace",fontSize:11}}>
+            <div style={{padding:"16px 18px",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",fontSize:11}}>
               {[...Array(4)].map((_,idx)=>{
                 const entry = logs[(logIdx-idx+logs.length)%logs.length];
                 const cur   = idx===0;
@@ -241,13 +241,13 @@ export const AutomationFullPanel = ({
             </div>
             <div style={{padding:"10px 18px",borderTop:"1px solid rgba(255,255,255,0.04)",
               display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <span style={{fontSize:9,color:"rgba(255,255,255,0.16)",fontFamily:"monospace"}}>
+              <span style={{fontSize:9,color:"rgba(255,255,255,0.16)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>
                 {runs.toLocaleString()} tasks processed today
               </span>
               <div style={{display:"flex",alignItems:"center",gap:5}}>
                 <motion.div style={{width:5,height:5,borderRadius:"50%",background:"#30d158"}}
                   animate={{opacity:[1,0.3,1]}} transition={{duration:1.2,repeat:Infinity}}/>
-                <span style={{fontSize:9,color:"#30d158",fontFamily:"monospace"}}>Running</span>
+                <span style={{fontSize:9,color:"#30d158",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>Running</span>
               </div>
             </div>
           </motion.div>
@@ -284,7 +284,7 @@ export const AutomationFullPanel = ({
               borderRight:i<3?"1px solid rgba(255,255,255,0.05)":"none"}}>
               <div style={{fontSize:"clamp(20px,2.8vw,38px)",fontWeight:800,
                 color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:5}}>{s.value}</div>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.2)",marginBottom:2,fontFamily:"monospace"}}>{s.unit}</div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.2)",marginBottom:2,fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.unit}</div>
               <div style={{fontSize:10,color:"rgba(255,255,255,0.18)",lineHeight:1.4}}>{s.label}</div>
             </div>
           ))}

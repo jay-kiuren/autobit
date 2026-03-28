@@ -74,7 +74,7 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
                   initial={panelAnim.initial} whileInView={panelAnim.animate}
                   viewport={{ once: false, amount: 0.2 }} transition={panelAnim.transition}>
 
-                  <div className="svc-badge" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div className="svc-badge" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.55)" }}>
                     {s.badge}
                   </div>
 

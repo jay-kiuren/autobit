@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IconBot } from "./components/Icons";
 
 const ACCENT = "#30d158";
-const FONT   = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
+const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif";
 
 export const AIAgentsFrameDeco = ({ accent }: { accent: string }) => null;
 
@@ -76,8 +76,8 @@ const ChatDemo = ({ tab, active }: { tab: typeof tabs[0]; active: boolean }) => 
     </div>
     <div style={{padding:"10px 18px",borderTop:"1px solid rgba(255,255,255,0.05)",
       display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontFamily:"monospace"}}>{tab.stat.label}</span>
-      <span style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,0.75)",fontFamily:"monospace"}}>{tab.stat.value}</span>
+      <span style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{tab.stat.label}</span>
+      <span style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,0.75)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{tab.stat.value}</span>
     </div>
   </div>
 );
@@ -138,7 +138,7 @@ export const AIAgentsFullPanel = ({
           <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}}
             viewport={{once:false,amount:0.3}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}>
             <div style={{display:"inline-flex",alignItems:"center",
-              background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
+              background:"rgba(255,255,255,0.05)",
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
               <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>AI AGENTS</span>
             </div>
@@ -155,14 +155,13 @@ export const AIAgentsFullPanel = ({
               {tabs.map((tab,i)=>(
                 <button key={i} onClick={()=>setActiveTab(i)}
                   style={{background:activeTab===i?`${ACCENT}10`:"transparent",
-                    border:`1px solid ${activeTab===i?`${ACCENT}30`:"rgba(255,255,255,0.07)"}`,
                     borderRadius:12,padding:"12px 16px",cursor:"pointer",textAlign:"left",
                     transition:"all 0.22s ease",display:"flex",alignItems:"center",
                     justifyContent:"space-between",fontFamily:FONT}}>
                   <div>
                     <div style={{fontSize:13,fontWeight:600,
                       color:activeTab===i?ACCENT:"rgba(255,255,255,0.55)",marginBottom:2}}>{tab.label}</div>
-                    <div style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontFamily:"monospace"}}>{tab.tag}</div>
+                    <div style={{fontSize:10,color:"rgba(255,255,255,0.25)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{tab.tag}</div>
                   </div>
                   {activeTab===i&&(
                     <motion.div layoutId="tab-indicator"
