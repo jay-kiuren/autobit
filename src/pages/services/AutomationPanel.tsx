@@ -189,7 +189,7 @@ export const AutomationFullPanel = ({
             <div>
               <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
                 style={{background:CTA_COLOR,color:"#fff",border:"none",cursor:"pointer",
-                  padding:"13px 30px",borderRadius:980,fontSize:15,fontWeight:600,
+                  padding:"12px 26px",borderRadius:980,fontSize:15,fontWeight:500,
                   boxShadow:"0 4px 24px rgba(41,151,255,0.28)",
                   transition:"all 0.22s ease",letterSpacing:"-0.1px",fontFamily:FONT}}
                 onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
