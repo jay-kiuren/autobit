@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   BarChart2,
   Users,
@@ -11,323 +10,257 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+// --- Types & Data ---
+
 const menuItems = [
-  { id: "analytics",  label: "Analytics",     icon: BarChart2,   accent: "41, 151, 255"  },
-  { id: "customers",  label: "Customers",     icon: Users,       accent: "48, 209, 88"   },
-  { id: "orders",     label: "Orders",        icon: ShoppingCart,accent: "255, 159, 10"  },
-  { id: "growth",     label: "Growth",        icon: TrendingUp,  accent: "255, 69, 58"   },
-  { id: "alerts",     label: "Alerts",        icon: Bell,        accent: "191, 90, 242"  },
-  { id: "settings",   label: "Settings",      icon: Settings,    accent: "255,255,255"   },
+  { id: "analytics", label: "Analytics", icon: BarChart2, accent: "41, 151, 255" },
+  { id: "customers", label: "Customers", icon: Users, accent: "48, 209, 88" },
+  { id: "orders", label: "Orders", icon: ShoppingCart, accent: "255, 159, 10" },
+  { id: "growth", label: "Growth", icon: TrendingUp, accent: "255, 69, 58" },
+  { id: "alerts", label: "Alerts", icon: Bell, accent: "191, 90, 242" },
+  { id: "settings", label: "Settings", icon: Settings, accent: "255, 255, 255" },
 ];
 
-const content: Record<string, { title: string; subtitle: string; value: string; body: string }> = {
-  analytics:  { title: "Live Analytics",       subtitle: "Real-time data pipeline",    value: "99.9%",  body: "Track every metric that matters — live, not lagging." },
-  customers:  { title: "Customer Intelligence",subtitle: "Segmentation & behavior",    value: "12.4K",  body: "Know who your customers are and what they actually do." },
-  orders:     { title: "Order Operations",     subtitle: "End-to-end fulfillment",     value: "$84K",   body: "From checkout to delivery — tracked and automated." },
-  growth:     { title: "Growth Engine",        subtitle: "Forecasting & trends",       value: "+34%",   body: "Predictive models that tell you where revenue is going." },
-  alerts:     { title: "Smart Alerts",         subtitle: "Threshold-based triggers",   value: "0 miss", body: "Get notified on what matters. Nothing else." },
-  settings:   { title: "System Config",        subtitle: "Roles, access & audit log",  value: "SOC2",   body: "Enterprise-grade control over who sees what." },
+const content: Record<string, { title: string; subtitle: string; value: string; body: string; catUrl: string }> = {
+  analytics: { 
+    title: "Live Analytics", 
+    subtitle: "Real-time data pipeline", 
+    value: "99.9%", 
+    body: "Track every metric that matters — live, not lagging.",
+    catUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1000&auto=format&fit=crop"
+  },
+  customers: { 
+    title: "Intelligence", 
+    subtitle: "Segmentation & behavior", 
+    value: "12.4K", 
+    body: "Know who your customers are and what they actually do.",
+    catUrl: "https://images.unsplash.com/photo-1573865668131-973177e81a4b?q=80&w=1000&auto=format&fit=crop"
+  },
+  orders: { 
+    title: "Order Ops", 
+    subtitle: "End-to-end fulfillment", 
+    value: "$84K", 
+    body: "From checkout to delivery — tracked and automated.",
+    catUrl: "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1000&auto=format&fit=crop"
+  },
+  growth: { 
+    title: "Growth Engine", 
+    subtitle: "Forecasting & trends", 
+    value: "+34%", 
+    body: "Predictive models that tell you where revenue is going.",
+    catUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80&w=1000&auto=format&fit=crop"
+  },
+  alerts: { 
+    title: "Smart Alerts", 
+    subtitle: "Threshold triggers", 
+    value: "0 miss", 
+    body: "Get notified on what matters. Nothing else.",
+    catUrl: "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?q=80&w=1000&auto=format&fit=crop"
+  },
+  settings: { 
+    title: "System Config", 
+    subtitle: "Roles & access", 
+    value: "SOC2", 
+    body: "Enterprise-grade control over who sees what.",
+    catUrl: "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1000&auto=format&fit=crop"
+  },
 };
 
-const SidebarItem = ({
-  item,
-  isActive,
-  onClick,
-}: {
-  item: typeof menuItems[0];
-  isActive: boolean;
-  onClick: (id: string) => void;
-}) => (
-  <button
+// --- Components ---
+
+const SidebarItem = ({ item, isActive, onClick }: { item: typeof menuItems[0]; isActive: boolean; onClick: (id: string) => void }) => (
+  <motion.button
+    whileHover={{ x: 4 }}
+    whileTap={{ scale: 0.98 }}
     onClick={() => onClick(item.id)}
+    className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-300"
     style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "10px",
-      width: "100%",
-      padding: "10px 14px",
-      borderRadius: "9999px",
-      border: "none",
-      cursor: "pointer",
-      background: isActive ? "rgba(255,255,255,0.07)" : "transparent",
-      transition: "background 0.2s ease",
+      background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
     }}
   >
-    <div style={{
-      padding: "5px",
-      borderRadius: "50%",
-      border: `1px solid ${isActive ? `rgba(${item.accent},0.50)` : "rgba(255,255,255,0.15)"}`,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      color: isActive ? `rgba(${item.accent},1)` : "rgba(255,255,255,0.35)",
-      transition: "all 0.2s ease",
-    }}>
-      <item.icon size={13} />
+    <div
+      className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors"
+      style={{
+        background: isActive ? `rgba(${item.accent}, 0.15)` : "rgba(255,255,255,0.03)",
+        color: isActive ? `rgb(${item.accent})` : "rgba(255,255,255,0.3)",
+      }}
+    >
+      <item.icon size={14} strokeWidth={2.5} />
     </div>
-    <span style={{
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-      fontSize: "13px",
-      fontWeight: isActive ? 600 : 400,
-      color: isActive ? "#f5f5f7" : "rgba(255,255,255,0.40)",
-      letterSpacing: "-0.01em",
-      transition: "color 0.2s ease",
-    }}>
+    <span
+      className="text-[13.5px] tracking-tight transition-colors"
+      style={{
+        fontFamily: "SF Pro Text, -apple-system, sans-serif",
+        fontWeight: isActive ? 600 : 400,
+        color: isActive ? "#FFFFFF" : "rgba(255,255,255,0.45)",
+      }}
+    >
       {item.label}
     </span>
-  </button>
+  </motion.button>
 );
 
 const DashboardPreview = () => {
   const [active, setActive] = useState("analytics");
-  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { threshold: 0.2, once: false });
+  
   const c = content[active];
-  const item = menuItems.find(m => m.id === active)!;
-
-  useEffect(() => {
-    const t = setTimeout(() => setOpen(true), 400);
-    return () => clearTimeout(t);
-  }, []);
+  const item = menuItems.find((m) => m.id === active)!;
 
   return (
-    <div style={{
-      display: "flex",
-      gap: "32px",
-      alignItems: "center",
-      width: "100%",
-      maxWidth: "900px",
-      margin: "0 auto",
-    }}>
+    <div ref={containerRef} className="flex flex-col lg:flex-row gap-12 items-center w-full max-w-[1000px] mx-auto">
       {/* Sidebar */}
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-        minWidth: "180px",
-      }}>
-        {menuItems.map(m => (
+      <motion.div 
+        key={`sidebar-${isInView}`}
+        initial={{ opacity: 0, x: -20 }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col gap-1.5 w-full lg:w-52"
+      >
+        {menuItems.map((m) => (
           <SidebarItem key={m.id} item={m} isActive={active === m.id} onClick={setActive} />
         ))}
-      </div>
+      </motion.div>
 
-      {/* Laptop shell */}
-      <div style={{ flex: 1, perspective: "1200px" }}>
+      {/* Laptop / Screen Area */}
+      <div className="flex-1 w-full perspective-[2000px]">
         <motion.div
-          initial={{ rotateX: -90, originY: "bottom" }}
-          animate={{ rotateX: open ? 0 : -90 }}
-          transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-          style={{ position: "relative", zIndex: 1 }}
+          key={`screen-${isInView}`}
+          initial={{ rotateX: 15, rotateY: -10, y: 40, opacity: 0, scale: 0.95 }}
+          animate={isInView ? { rotateX: 0, rotateY: 0, y: 0, opacity: 1, scale: 1 } : { rotateX: 15, rotateY: -10, y: 40, opacity: 0, scale: 0.95 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative group"
         >
-          {/* Screen */}
-          <div style={{
-            position: "relative",
-            aspectRatio: "16/10",
-            background: "#0a0a0a",
-            borderRadius: "16px 16px 0 0",
-            border: "2px solid #2a2a2a",
-            overflow: "hidden",
-          }}>
-            {/* Notch */}
-            <div style={{
-              position: "absolute", top: 0,
-              left: "50%", transform: "translateX(-50%)",
-              width: "100px", height: "20px",
-              background: "#000",
-              borderRadius: "0 0 12px 12px",
-              zIndex: 10,
-              borderLeft: "1px solid #2a2a2a",
-              borderRight: "1px solid #2a2a2a",
-              borderBottom: "1px solid #2a2a2a",
-            }} />
+          {/* Main Display Shell */}
+          <div className="relative aspect-[16/10] bg-[#000] rounded-[32px] overflow-hidden p-3 shadow-2xl shadow-blue-500/10 transition-all duration-700">
+            {/* Screen Content Container */}
+            <div className="relative h-full w-full rounded-[22px] overflow-hidden bg-[#0a0a0b]">
+              
+              {/* Subtle Cat Asset Layer */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 0.15, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 1.5, ease: "circOut" }}
+                  className="absolute inset-0 z-0 pointer-events-none"
+                >
+                  <img src={c.catUrl} alt="bg" className="w-full h-full object-cover filter grayscale contrast-125" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-[#0a0a0b]/80" />
+                </motion.div>
+              </AnimatePresence>
 
-            {/* Grid bg */}
-            <div style={{
-              position: "absolute", inset: 0,
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-              backgroundSize: "40px 40px",
-              pointerEvents: "none",
-            }} />
-
-            {/* Glow */}
-            <div style={{
-              position: "absolute", inset: 0,
-              background: `radial-gradient(ellipse 60% 50% at 60% 40%, rgba(${item.accent},0.08) 0%, transparent 70%)`,
-              pointerEvents: "none",
-              transition: "background 0.5s ease",
-            }} />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, scale: 0.98, filter: "blur(8px)" }}
-                animate={{ opacity: 1, scale: 1,    filter: "blur(0px)" }}
-                exit={{   opacity: 0, scale: 1.01,  filter: "blur(8px)" }}
-                transition={{ duration: 0.45, ease: "circOut" }}
-                style={{
-                  width: "100%", height: "100%",
-                  padding: "36px 36px 28px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  position: "relative",
-                  zIndex: 1,
+              {/* Dynamic Accent Glow */}
+              <motion.div 
+                animate={{ 
+                  background: `radial-gradient(circle at 70% 30%, rgba(${item.accent}, 0.12) 0%, transparent 60%)` 
                 }}
-              >
-                {/* Top */}
-                <div>
-                  <p style={{
-                    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-                    fontSize: "9px",
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase" as const,
-                    color: "rgba(255,255,255,0.28)",
-                    margin: "0 0 10px",
-                  }}>
-                    Dashboard Module
-                  </p>
-                  <h3 style={{
-                    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-                    fontSize: "clamp(20px, 3vw, 28px)",
-                    fontWeight: 700,
-                    letterSpacing: "-0.03em",
-                    color: "#f5f5f7",
-                    margin: "0 0 6px",
-                  }}>
-                    {c.title}
-                  </h3>
-                  <div style={{
-                    height: "2px",
-                    width: "32px",
-                    background: `rgba(${item.accent}, 0.80)`,
-                    borderRadius: "2px",
-                    marginTop: "12px",
-                  }} />
-                </div>
+                className="absolute inset-0 pointer-events-none z-1" 
+              />
 
-                {/* Bottom */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                  <div>
-                    <p style={{
-                      fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-                      fontSize: "13px",
-                      color: "rgba(255,255,255,0.45)",
-                      margin: "0 0 4px",
-                    }}>
-                      {c.subtitle}
-                    </p>
-                    <p style={{
-                      fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-                      fontSize: "12px",
-                      color: "rgba(255,255,255,0.30)",
-                      margin: "0 0 16px",
-                      maxWidth: "200px",
-                    }}>
-                      {c.body}
-                    </p>
-                    <button style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      background: "#fff",
-                      color: "#000",
-                      border: "none",
-                      borderRadius: "9999px",
-                      padding: "7px 16px",
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      letterSpacing: "0.02em",
-                    }}>
-                      EXPLORE <ChevronRight size={11} />
-                    </button>
-                  </div>
-                  <div style={{
-                    fontSize: "clamp(28px, 5vw, 48px)",
-                    fontWeight: 900,
-                    color: "rgba(255,255,255,0.07)",
-                    letterSpacing: "-0.04em",
-                    lineHeight: 1,
-                  }}>
-                    {c.value}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+              {/* Functional Content Overlay */}
+              <div className="relative z-10 h-full p-8 flex flex-col justify-between">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active}
+                    initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="h-full flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 mb-6">
+                        <div className="h-1 w-8 rounded-full" style={{ background: `rgb(${item.accent})` }} />
+                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-40 text-white">System.IO</span>
+                      </div>
+                      
+                      <h3 className="text-4xl font-bold tracking-tight text-white mb-2" style={{ fontFamily: "SF Pro Display, sans-serif" }}>
+                        {c.title}
+                      </h3>
+                      <p className="text-lg text-white/40 font-medium" style={{ fontFamily: "SF Pro Text, sans-serif" }}>
+                        {c.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between items-end">
+                      <div className="max-w-[240px]">
+                        <p className="text-[14px] leading-relaxed text-white/30 mb-6">
+                          {c.body}
+                        </p>
+                        <motion.button 
+                          whileHover={{ scale: 1.02, background: "#FFFFFF" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="flex items-center gap-2 bg-white/95 text-black px-5 py-2.5 rounded-full text-[12px] font-bold tracking-tight"
+                        >
+                          OPEN MODULE <ChevronRight size={14} />
+                        </motion.button>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="block text-6xl font-black text-white/10 tracking-tighter mb-[-4px]">
+                          {c.value}
+                        </span>
+                        <span className="text-[10px] font-bold tracking-[0.1em] text-white/20 uppercase">Core Metric</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Notch Area */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#000] rounded-b-2xl z-50 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-white/5" />
+            </div>
           </div>
-        </motion.div>
 
-        {/* Base */}
-        <div style={{
-          height: "12px",
-          width: "105%",
-          marginLeft: "-2.5%",
-          background: "#1e1e1e",
-          borderRadius: "0 0 12px 12px",
-          borderTop: "1px solid #333",
-        }} />
-        <div style={{
-          height: "3px",
-          width: "70%",
-          margin: "0 auto",
-          background: "#111",
-          borderRadius: "0 0 8px 8px",
-          opacity: 0.5,
-          filter: "blur(2px)",
-        }} />
+          {/* Device Shadow */}
+          <div className="absolute -bottom-10 left-[5%] right-[5%] h-12 bg-blue-500/10 blur-[60px] rounded-full pointer-events-none" />
+        </motion.div>
       </div>
     </div>
   );
 };
 
-const DashboardSection = () => (
-  <section style={{
-    position: "relative",
-    zIndex: 1,
-    background: "#0a0a0a",
-    paddingTop: "100px",
-    paddingBottom: "80px",
-  }}>
-    <div className="section-container">
-      <ScrollReveal>
-        <p style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "10px",
-          letterSpacing: "0.14em",
-          textTransform: "uppercase" as const,
-          color: "rgba(255,255,255,0.28)",
-          margin: "0 0 16px",
-        }}>
-          Business Dashboard
-        </p>
-        <h2 style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-          fontSize: "clamp(40px, 6vw, 64px)",
-          fontWeight: 700,
-          letterSpacing: "-0.04em",
-          lineHeight: 1.02,
-          color: "#f5f5f7",
-          margin: "0 0 12px",
-        }}>
-          Your data, visible.
-        </h2>
-        <p style={{
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-          fontSize: "17px",
-          color: "rgba(255,255,255,0.40)",
-          lineHeight: 1.65,
-          margin: "0 0 64px",
-          maxWidth: "480px",
-        }}>
-          Custom dashboards built for how your business actually works.
-        </p>
-      </ScrollReveal>
+const DashboardSection = () => {
+  const headerRef = useRef(null);
+  const isHeaderInView = useInView(headerRef, { threshold: 0.5, once: false });
 
-      <ScrollReveal delay={0.1}>
+  return (
+    <section className="relative bg-[#050505] py-32 px-6 overflow-hidden min-h-screen flex flex-col justify-center">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
+      
+      <div className="max-w-[1200px] mx-auto w-full">
+        <header ref={headerRef} className="mb-20">
+          <motion.div
+            key={`header-${isHeaderInView}`}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="inline-block text-[12px] font-bold tracking-[0.3em] uppercase text-blue-500 mb-4">
+              Intelligence Platform
+            </span>
+            <h2 className="text-6xl md:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.05]">
+              Data, <span className="text-white/30">defined.</span>
+            </h2>
+            <p className="text-xl text-white/40 max-w-lg leading-relaxed font-medium">
+              Architecting the future of operational visibility through high-fidelity interfaces.
+            </p>
+          </motion.div>
+        </header>
+
         <DashboardPreview />
-      </ScrollReveal>
-    </div>
-  </section>
-);
+      </div>
+
+      {/* Aesthetic Footer Grid Overlay */}
+      <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#050505] to-transparent z-10 pointer-events-none" />
+    </section>
+  );
+};
 
 export default DashboardSection;
