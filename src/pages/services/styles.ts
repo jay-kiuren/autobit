@@ -9,7 +9,7 @@ export const servicesStyles = `
   /* ── Heading — fluid typography ── */
   .svc-heading {
     font-size:clamp(22px,2.8vw,44px);
-    font-weight:800; letter-spacing:-1.5px; line-height:1.04;
+    font-weight:700; letter-spacing:-0.8px; line-height:1.04;
     color:#f5f5f7; margin:0 0 16px; white-space:pre-line; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
   }
 

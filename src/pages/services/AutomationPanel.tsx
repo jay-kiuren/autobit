@@ -174,17 +174,17 @@ export const AutomationFullPanel = ({
             <div style={{display:"inline-flex",alignItems:"center",gap:6,
               background:"rgba(255,255,255,0.04)",
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
-              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.38)"}}>
+              <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.52)"}}>
                 WORKFLOW AUTOMATION
               </span>
             </div>
-            <h2 style={{fontSize:"clamp(36px,4.8vw,72px)",fontWeight:800,
-              letterSpacing:"-2.5px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 20px",fontFamily:FONT}}>
+            <h2 style={{fontSize:"clamp(32px,4.2vw,60px)",fontWeight:700,
+              letterSpacing:"-1px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 20px",fontFamily:FONT}}>
               Eliminate<br/>
               <span style={{color:"rgba(255,255,255,0.25)"}}>manual work.</span>
             </h2>
             <p style={{fontSize:"clamp(14px,1.05vw,16px)",lineHeight:1.75,
-              color:"rgba(255,255,255,0.32)",margin:"0 0 28px",maxWidth:420}}>
+              color:"rgba(255,255,255,0.5)",margin:"0 0 28px",maxWidth:420}}>
               Zapier, Make, and n8n pipelines designed and deployed to remove every repetitive task from your operation — permanently.
             </p>
             <span style={{display:"inline-block",fontSize:10,fontWeight:500,
@@ -282,7 +282,7 @@ export const AutomationFullPanel = ({
             <div key={i} style={{
               padding:"clamp(16px,2.2vw,26px) clamp(14px,1.8vw,24px)",
               borderRight:i<3?"1px solid rgba(255,255,255,0.05)":"none"}}>
-              <div style={{fontSize:"clamp(20px,2.8vw,38px)",fontWeight:800,
+              <div style={{fontSize:"clamp(18px,2.4vw,32px)",fontWeight:700,
                 color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:5}}>{s.value}</div>
               <div style={{fontSize:10,color:"rgba(255,255,255,0.2)",marginBottom:2,fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.unit}</div>
               <div style={{fontSize:10,color:"rgba(255,255,255,0.18)",lineHeight:1.4}}>{s.label}</div>

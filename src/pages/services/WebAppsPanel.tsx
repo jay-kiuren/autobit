@@ -121,10 +121,10 @@ export const WebAppsFullPanel = ({
           <div style={{display:"inline-flex",alignItems:"center",
             background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:20}}>
-            <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>WEB APPLICATIONS</span>
+            <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>WEB APPLICATIONS</span>
           </div>
-          <h2 style={{fontSize:"clamp(36px,5.5vw,76px)",fontWeight:800,
-            letterSpacing:"-3px",lineHeight:1.0,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
+          <h2 style={{fontSize:"clamp(28px,3.8vw,56px)",fontWeight:700,
+            letterSpacing:"-1px",lineHeight:1.0,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
             A feast for<br/>
             <span style={{color:"rgba(255,255,255,0.25)"}}>your data.</span>
           </h2>
@@ -150,8 +150,8 @@ export const WebAppsFullPanel = ({
               padding:"clamp(24px,3vw,40px) clamp(20px,3vw,40px)",
               borderRight:i<2?"1px solid rgba(255,255,255,0.05)":"none",
               textAlign:"center"}}>
-              <div style={{fontSize:"clamp(32px,4.5vw,60px)",fontWeight:800,
-                color:"#f5f5f7",letterSpacing:"-2px",lineHeight:1,marginBottom:10}}>
+              <div style={{fontSize:"clamp(26px,3.5vw,48px)",fontWeight:700,
+                color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:10}}>
                 {inView ? s.value : "—"}
               </div>
               <div style={{fontSize:12,color:"rgba(255,255,255,0.3)",lineHeight:1.5,
@@ -182,7 +182,7 @@ export const WebAppsFullPanel = ({
           <span style={{fontSize:10,fontWeight:500,letterSpacing:"0.05em",
             padding:"4px 12px",borderRadius:6,
             background:"rgba(255,255,255,0.05)",
-            color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>
+            color:"rgba(255,255,255,0.52)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>
             React · Firebase · Vercel · Supabase
           </span>
           <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}

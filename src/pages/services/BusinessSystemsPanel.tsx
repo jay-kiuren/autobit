@@ -117,15 +117,15 @@ export const BusinessSystemsFullPanel = ({
           <div style={{display:"inline-flex",alignItems:"center",
             background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:22}}>
-            <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>BUSINESS SYSTEMS</span>
+            <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>BUSINESS SYSTEMS</span>
           </div>
-          <h2 style={{fontSize:"clamp(32px,4.5vw,64px)",fontWeight:800,
-            letterSpacing:"-2px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
+          <h2 style={{fontSize:"clamp(28px,3.8vw,56px)",fontWeight:700,
+            letterSpacing:"-1px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
             One system.<br/>
             <span style={{color:"rgba(255,255,255,0.25)"}}>Everything connected.</span>
           </h2>
           <p style={{fontSize:"clamp(14px,1.05vw,16px)",lineHeight:1.75,
-            color:"rgba(255,255,255,0.38)",margin:"0 0 28px",maxWidth:380}}>
+            color:"rgba(255,255,255,0.52)",margin:"0 0 28px",maxWidth:380}}>
             Inventory, HR, finance, and scheduling — unified in one platform. Every module talks to every other. No more spreadsheets. No more silos.
           </p>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:28}}>
@@ -142,7 +142,7 @@ export const BusinessSystemsFullPanel = ({
           <span style={{display:"inline-block",fontSize:10,fontWeight:500,
             letterSpacing:"0.05em",padding:"4px 11px",borderRadius:6,
             background:"rgba(255,255,255,0.05)",
-            color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
+            color:"rgba(255,255,255,0.52)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
             ERP · POS · Operations · Reporting
           </span>
           <div>
@@ -171,7 +171,7 @@ export const BusinessSystemsFullPanel = ({
         ].map((s,i)=>(
           <div key={i} style={{padding:"24px 28px",
             borderRight:i<3?"1px solid rgba(255,255,255,0.05)":"none",textAlign:"center"}}>
-            <div style={{fontSize:"clamp(22px,3vw,40px)",fontWeight:800,
+            <div style={{fontSize:"clamp(20px,2.6vw,34px)",fontWeight:700,
               color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,fontFamily:FONT}}>{s.value}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
           </div>

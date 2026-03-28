@@ -92,21 +92,21 @@ export const RoboticsFullPanel = ({
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
               <motion.div style={{width:6,height:6,borderRadius:"50%",background:"rgba(255,255,255,0.4)"}}
                 animate={{opacity:[1,0.3,1]}} transition={{duration:1.1,repeat:Infinity}}/>
-              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>ROBOTICS & PHYSICAL AI</span>
+              <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>ROBOTICS & PHYSICAL AI</span>
             </div>
-            <h2 style={{fontSize:"clamp(32px,4.8vw,68px)",fontWeight:800,
-              letterSpacing:"-2.5px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
+            <h2 style={{fontSize:"clamp(28px,3.8vw,56px)",fontWeight:700,
+              letterSpacing:"-1px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
               Edge AI.<br/>
               <span style={{color:"rgba(255,255,255,0.25)"}}>No cloud required.</span>
             </h2>
             <p style={{fontSize:"clamp(14px,1.05vw,16px)",lineHeight:1.75,
-              color:"rgba(255,255,255,0.38)",margin:"0 0 28px",maxWidth:380}}>
+              color:"rgba(255,255,255,0.52)",margin:"0 0 28px",maxWidth:380}}>
               PLC integration, computer vision, and embedded AI for industrial environments. Inference runs locally — zero latency, zero dependency on internet.
             </p>
             <span style={{display:"inline-block",fontSize:10,fontWeight:500,
               letterSpacing:"0.05em",padding:"4px 11px",borderRadius:6,
               background:"rgba(255,255,255,0.05)",
-              color:"rgba(255,255,255,0.38)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
+              color:"rgba(255,255,255,0.52)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",marginBottom:28}}>
               YOLO · PLC · Edge Inference · OpenCV
             </span>
             <div>
@@ -135,7 +135,7 @@ export const RoboticsFullPanel = ({
                   background:"rgba(255,255,255,0.022)",
                   borderRadius:14,padding:"16px 20px"}}>
                 <div>
-                  <div style={{fontSize:"clamp(18px,2.2vw,28px)",fontWeight:800,
+                  <div style={{fontSize:"clamp(16px,1.8vw,24px)",fontWeight:700,
                     color:"#f5f5f7",letterSpacing:"-0.5px",lineHeight:1,fontFamily:FONT}}>{s.stat}</div>
                   <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",marginTop:3,fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
                 </div>

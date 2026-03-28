@@ -140,15 +140,15 @@ export const AIAgentsFullPanel = ({
             <div style={{display:"inline-flex",alignItems:"center",
               background:"rgba(255,255,255,0.05)",
               borderRadius:980,padding:"4px 13px",marginBottom:22}}>
-              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>AI AGENTS</span>
+              <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>AI AGENTS</span>
             </div>
-            <h2 style={{fontSize:"clamp(36px,5vw,68px)",fontWeight:800,
-              letterSpacing:"-2.5px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 20px",fontFamily:FONT}}>
+            <h2 style={{fontSize:"clamp(32px,4.2vw,60px)",fontWeight:700,
+              letterSpacing:"-1px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 20px",fontFamily:FONT}}>
               Custom AI.<br/>
               <span style={{color:"rgba(255,255,255,0.28)"}}>Works 24/7.</span>
             </h2>
             <p style={{fontSize:"clamp(14px,1.05vw,16px)",lineHeight:1.75,
-              color:"rgba(255,255,255,0.38)",margin:"0 0 32px",maxWidth:400}}>
+              color:"rgba(255,255,255,0.52)",margin:"0 0 32px",maxWidth:400}}>
               Purpose-built agents for customer support, lead qualification, and internal operations. Trained on your data. Live in days.
             </p>
             <div style={{display:"flex",flexDirection:"column",gap:2}}>
@@ -206,8 +206,8 @@ export const AIAgentsFullPanel = ({
           ].map((s,i)=>(
             <div key={i} style={{padding:"28px 32px",
               borderRight:i<2?"1px solid rgba(255,255,255,0.05)":"none"}}>
-              <div style={{fontSize:"clamp(28px,3.5vw,48px)",fontWeight:800,
-                color:"#f5f5f7",letterSpacing:"-1.5px",lineHeight:1,marginBottom:8}}>{s.value}</div>
+              <div style={{fontSize:"clamp(24px,3vw,42px)",fontWeight:700,
+                color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8}}>{s.value}</div>
               <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",lineHeight:1.5}}>{s.label}</div>
             </div>
           ))}

@@ -8,7 +8,7 @@ const HeroSection = () => (
         <span style={{fontSize:"10px",fontWeight:600,letterSpacing:"0.14em",textTransform:"uppercase" as const,color:"rgba(255,255,255,0.25)",display:"block",marginBottom:18}}>
           Engineering services
         </span>
-        <h1 style={{fontSize:"clamp(32px,5vw,68px)",fontWeight:800,letterSpacing:"-2.5px",lineHeight:1.01,color:"#f5f5f7",margin:"0 0 20px"}}>
+        <h1 style={{fontSize:"clamp(32px,5vw,68px)",fontWeight:700,letterSpacing:"-1px",lineHeight:1.01,color:"#f5f5f7",margin:"0 0 20px"}}>
           What we build.
         </h1>
         <p style={{fontSize:"clamp(14px,1.3vw,17px)",color:"rgba(255,255,255,0.3)",margin:"0 auto",maxWidth:400,lineHeight:1.65}}>

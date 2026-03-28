@@ -142,15 +142,15 @@ export const MobileFullPanel = ({
           <div style={{display:"inline-flex",alignItems:"center",
             background:"rgba(255,255,255,0.05)",
             borderRadius:980,padding:"4px 13px",marginBottom:22}}>
-            <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>MOBILE APPLICATIONS</span>
+            <span style={{fontSize:9,fontWeight:600,letterSpacing:"0.1em",color:"rgba(255,255,255,0.45)"}}>MOBILE APPLICATIONS</span>
           </div>
-          <h2 style={{fontSize:"clamp(32px,4.5vw,62px)",fontWeight:800,
-            letterSpacing:"-2px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
+          <h2 style={{fontSize:"clamp(28px,3.8vw,56px)",fontWeight:700,
+            letterSpacing:"-1px",lineHeight:1.02,color:"#f5f5f7",margin:"0 0 18px",fontFamily:FONT}}>
             iOS + Android.<br/>
             <span style={{color:"rgba(255,255,255,0.25)"}}>Shipped fast.</span>
           </h2>
           <p style={{fontSize:"clamp(13px,1vw,15px)",lineHeight:1.75,
-            color:"rgba(255,255,255,0.38)",margin:"0 0 24px",maxWidth:320}}>
+            color:"rgba(255,255,255,0.52)",margin:"0 0 24px",maxWidth:320}}>
             React Native mobile apps — cross-platform, performant, and production-ready. One codebase, both stores.
           </p>
           <div style={{display:"flex",gap:10,marginBottom:28,flexWrap:"wrap"}}>
@@ -238,7 +238,7 @@ export const MobileFullPanel = ({
         ].map((s,i)=>(
           <div key={i} style={{padding:"24px 28px",
             borderRight:i<2?"1px solid rgba(255,255,255,0.05)":"none",textAlign:"center"}}>
-            <div style={{fontSize:"clamp(22px,3vw,38px)",fontWeight:800,
+            <div style={{fontSize:"clamp(20px,2.6vw,34px)",fontWeight:700,
               color:"#f5f5f7",letterSpacing:"-1px",lineHeight:1,marginBottom:8,fontFamily:FONT}}>{s.value}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{s.label}</div>
           </div>
