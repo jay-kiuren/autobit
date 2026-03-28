@@ -1,6 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { services } from "./data";
+import { services, type ServiceRecord } from "./data";
+import type { ComponentType } from "react";
+
+type FullPanelViewProps = {
+  active: boolean;
+  animKey: number;
+  sectionRef: (el: HTMLDivElement | null) => void;
+};
+
+function hasFullPanel(
+  s: ServiceRecord,
+): s is ServiceRecord & { FullPanel: ComponentType<FullPanelViewProps> } {
+  return typeof s.FullPanel === "function";
+}
 
 interface ServiceSectionsProps {
   activeIndex: number;
@@ -34,8 +47,8 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
       const isReverse = i % 2 === 1;
 
       // ── If the panel has a custom full layout, use it ──────────────────────
-      if ((s as any).FullPanel) {
-        const FullPanel = (s as any).FullPanel;
+      if (hasFullPanel(s)) {
+        const { FullPanel } = s;
         return (
           <FullPanel
             key={s.id}

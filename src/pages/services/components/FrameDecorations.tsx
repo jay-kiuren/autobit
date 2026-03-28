@@ -1,4 +1,8 @@
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
+
+type TargetingCorner = { top: number; left: number } | { top: number; right: number }
+  | { bottom: number; left: number } | { bottom: number; right: number };
 
 // Panel 0 — Automation (blue): Blueprint grid + L-bracket corners
 const FrameDecoBlueprint = ({ accent }: { accent: string }) => (
@@ -114,18 +118,21 @@ const FrameDecoTicks = ({ accent }: { accent: string }) => (
 const FrameDecoTargeting = ({ accent }: { accent: string }) => (
   <>
     {/* Targeting corner brackets — like detection boxes in the art */}
-    {[
+    {([
       {top:8,left:8},
       {top:8,right:8},
       {bottom:8,left:8},
       {bottom:8,right:8},
-    ].map((pos,i)=>(<svg key={i} width={22} height={22} viewBox="0 0 22 22" fill="none"
-      style={{position:"absolute",...pos as any,opacity:0.6}}>
+    ] satisfies TargetingCorner[]).map((pos,i)=>{
+      const posStyle: CSSProperties = { position: "absolute", opacity: 0.6, ...pos };
+      return (<svg key={i} width={22} height={22} viewBox="0 0 22 22" fill="none"
+      style={posStyle}>
       {i===0&&<><path d="M0 10 L0 0 L10 0" stroke={accent} strokeWidth={2}/></>}
       {i===1&&<><path d="M22 10 L22 0 L12 0" stroke={accent} strokeWidth={2}/></>}
       {i===2&&<><path d="M0 12 L0 22 L10 22" stroke={accent} strokeWidth={2}/></>}
       {i===3&&<><path d="M22 12 L22 22 L12 22" stroke={accent} strokeWidth={2}/></>}
-    </svg>))}
+    </svg>);
+    })}
     {/* Pulsing center crosshair dot */}
     <motion.div style={{position:"absolute",top:"50%",left:"50%",
       width:8,height:8,borderRadius:"50%",marginTop:-4,marginLeft:-4,
