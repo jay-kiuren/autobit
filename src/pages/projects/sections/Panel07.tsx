@@ -1,4 +1,5 @@
 import ScrollReveal from "@/components/ScrollReveal";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const cards = [
   {
@@ -24,7 +25,10 @@ const cards = [
   },
 ];
 
-const WhySection = () => (
+const WhySection = () => {
+  const { openModal } = useContactModal();
+
+  return (
   <section style={{
     position: "relative",
     zIndex: 1,
@@ -132,7 +136,8 @@ const WhySection = () => (
               </p>
               {card.cta ? (
                 <button
-                  onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}
+                  type="button"
+                  onClick={openModal}
                   style={{
                     marginTop: "24px",
                     display: "inline-flex",
@@ -167,6 +172,7 @@ const WhySection = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default WhySection;

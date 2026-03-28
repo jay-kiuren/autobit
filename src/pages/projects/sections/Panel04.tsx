@@ -1,662 +1,633 @@
-// ─────────────────────────────────────────────────────────────
-// PANEL 04 — AI Agents + Automation
-// Matches reference: Image 1 (agent chat) + Image 2 (workflow graph)
-// Tab-switched: "AI Agents" ↔ "Automation"
-// ─────────────────────────────────────────────────────────────
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
-// ── Fonts ──
-const sfDisplay = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
-const sfText    = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif";
+/**
+ * Panel04: AI & Automation Systems
+ * Updated with dual CTA in the Agents section.
+ */
 
-// ── Types ──
-type Agent = { id: string; name: string; meta: string; active: boolean };
-type Message = { side: "user" | "agent"; text: string };
-type Node = {
-  id: string; label: string; sub?: string;
-  color: string; glow: string;
-  x: number; y: number; w: number; h: number;
-};
-type Edge = { from: string; to: string; dashed?: boolean };
+// --- Constants & Data ---
 
-// ── Data ──
-const AGENTS: Agent[] = [
-  { id: "support", name: "Customer Support", meta: "24/7 · Instant",     active: true  },
-  { id: "leads",   name: "Lead Qualification",meta: "Sales · Auto-route", active: false },
-  { id: "ops",     name: "Internal Ops",      meta: "HR · Finance · IT",  active: false },
+const sfDisplay = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif';
+const sfText = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif';
+
+const AGENTS = [
+  { id: "support", name: "Customer Support", meta: "Resolves 84% of tickets", icon: "💬" },
+  { id: "sales", name: "Sales Outreach", meta: "Personalized B2B flows", icon: "📈" },
+  { id: "operations", name: "Ops Coordinator", meta: "Syncs inventory & logs", icon: "⚙️" },
 ];
 
-const CONVERSATIONS: Record<string, Message[]> = {
+const CONVERSATIONS: Record<string, any[]> = {
   support: [
-    { side: "user",  text: "Hi, my order hasn't arrived yet" },
-    { side: "agent", text: "Order #4821 is out for delivery today!" },
-    { side: "agent", text: "Expected by 3pm. Track here →" },
-    { side: "user",  text: "Thank you!" },
+    { role: "user", text: "How do I track my delivery?" },
+    { role: "bot", text: "I can help with that! What's your order ID?" },
+    { role: "user", text: "It's #AB-9042." },
+    { role: "bot", text: "Checking... It's out for delivery and will arrive by 4 PM." },
   ],
-  leads: [
-    { side: "user",  text: "We need automation for 50+ staff" },
-    { side: "agent", text: "Perfect fit. Budget range?" },
-    { side: "user",  text: "Around $5,000" },
-    { side: "agent", text: "Booking you with our team now ✓" },
+  sales: [
+    { role: "user", text: "Interested in the enterprise plan." },
+    { role: "bot", text: "Great! Our enterprise plan includes 24/7 dedicated support." },
+    { role: "user", text: "Can we hop on a call?" },
+    { role: "bot", text: "I've sent a calendar link to your email. Pick a time!" },
   ],
-  ops: [
-    { side: "user",  text: "Generate Q3 expense summary" },
-    { side: "agent", text: "Pulling from Xero and Notion…" },
-    { side: "agent", text: "47 transactions · $128,420 · CSV ready ✓" },
+  operations: [
+    { role: "user", text: "Is the warehouse sync active?" },
+    { role: "bot", text: "Yes, synced 2 minutes ago. All stocks are up to date." },
+    { role: "user", text: "Any anomalies detected?" },
+    { role: "bot", text: "None. Logistics flowing at 98% efficiency." },
   ],
 };
 
-// ── Workflow nodes & edges (image 2) ──
-const NODES: Node[] = [
-  { id: "trigger", label: "Trigger",  sub: "webhook",   color: "#2997ff", glow: "rgba(41,151,255,0.20)", x: 40,  y: 120, w: 110, h: 52 },
-  { id: "filter",  label: "Filter",   sub: "condition",  color: "#00e676", glow: "rgba(0,230,118,0.18)",  x: 220, y: 60,  w: 110, h: 52 },
-  { id: "timer",   label: "Timer",    sub: "cron",       color: "#2997ff", glow: "rgba(41,151,255,0.16)", x: 220, y: 180, w: 110, h: 52 },
-  { id: "process", label: "Process",  sub: "transform",  color: "#2997ff", glow: "rgba(41,151,255,0.20)", x: 400, y: 120, w: 110, h: 52 },
-  { id: "notify",  label: "Notify",   sub: "slack / mail",color: "#00e676",glow: "rgba(0,230,118,0.18)",  x: 578, y: 60,  w: 120, h: 52 },
-  { id: "store",   label: "Store",    sub: "database",   color: "#2997ff", glow: "rgba(41,151,255,0.16)", x: 578, y: 180, w: 110, h: 52 },
-  { id: "done",    label: "Done ✓",   sub: "completed",  color: "#00e676", glow: "rgba(0,230,118,0.28)",  x: 756, y: 120, w: 100, h: 52 },
+const LOGS = [
+  { time: "12:04:11", msg: "API: Database Synced", status: "success" },
+  { time: "12:04:15", msg: "Webflow: Entry Created", status: "success" },
+  { time: "12:05:02", msg: "Stripe: Payment Verified", status: "success" },
+  { time: "12:05:08", msg: "Mailgun: Receipt Sent", status: "success" },
 ];
 
-const EDGES: Edge[] = [
-  { from: "trigger", to: "filter"  },
-  { from: "trigger", to: "timer"   },
-  { from: "filter",  to: "process" },
-  { from: "timer",   to: "process" },
-  { from: "process", to: "notify"  },
-  { from: "process", to: "store"   },
-  { from: "notify",  to: "done"    },
-  { from: "store",   to: "done", dashed: true },
+const NODES = [
+  { id: "1", label: "Trigger", sub: "New Sale", x: 80, y: 130, color: "#00e676" },
+  { id: "2", label: "Logic", sub: "Filter Lead", x: 300, y: 130, color: "#2979ff" },
+  { id: "3", label: "Action", sub: "CRM Update", x: 520, y: 60, color: "#ff9100" },
+  { id: "4", label: "Action", sub: "Slack Notify", x: 520, y: 200, color: "#d500f9" },
+  { id: "5", label: "Finish", sub: "Success", x: 740, y: 130, color: "#00e676" },
+];
+
+const EDGES = [
+  { from: "1", to: "2", d: "M 160 130 L 220 130" },
+  { from: "2", to: "3", d: "M 380 110 Q 420 60 440 60" },
+  { from: "2", to: "4", d: "M 380 150 Q 420 200 440 200" },
+  { from: "3", to: "5", d: "M 600 60 Q 660 60 680 110" },
+  { from: "4", to: "5", d: "M 600 200 Q 660 200 680 150" },
 ];
 
 const STATS = [
-  { label: "Runs / day",  value: "1,284" },
-  { label: "Success",     value: "99.8%" },
-  { label: "Time saved",  value: "48 hrs" },
+  { label: "TASKS DONE", value: "1,284", duration: "1.2s" },
+  { label: "ACCURACY", value: "99.8%", duration: "1.0s" },
+  { label: "TIME SAVED", value: "48 hrs", duration: "0.9s" },
 ];
 
-const LOGS = [
-  { ok: true,  text: "Slack alert sent" },
-  { ok: true,  text: "DB row created"   },
-  { ok: false, text: "Timer skipped"    },
-];
+// --- Styles ---
 
-// ── Helpers ──
-function midX(n: Node) { return n.x + n.w / 2; }
-function midY(n: Node) { return n.y + n.h / 2; }
-
-function buildPath(a: Node, b: Node): string {
-  const ax = a.x + a.w;
-  const ay = midY(a);
-  const bx = b.x;
-  const by = midY(b);
-  const cx = (ax + bx) / 2;
-  return `M${ax},${ay} C${cx},${ay} ${cx},${by} ${bx},${by}`;
-}
-
-// ── Typing dots component ──
-const TypingDots = () => (
-  <div style={{ display:"flex", gap:5, padding:"10px 14px", alignItems:"center" }}>
-    {[0,1,2].map(i => (
-      <span key={i} style={{
-        width:6, height:6, borderRadius:"50%",
-        background:"rgba(255,255,255,0.28)",
-        display:"block",
-        animation:`p4typing 1.2s ${i*0.18}s ease-in-out infinite`,
-      }} />
-    ))}
-  </div>
-);
-
-// ── Keyframes injected once ──
 const CSS = `
-@keyframes p4typing   { 0%,60%,100%{ opacity:.2; transform:scale(1) } 30%{ opacity:1; transform:scale(1.35) } }
-@keyframes p4pulse    { 0%,100%{ box-shadow:0 0 6px #30d158 } 50%{ box-shadow:0 0 16px #30d158 } }
-@keyframes p4dash     { to{ stroke-dashoffset:-20 } }
-@keyframes p4nodeglow { 0%,100%{ opacity:.55 } 50%{ opacity:1 } }
-@keyframes p4fadeup   { from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:translateY(0) } }
-@media(max-width:900px){
-  .p4-inner{ flex-direction:column !important }
-  .p4-left { width:100% !important }
-  .p4-right{ width:100% !important }
-  .p4-svg  { overflow-x:auto !important }
-}
+  @keyframes p4nodeenter {
+    from { opacity: 0; transform: translateY(8px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes p4edgedraw {
+    from { stroke-dashoffset: var(--path-len, 400); }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes p4countup {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+  }
+  @keyframes p4slideup {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .p4-hide-scrollbar::-webkit-scrollbar { display: none; }
 `;
 
-// ══════════════════════════════
-// PANEL COMPONENT
-// ══════════════════════════════
-const Panel04 = () => {
-  const [tab,          setTab]          = useState<"agents"|"auto">("agents");
-  const [activeAgent,  setActiveAgent]  = useState("support");
-  const [messages,     setMessages]     = useState<Message[]>([]);
-  const [showTyping,   setShowTyping]   = useState(false);
-  const [avgMs,        setAvgMs]        = useState(0);
-  const [activeNode,   setActiveNode]   = useState<string|null>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
+// --- Components ---
 
-  // Load conversation with stagger
-  useEffect(() => {
-    setMessages([]);
-    setShowTyping(false);
-    const msgs = CONVERSATIONS[activeAgent] ?? [];
-    msgs.forEach((m, i) => {
-      setTimeout(() => {
-        setMessages(prev => [...prev, m]);
-        if (i === msgs.length - 2) setShowTyping(true);
-        if (i === msgs.length - 1) setShowTyping(false);
-      }, i * 420 + 200);
-    });
-    // avg response counter
-    let v = 0;
-    const iv = setInterval(() => {
-      v += Math.floor(Math.random() * 18 + 4);
-      setAvgMs(v);
-      if (v > 340) { clearInterval(iv); setAvgMs(0); }
-    }, 80);
-    return () => clearInterval(iv);
-  }, [activeAgent]);
+const CountUp = ({ value, duration }: { value: string; duration: string }) => {
+  const [displayValue, setDisplayValue] = useState("0");
+  const numeric = parseFloat(value.replace(/,/g, ""));
+  const suffix = value.replace(/[0-9.,]/g, "");
 
-  // Auto-scroll chat
   useEffect(() => {
-    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
-  }, [messages, showTyping]);
+    let start = 0;
+    const end = numeric;
+    const totalMs = parseFloat(duration) * 1000;
+    const increment = end / (totalMs / 16);
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setDisplayValue(value);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(start).toLocaleString() + suffix);
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [value, duration, numeric, suffix]);
+
+  return <span style={{ animation: `p4countup ${duration} ease-out forwards` }}>{displayValue}</span>;
+};
+
+export default function Panel04() {
+  const { openModal } = useContactModal();
+  const [activeTab, setActiveTab] = useState<"agents" | "automation">("agents");
+  const [activeAgent, setActiveAgent] = useState("support");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [showTyping, setShowTyping] = useState(false);
+  const [avgMs, setAvgMs] = useState(0);
+  const [activeNode, setActiveNode] = useState<string | null>(null);
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { amount: 0.15 });
+
+  // 1. Scroll Reset Logic
+  useEffect(() => {
+    if (!isInView) {
+      setActiveTab("agents");
+      setActiveAgent("support");
+      setMessages([]);
+      setShowTyping(false);
+      setAvgMs(0);
+      setActiveNode(null);
+    }
+  }, [isInView]);
+
+  // Chat sequence logic
+  useEffect(() => {
+    if (!isInView || activeTab !== "agents") return;
+    
+    let isMounted = true;
+    const sequence = async () => {
+      setMessages([]);
+      setAvgMs(0);
+      const chat = CONVERSATIONS[activeAgent];
+      await new Promise(r => setTimeout(r, 500));
+
+      for (let i = 0; i < chat.length; i++) {
+        if (!isMounted) return;
+        if (chat[i].role === "bot") {
+          setShowTyping(true);
+          await new Promise((r) => setTimeout(r, 800 + Math.random() * 600));
+          setShowTyping(false);
+        }
+        setMessages((prev) => [...prev, chat[i]]);
+        if (i === chat.length - 1) setAvgMs(420);
+        await new Promise((r) => setTimeout(r, 1200));
+      }
+    };
+    sequence();
+    return () => { isMounted = false; };
+  }, [activeAgent, activeTab, isInView]);
+
+  // Node highlight sequence
+  useEffect(() => {
+    if (activeTab !== "automation" || !isInView) return;
+    let idx = 0;
+    const timer = setInterval(() => {
+      setActiveNode(NODES[idx % NODES.length].id);
+      idx++;
+    }, 1500);
+    return () => clearInterval(timer);
+  }, [activeTab, isInView]);
 
   return (
-    <section style={{
-      position:"relative", zIndex:1,
-      background:"#000",
-      paddingTop:"100px", paddingBottom:"100px",
-      borderBottom:"1px solid rgba(255,255,255,0.06)",
-      overflow:"hidden",
-    }}>
+    <section
+      ref={sectionRef}
+      style={{
+        width: "100%",
+        minHeight: "100vh",
+        background: "#050505",
+        padding: "100px 24px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
       <style>{CSS}</style>
 
-      {/* Ambient radial */}
-      <div style={{
-        position:"absolute", inset:0, pointerEvents:"none",
-        background:"radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,230,118,0.05) 0%, transparent 65%)",
-      }}/>
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+        transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+        style={{ width: "100%", maxWidth: "1200px" }}
+      >
+        {/* --- Header --- */}
+        <div style={{ textAlign: "center", marginBottom: "64px" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ delay: 0.05 }}
+            style={{
+              fontFamily: sfText,
+              fontSize: "13px",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              color: "#00e676",
+              marginBottom: "20px",
+            }}
+          >
+            SCALABLE WORKFLOWS
+          </motion.div>
 
-      <div className="section-container" style={{ position:"relative", zIndex:1 }}>
-
-        {/* ── Header ── */}
-        <ScrollReveal>
-          <p style={{
-            fontFamily:sfText, fontSize:"10px",
-            letterSpacing:"0.14em", textTransform:"uppercase",
-            color:"rgba(255,255,255,0.28)", margin:"0 0 16px",
-          }}>
-            AI Agents &amp; Automation
-          </p>
-
-          {/* Tab row */}
-          <div style={{ display:"flex", gap:4, marginBottom:"56px" }}>
-            {(["agents","auto"] as const).map(t => (
-              <button key={t} onClick={() => setTab(t)} style={{
-                padding:"8px 20px", borderRadius:"980px",
-                border:"1px solid",
-                fontFamily:sfText, fontSize:"13px", fontWeight:600,
-                cursor:"pointer",
-                transition:"all 0.22s cubic-bezier(0.4,0,0.2,1)",
-                borderColor: tab===t ? "rgba(255,255,255,0.20)" : "rgba(255,255,255,0.08)",
-                background:  tab===t ? "rgba(255,255,255,0.08)" : "transparent",
-                color:       tab===t ? "#f5f5f7" : "rgba(255,255,255,0.35)",
-              }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
+            {["agents", "automation"].map((t, i) => (
+              <motion.button
+                key={t}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                transition={{ delay: 0.15 + i * 0.06 }}
+                onClick={() => setActiveTab(t as any)}
+                style={{
+                  padding: "10px 24px",
+                  borderRadius: "100px",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  fontFamily: sfText,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  border: "none",
+                  outline: "none",
+                  background: activeTab === t ? "#1a1a1a" : "transparent",
+                  color: activeTab === t ? "#fff" : "#6e6e73",
+                  boxShadow: activeTab === t ? "0 0 0 1px rgba(255,255,255,0.14)" : "none",
+                }}
+              >
                 {t === "agents" ? "AI Agents" : "Automation"}
-              </button>
+              </motion.button>
             ))}
           </div>
-        </ScrollReveal>
+        </div>
 
-        {/* ══════════════════════════
-            TAB: AI AGENTS
-        ══════════════════════════ */}
+        {/* --- Tab Content --- */}
         <AnimatePresence mode="wait">
-          {tab === "agents" && (
+          {activeTab === "agents" ? (
             <motion.div
               key="agents"
-              initial={{ opacity:0, y:16 }}
-              animate={{ opacity:1, y:0 }}
-              exit={{    opacity:0, y:-12 }}
-              transition={{ duration:0.38, ease:[0.4,0,0.2,1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ display: "flex", gap: "60px", alignItems: "flex-start" }}
             >
-              <div className="p4-inner" style={{ display:"flex", gap:40, alignItems:"flex-start" }}>
+              {/* Left Column */}
+              <motion.div 
+                initial={{ x: -24, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                style={{ flex: "0 0 38%", paddingTop: 0 }}
+              >
+                <motion.div
+                  initial={{ scale: 0.85 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.25 }}
+                  style={{
+                    display: "inline-block",
+                    padding: "6px 12px",
+                    background: "#0d1a12",
+                    color: "#00e676",
+                    borderRadius: "6px",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
+                    marginBottom: "24px",
+                  }}
+                >
+                  AI AGENTS
+                </motion.div>
 
-                {/* Left — Headline + tag + agent list + CTA */}
-                <div className="p4-left" style={{ width:"38%", paddingTop:8 }}>
-                  <span style={{
-                    display:"inline-block",
-                    fontFamily:sfText, fontSize:"11px", fontWeight:600,
-                    letterSpacing:"0.06em", textTransform:"uppercase",
-                    color:"#00e676",
-                    border:"1px solid rgba(0,230,118,0.35)",
-                    borderRadius:"980px", padding:"4px 12px",
-                    marginBottom:"24px",
-                  }}>
-                    AI Agents
-                  </span>
+                <h2 style={{ fontFamily: sfDisplay, fontSize: "48px", fontWeight: 600, lineHeight: 1.1, margin: 0, marginBottom: "24px" }}>
+                  <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} style={{ color: "#f5f5f7", display: "block" }}>Custom AI.</motion.span>
+                  <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.38 }} style={{ color: "#3d3d3d", display: "block" }}>Works 24/7.</motion.span>
+                </h2>
 
-                  <h2 style={{
-                    fontFamily:sfDisplay,
-                    fontSize:"clamp(36px,5vw,56px)",
-                    fontWeight:700, letterSpacing:"-0.04em",
-                    lineHeight:1.0, color:"#f5f5f7",
-                    margin:"0 0 6px",
-                  }}>
-                    Custom AI.
-                  </h2>
-                  <h2 style={{
-                    fontFamily:sfDisplay,
-                    fontSize:"clamp(36px,5vw,56px)",
-                    fontWeight:700, letterSpacing:"-0.04em",
-                    lineHeight:1.0, color:"rgba(255,255,255,0.28)",
-                    margin:"0 0 20px",
-                  }}>
-                    Works 24/7.
-                  </h2>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.42 }}
+                  style={{ fontFamily: sfText, fontSize: "17px", lineHeight: "1.6", color: "#6e6e73", marginBottom: "36px" }}
+                >
+                  Automate complex customer interactions and internal operations with 
+                  agents that learn your business logic.
+                </motion.p>
 
-                  <p style={{
-                    fontFamily:sfText, fontSize:"15px",
-                    color:"rgba(255,255,255,0.50)", lineHeight:1.65,
-                    maxWidth:"340px", margin:"0 0 40px",
-                  }}>
-                    Purpose-built agents for customer support, lead qualification, and internal operations.
-                    Trained on your data. Live in days.
-                  </p>
-
-                  {/* Agent list */}
-                  <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:40 }}>
-                    {AGENTS.map(ag => (
-                      <button
-                        key={ag.id}
-                        onClick={() => setActiveAgent(ag.id)}
-                        style={{
-                          padding:"16px 20px",
-                          borderRadius:"14px",
-                          border:"1px solid",
-                          textAlign:"left",
-                          cursor:"pointer",
-                          transition:"all 0.22s cubic-bezier(0.4,0,0.2,1)",
-                          display:"flex", alignItems:"center", justifyContent:"space-between",
-                          background: activeAgent===ag.id
-                            ? "rgba(0,230,118,0.05)"
-                            : "transparent",
-                          borderColor: activeAgent===ag.id
-                            ? "#00e676"
-                            : "rgba(255,255,255,0.08)",
-                        }}
-                      >
-                        <div>
-                          <div style={{
-                            fontFamily:sfText, fontSize:"14px", fontWeight:600,
-                            color: activeAgent===ag.id ? "#00e676" : "#f5f5f7",
-                            marginBottom:3,
-                          }}>
-                            {ag.name}
-                          </div>
-                          <div style={{
-                            fontFamily:sfText, fontSize:"11px",
-                            color: activeAgent===ag.id
-                              ? "rgba(0,230,118,0.55)"
-                              : "rgba(255,255,255,0.28)",
-                            letterSpacing:"0.02em",
-                          }}>
-                            {ag.meta}
-                          </div>
-                        </div>
-                        <span style={{
-                          width:8, height:8, borderRadius:"50%",
-                          flexShrink:0,
-                          background: activeAgent===ag.id ? "#00e676" : "rgba(255,255,255,0.15)",
-                          animation: activeAgent===ag.id ? "p4pulse 2s ease-in-out infinite" : "none",
-                        }}/>
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <button
-                    onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-                    style={{
-                      display:"inline-flex", alignItems:"center", gap:8,
-                      padding:"14px 28px", borderRadius:"980px",
-                      background:"#00e676", color:"#000",
-                      fontFamily:sfText, fontSize:"15px", fontWeight:700,
-                      border:"none", cursor:"pointer",
-                      transition:"opacity 0.2s, transform 0.2s",
-                    }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity="0.88"; (e.currentTarget as HTMLButtonElement).style.transform="translateY(-1px)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity="1";    (e.currentTarget as HTMLButtonElement).style.transform="translateY(0)";    }}
-                  >
-                    Get a quote
-                    <span style={{ fontSize:15 }}>→</span>
-                  </button>
-                </div>
-
-                {/* Right — Chat window */}
-                <div className="p4-right" style={{ width:"62%" }}>
-                  <div style={{
-                    background:"#0a0a0b",
-                    border:"1px solid rgba(255,255,255,0.08)",
-                    borderRadius:"20px",
-                    overflow:"hidden",
-                  }}>
-                    {/* Chat header */}
-                    <div style={{
-                      display:"flex", alignItems:"center", gap:12,
-                      padding:"18px 24px",
-                      borderBottom:"1px solid rgba(255,255,255,0.06)",
-                      background:"#0d0d0f",
-                    }}>
-                      <div style={{
-                        width:36, height:36, borderRadius:"50%",
-                        background:"rgba(0,230,118,0.15)",
-                        border:"1px solid rgba(0,230,118,0.30)",
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                        fontSize:16,
-                      }}>
-                        🤖
-                      </div>
-                      <div>
-                        <div style={{ fontFamily:sfText, fontSize:"14px", fontWeight:600, color:"#f5f5f7" }}>
-                          Autobit Agent
-                        </div>
-                        <div style={{ fontFamily:sfText, fontSize:"11px", color:"rgba(255,255,255,0.35)", display:"flex", alignItems:"center", gap:5 }}>
-                          <span style={{ width:6, height:6, borderRadius:"50%", background:"#00e676", display:"inline-block", animation:"p4pulse 2s infinite" }}/>
-                          Online · 24/7 · Instant
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Messages */}
-                    <div
-                      ref={chatRef}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "36px" }}>
+                  {AGENTS.map((agent, i) => (
+                    <motion.div
+                      key={agent.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      onClick={() => setActiveAgent(agent.id)}
                       style={{
-                        padding:"24px",
-                        minHeight:"320px", maxHeight:"360px",
-                        overflowY:"auto",
-                        display:"flex", flexDirection:"column", gap:10,
-                        scrollbarWidth:"none",
+                        padding: "14px 18px",
+                        borderRadius: "12px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "14px",
+                        transition: "all 0.2s ease",
+                        background: activeAgent === agent.id ? "#0d1a12" : "#0e0e10",
+                        boxShadow: activeAgent === agent.id 
+                          ? "0 0 0 1.5px #00e676, 0 4px 20px rgba(0,230,118,0.12)" 
+                          : "0 1px 3px rgba(0,0,0,0.4)",
                       }}
                     >
-                      <AnimatePresence>
-                        {messages.map((m, i) => (
-                          <motion.div
-                            key={`${activeAgent}-${i}`}
-                            initial={{ opacity:0, y:8, scale:0.97 }}
-                            animate={{ opacity:1, y:0, scale:1 }}
-                            transition={{ duration:0.3, ease:[0.4,0,0.2,1] }}
-                            style={{
-                              display:"flex",
-                              justifyContent: m.side==="user" ? "flex-start" : "flex-end",
-                            }}
-                          >
-                            <div style={{
-                              maxWidth:"70%",
-                              padding:"12px 18px",
-                              borderRadius: m.side==="user"
-                                ? "18px 18px 18px 4px"
-                                : "18px 18px 4px 18px",
-                              background: m.side==="user"
-                                ? "rgba(255,255,255,0.07)"
-                                : "#00e676",
-                              color: m.side==="user" ? "#f5f5f7" : "#000",
-                              fontFamily:sfText,
-                              fontSize:"14px", fontWeight: m.side==="agent" ? 600 : 400,
-                              lineHeight:1.5,
-                              border: m.side==="user" ? "1px solid rgba(255,255,255,0.08)" : "none",
-                            }}>
-                              {m.text}
-                            </div>
-                          </motion.div>
-                        ))}
-                        {showTyping && (
-                          <motion.div
-                            key="typing"
-                            initial={{ opacity:0, y:8 }}
-                            animate={{ opacity:1, y:0 }}
-                            exit={{ opacity:0 }}
-                            style={{ display:"flex", justifyContent:"flex-start" }}
-                          >
-                            <div style={{
-                              background:"rgba(255,255,255,0.07)",
-                              border:"1px solid rgba(255,255,255,0.08)",
-                              borderRadius:"18px 18px 18px 4px",
-                            }}>
-                              <TypingDots />
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Footer metric */}
-                    <div style={{
-                      padding:"14px 24px",
-                      borderTop:"1px solid rgba(255,255,255,0.06)",
-                      display:"flex", justifyContent:"space-between", alignItems:"center",
-                    }}>
-                      <span style={{ fontFamily:sfText, fontSize:"12px", color:"rgba(255,255,255,0.28)" }}>
-                        Avg. response
-                      </span>
-                      <span style={{ fontFamily:sfText, fontSize:"13px", fontWeight:600, color:"#00e676" }}>
-                        {avgMs === 0 ? "0ms" : `${avgMs}ms`}
-                      </span>
-                    </div>
-                  </div>
+                      <span style={{ fontSize: "20px" }}>{agent.icon}</span>
+                      <div>
+                        <div style={{ color: "#f5f5f7", fontSize: "15px", fontWeight: 600, fontFamily: sfText }}>{agent.name}</div>
+                        <div style={{ color: "#48484a", fontSize: "13px", fontFamily: sfText }}>{agent.meta}</div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </div>
-            </motion.div>
-          )}
 
-          {/* ══════════════════════════
-              TAB: AUTOMATION
-          ══════════════════════════ */}
-          {tab === "auto" && (
-            <motion.div
-              key="auto"
-              initial={{ opacity:0, y:16 }}
-              animate={{ opacity:1, y:0 }}
-              exit={{    opacity:0, y:-12 }}
-              transition={{ duration:0.38, ease:[0.4,0,0.2,1] }}
-            >
-              <div style={{ display:"flex", gap:32, alignItems:"flex-start" }}>
+                {/* UPDATED CTA SECTION */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.55 }}
+                  style={{ display: "flex", alignItems: "baseline", gap: "24px" }}
+                >
+                  <button 
+                    type="button"
+                    onClick={openModal}
+                    style={{ 
+                      padding: "14px 28px", 
+                      borderRadius: "100px", 
+                      background: "#fff", 
+                      color: "#000", 
+                      border: "none", 
+                      fontSize: "15px", 
+                      fontWeight: 600, 
+                      fontFamily: sfText, 
+                      cursor: "pointer",
+                      transition: "transform 0.2s ease"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  >
+                    Start a project
+                  </button>
+                  <Link
+                    to="/services"
+                    style={{ 
+                      color: "#6e6e73", 
+                      fontSize: "15px", 
+                      fontFamily: sfText, 
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      textDecoration: "none",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#f5f5f7")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#6e6e73")}
+                  >
+                    Learn more →
+                  </Link>
+                </motion.div>
+              </motion.div>
 
-                {/* Left — log list */}
-                <div style={{ width:"22%", paddingTop:8 }}>
-                  <div style={{ fontFamily:sfText, fontSize:"10px", letterSpacing:"0.1em", textTransform:"uppercase", color:"rgba(255,255,255,0.25)", marginBottom:16 }}>
-                    Quick · 4 running
+              {/* Right Column: Chat Window */}
+              <motion.div
+                initial={{ x: 24, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.28, duration: 0.6 }}
+                style={{
+                  flex: "0 0 62%",
+                  background: "#0a0a0b",
+                  borderRadius: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "480px",
+                  boxShadow: "0 4px 40px rgba(0,0,0,0.6)",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Chat Header */}
+                <motion.div
+                  initial={{ y: -8 }}
+                  animate={{ y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  style={{
+                    padding: "16px 20px",
+                    background: "#0d0d0f",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    boxShadow: "0 1px 0 rgba(255,255,255,0.04)",
+                  }}
+                >
+                  <div style={{ 
+                    width: "36px", height: "36px", borderRadius: "50%", 
+                    background: "rgba(0,230,118,0.12)", display: "flex", 
+                    alignItems: "center", justifyContent: "center" 
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e676" strokeWidth="1.8" strokeLinecap="round">
+                      <circle cx="12" cy="8" r="4"/>
+                      <rect x="4" y="14" width="16" height="7" rx="3"/>
+                      <line x1="12" y1="4" x2="12" y2="2"/>
+                      <circle cx="12" cy="2" r="1" fill="#00e676"/>
+                    </svg>
                   </div>
-                  <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                    {/* skeleton rows */}
-                    {[90,70,55].map((w,i) => (
-                      <div key={i} style={{
-                        height:28, borderRadius:8,
-                        background:`rgba(255,255,255,0.05)`,
-                        width:`${w}%`,
-                        border:"1px solid rgba(255,255,255,0.06)",
-                      }}/>
-                    ))}
+                  <div>
+                    <div style={{ color: "#fff", fontSize: "14px", fontWeight: 600, fontFamily: sfText }}>
+                      {AGENTS.find((a) => a.id === activeAgent)?.name}
+                    </div>
+                    <div style={{ color: "#00e676", fontSize: "11px", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+                      <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00e676" }} />
+                      ACTIVE NOW
+                    </div>
                   </div>
+                </motion.div>
 
-                  {/* Logs */}
-                  <div style={{ marginTop:32, display:"flex", flexDirection:"column", gap:8 }}>
-                    {LOGS.map((l,i) => (
+                {/* Chat Messages */}
+                <div className="p4-hide-scrollbar" style={{ flex: 1, padding: "24px", overflowY: "auto", minHeight: "340px", maxHeight: "340px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {messages.map((m, i) => (
                       <motion.div
                         key={i}
-                        initial={{ opacity:0, x:-8 }}
-                        animate={{ opacity:1, x:0 }}
-                        transition={{ delay: i*0.15 + 0.3 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
                         style={{
-                          display:"flex", alignItems:"center", gap:8,
-                          padding:"8px 12px",
-                          borderRadius:8,
-                          background:"rgba(255,255,255,0.04)",
-                          border:"1px solid rgba(255,255,255,0.06)",
+                          alignSelf: m.role === "user" ? "flex-end" : "flex-start",
+                          maxWidth: "80%",
+                          padding: "12px 16px",
+                          borderRadius: "14px",
+                          fontSize: "14px",
+                          lineHeight: "1.5",
+                          fontFamily: sfText,
+                          background: m.role === "user" ? "#1a1a1c" : "#00e676",
+                          color: m.role === "user" ? "#fff" : "#000",
                         }}
                       >
-                        <span style={{ color: l.ok ? "#00e676" : "rgba(255,255,255,0.25)", fontSize:11 }}>
-                          {l.ok ? "✓" : "–"}
-                        </span>
-                        <span style={{ fontFamily:sfText, fontSize:"12px", color:"rgba(255,255,255,0.50)" }}>
-                          {l.text}
-                        </span>
+                        {m.text}
                       </motion.div>
                     ))}
+                    {showTyping && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{ alignSelf: "flex-start", padding: "12px 16px", background: "#1a1a1c", borderRadius: "14px", display: "flex", gap: "4px" }}
+                      >
+                        {[0, 1, 2].map((d) => (
+                          <motion.div
+                            key={d}
+                            animate={{ opacity: [0.3, 1, 0.3] }}
+                            transition={{ repeat: Infinity, duration: 0.8, delay: d * 0.15 }}
+                            style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#6e6e73" }}
+                          />
+                        ))}
+                      </motion.div>
+                    )}
                   </div>
                 </div>
 
-                {/* Center — SVG flow graph */}
-                <div style={{ flex:1, overflow:"hidden" }}>
-                  <svg
-                    className="p4-svg"
-                    viewBox="0 0 900 260"
-                    style={{
-                      width:"100%", height:"auto",
-                      overflow:"visible",
-                    }}
-                  >
-                    {/* Star field */}
-                    {Array.from({length:48}).map((_,i) => (
-                      <circle
+                {/* Chat Footer Metrics */}
+                <div style={{ padding: "12px 20px", background: "#0d0d0f", display: "flex", justifyContent: "space-between", boxShadow: "0 -1px 0 rgba(255,255,255,0.04)" }}>
+                  <div style={{ color: "#48484a", fontSize: "11px", fontFamily: sfText, fontWeight: 600 }}>RESPONSE TIME</div>
+                  <div style={{ color: "#00e676", fontSize: "11px", fontFamily: sfText, fontWeight: 700 }}>{avgMs > 0 ? `${avgMs}MS` : "CALCULATING..."}</div>
+                </div>
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="automation"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ display: "flex", gap: "40px" }}
+            >
+              {/* Left Column: Logs */}
+              <motion.div 
+                initial={{ x: -16, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                style={{ flex: "0 0 22%", paddingTop: 0 }}
+              >
+                <div style={{ color: "#f5f5f7", fontSize: "11px", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "16px", display: "flex", justifyContent: "space-between" }}>
+                  <span>QUICK · 4 RUNNING</span>
+                  <span style={{ color: "#00e676" }}>LIVE</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {LOGS.map((log, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.12 }}
+                      style={{ padding: "10px", background: "#0e0e10", borderRadius: "8px", fontFamily: "monospace", fontSize: "11px" }}
+                    >
+                      <div style={{ color: "#48484a", marginBottom: "4px" }}>[{log.time}]</div>
+                      <div style={{ color: "#f5f5f7" }}>{log.msg}</div>
+                    </motion.div>
+                  ))}
+                  {[0, 1].map((s, i) => (
+                    <motion.div
+                      key={`skel-${i}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 + i * 0.06 }}
+                      style={{ height: "40px", background: "rgba(255,255,255,0.06)", borderRadius: "8px" }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Right Column: Graph & Stats */}
+              <div style={{ flex: 1 }}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  style={{ background: "#080808", borderRadius: "20px", position: "relative", overflow: "hidden", paddingTop: "8px" }}
+                >
+                  <svg viewBox="0 0 900 260" style={{ width: "100%", height: "auto", display: "block" }}>
+                    {/* Edges */}
+                    {EDGES.map((edge, i) => (
+                      <path
                         key={i}
-                        cx={Math.sin(i*137.5)*420+450}
-                        cy={Math.cos(i*137.5)*120+130}
-                        r={Math.random()*1+0.3}
-                        fill="rgba(255,255,255,0.18)"
+                        d={edge.d}
+                        fill="none"
+                        stroke="#1a1a1c"
+                        strokeWidth="2"
+                        style={{
+                          strokeDasharray: 400,
+                          strokeDashoffset: 400,
+                          animation: `p4edgedraw 0.6s ease forwards`,
+                          animationDelay: `${i * 0.12}s`,
+                          "--path-len": 400,
+                        } as any}
                       />
                     ))}
-
-                    {/* Edges */}
-                    {EDGES.map((e,i) => {
-                      const a = NODES.find(n=>n.id===e.from)!;
-                      const b = NODES.find(n=>n.id===e.to)!;
-                      return (
-                        <path
-                          key={i}
-                          d={buildPath(a,b)}
-                          fill="none"
-                          stroke={ e.dashed ? "rgba(41,151,255,0.20)" : "rgba(255,255,255,0.10)" }
-                          strokeWidth={1.5}
-                          strokeDasharray={ e.dashed ? "6 4" : undefined }
-                          style={ e.dashed ? { animation:"p4dash 1.4s linear infinite" } : undefined }
-                        />
-                      );
-                    })}
-
+                    
                     {/* Nodes */}
-                    {NODES.map(n => (
+                    {NODES.map((n, i) => (
                       <g
                         key={n.id}
-                        style={{ cursor:"pointer" }}
-                        onClick={() => setActiveNode(activeNode===n.id ? null : n.id)}
+                        style={{
+                          animation: `p4nodeenter 0.4s ease forwards`,
+                          animationDelay: `${i * 0.07}s`,
+                          opacity: 0,
+                        }}
                       >
-                        {/* glow */}
                         <rect
-                          x={n.x-4} y={n.y-4}
-                          width={n.w+8} height={n.h+8}
-                          rx={14}
-                          fill={n.glow}
-                          style={{ animation:"p4nodeglow 2.5s ease-in-out infinite", animationDelay:`${NODES.indexOf(n)*0.3}s` }}
+                          x={n.x} y={n.y - 35} width="140" height="70" rx="12"
+                          fill={activeNode === n.id ? "#131a15" : "#0e1012"}
+                          stroke={activeNode === n.id ? n.color : "none"}
+                          strokeWidth="1.5"
+                          style={{ transition: "all 0.3s ease" }}
                         />
-                        {/* card */}
-                        <rect
-                          x={n.x} y={n.y}
-                          width={n.w} height={n.h}
-                          rx={10}
-                          fill={ activeNode===n.id ? "rgba(255,255,255,0.09)" : "#0d0f11" }
-                          stroke={ activeNode===n.id ? n.color : "rgba(255,255,255,0.10)" }
-                          strokeWidth={activeNode===n.id ? 1.5 : 1}
-                        />
-                        {/* dot */}
-                        <circle cx={n.x+14} cy={n.y+16} r={4} fill={n.color}/>
-                        {/* label */}
-                        <text x={n.x+26} y={n.y+20}
-                          fontFamily={sfText} fontSize="13" fontWeight="600"
-                          fill="#f0f2f4">
-                          {n.label}
-                        </text>
-                        {/* sub */}
-                        {n.sub && (
-                          <text x={n.x+14} y={n.y+38}
-                            fontFamily={sfText} fontSize="10"
-                            fill="rgba(255,255,255,0.30)">
-                            {n.sub}
-                          </text>
-                        )}
+                        <text x={n.x + 15} y={n.y - 5} fill="#f0f2f4" style={{ fontFamily: sfText, fontSize: "14px", fontWeight: 600 }}>{n.label}</text>
+                        <text x={n.x + 15} y={n.y + 15} fill="#48484a" style={{ fontFamily: sfText, fontSize: "12px" }}>{n.sub}</text>
+                        <circle cx={n.x + 120} cy={n.y} r="4" fill={n.color} />
                       </g>
                     ))}
                   </svg>
+                </motion.div>
 
-                  {/* Stats bar */}
-                  <div style={{
-                    display:"flex", gap:48, marginTop:32,
-                    padding:"24px 32px",
-                    background:"#0a0a0b",
-                    border:"1px solid rgba(255,255,255,0.07)",
-                    borderRadius:14,
-                  }}>
-                    {STATS.map(s => (
-                      <div key={s.label}>
-                        <div style={{ fontFamily:sfText, fontSize:"11px", color:"rgba(255,255,255,0.35)", marginBottom:6, letterSpacing:"0.04em" }}>
-                          {s.label}
-                        </div>
-                        <div style={{ fontFamily:sfDisplay, fontSize:"26px", fontWeight:700, letterSpacing:"-0.03em", color:"#f5f5f7" }}>
-                          {s.value}
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Done badge */}
-                    <div style={{ marginLeft:"auto", alignSelf:"center" }}>
-                      <div style={{
-                        padding:"8px 18px", borderRadius:8,
-                        background:"rgba(0,230,118,0.10)",
-                        border:"1px solid rgba(0,230,118,0.25)",
-                        display:"flex", alignItems:"center", gap:7,
-                      }}>
-                        <span style={{ color:"#00e676", fontSize:13 }}>✓</span>
-                        <span style={{ fontFamily:sfText, fontSize:"13px", fontWeight:600, color:"#00e676" }}>
-                          Completed
-                        </span>
+                {/* Stats Bar */}
+                <motion.div
+                  initial={{ y: 16, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.65 }}
+                  style={{
+                    marginTop: "24px",
+                    background: "#0a0a0b",
+                    padding: "20px 32px",
+                    borderRadius: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    boxShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  {STATS.map((stat, i) => (
+                    <div key={i}>
+                      <div style={{ color: "#48484a", fontSize: "11px", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "4px" }}>{stat.label}</div>
+                      <div style={{ color: "#f5f5f7", fontSize: "24px", fontWeight: 600, fontFamily: sfDisplay }}>
+                        <CountUp value={stat.value} duration={stat.duration} />
                       </div>
                     </div>
+                  ))}
+                  <div style={{ padding: "8px 16px", background: "#0d1f14", color: "#00e676", borderRadius: "100px", fontSize: "12px", fontWeight: 700, boxShadow: "0 0 0 1px rgba(0,230,118,0.30)" }}>
+                    DONE
                   </div>
-                </div>
-              </div>
+                </motion.div>
 
-              {/* CTA row */}
-              <div style={{ marginTop:48, display:"flex", gap:12 }}>
-                <button
-                  onClick={() => window.dispatchEvent(new CustomEvent("open-contact-modal"))}
-                  style={{
-                    padding:"12px 28px", borderRadius:"980px",
-                    background:"#2997ff", color:"#fff",
-                    fontFamily:sfText, fontSize:"15px", fontWeight:600,
-                    border:"none", cursor:"pointer",
-                    transition:"opacity 0.2s, transform 0.2s",
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity="0.85"; (e.currentTarget as HTMLButtonElement).style.transform="translateY(-1px)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity="1";    (e.currentTarget as HTMLButtonElement).style.transform="translateY(0)"; }}
-                >
-                  Start a project
-                </button>
-                <a href="/services#automation" style={{
-                  padding:"12px 28px", borderRadius:"980px",
-                  color:"#2997ff", textDecoration:"none",
-                  fontFamily:sfText, fontSize:"15px", fontWeight:600,
-                }}>
-                  Learn more →
-                </a>
+                {/* CTA Row */}
+                <div style={{ marginTop: "40px", display: "flex", alignItems: "baseline", gap: "24px" }}>
+                  <button
+                    type="button"
+                    onClick={openModal}
+                    style={{ padding: "14px 28px", borderRadius: "100px", background: "#fff", color: "#000", border: "none", fontSize: "15px", fontWeight: 600, fontFamily: sfText, cursor: "pointer" }}
+                  >
+                    Start a project
+                  </button>
+                  <Link
+                    to="/services"
+                    style={{ color: "#6e6e73", fontSize: "15px", fontFamily: sfText, cursor: "pointer", textDecoration: "none" }}
+                  >
+                    Learn more →
+                  </Link>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </section>
   );
-};
-
-export default Panel04;
+}

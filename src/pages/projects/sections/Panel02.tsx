@@ -1,8 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { Shield, Radio, Activity, Play } from 'lucide-react';
+import { useContactModal } from '@/contexts/ContactModalContext';
+
+/**
+ * Panel02: System Showcases
+ * Adjusted for transparent glassy navigation, reset to AXONIS on scroll,
+ * and added themed action buttons.
+ */
 
 const Panel02 = () => {
+  const { openModal } = useContactModal();
   const [activeTab, setActiveTab] = useState('axonis');
   const sectionRef = useRef(null);
   const isSectionInView = useInView(sectionRef, { amount: 0.3 });
@@ -20,25 +28,21 @@ const Panel02 = () => {
       description: "Neural monitoring for subterranean operations. Predictive engine inheritance models that automate SOP compliance.",
       bg: "https://images.unsplash.com/photo-1620712943543-bcc4628c71d0?auto=format&fit=crop&q=80&w=2000",
       accent: "from-emerald-600/40",
-      icon: Shield
     },
     axonis: {
-      title: "AXONIS CORE",
+      title: "AXONIS",
       description: "Centralized hazard taxonomy for high-stakes environments. Integrating real-time telemetry with decentralized proof protocols.",
       bg: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000",
       accent: "from-blue-600/40",
-      icon: Activity
     },
     gridsonar: {
       title: "GRIDSONAR",
       description: "Visualizing network resilience across scalable data operations. Real-time infrastructure mapping with sub-meter resolution.",
       bg: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2000",
       accent: "from-orange-600/40",
-      icon: Radio
     }
   };
 
-  // Reordered: MindSafe AI - AXONIS - GridSonar
   const tabOrder = ['mindsafe', 'axonis', 'gridsonar'];
 
   return (
@@ -77,51 +81,56 @@ const Panel02 = () => {
                   transition={{ delay: 0.2 }}
                 >
                   <span className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase mb-2 block">System Deployment</span>
-                  <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter leading-none mb-4">
+                  <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter leading-none mb-6">
                     {panels[activeTab].title}
                   </h2>
-                  {/* Highlighted Info with Faded Background */}
-                  <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/5 max-w-md">
-                    <p className="text-sm md:text-base text-white/90 font-medium">
+                  
+                  <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/5 max-w-md mb-8">
+                    <p className="text-sm md:text-base text-white/90 font-medium leading-relaxed">
                       {panels[activeTab].description}
                     </p>
                   </div>
-                </motion.div>
 
-                <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/5">
-                   <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                   <span className="text-[9px] font-bold text-white uppercase tracking-widest">Live Feed</span>
-                </div>
-              </div>
-
-              {activeTab === 'axonis' && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform">
-                    <Play fill="black" size={28} className="ml-1" />
+                  {/* New Action Buttons */}
+                  <div className="flex items-center space-x-6">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={openModal}
+                      className="px-8 py-4 bg-[#2196F3] text-white rounded-full font-bold text-[15px] shadow-[0_8px_20px_rgba(33,150,243,0.3)] transition-all"
+                    >
+                      Start a project
+                    </motion.button>
+                    <motion.div whileHover={{ x: 3 }}>
+                      <Link
+                        to="/services"
+                        className="text-[#2196F3] font-bold text-[15px] flex items-center"
+                      >
+                        Learn more <span className="ml-2 text-xl">→</span>
+                      </Link>
+                    </motion.div>
                   </div>
-                </div>
-              )}
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Bottom Interactive Navigation: Minimized and Reordered */}
-        <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center">
-          <div className="flex items-center space-x-1.5 bg-black/40 backdrop-blur-3xl p-1.5 rounded-[28px] border border-white/10 shadow-2xl">
+        {/* Bottom Interactive Navigation: Transparent and Glassy */}
+        <div className="absolute bottom-10 left-0 right-0 z-30 flex justify-center">
+          <div className="flex items-center space-x-1 bg-white/[0.03] backdrop-blur-2xl p-1.5 rounded-full border border-white/10 shadow-2xl">
             {tabOrder.map((key) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex items-center space-x-2.5 px-6 py-3 rounded-[22px] transition-all duration-500 ${
+                className={`flex items-center px-8 py-3 rounded-full transition-all duration-500 font-bold text-[11px] uppercase tracking-wider ${
                   activeTab === key 
-                  ? 'bg-white text-black shadow-lg scale-105' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
+                  ? 'bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/20' 
+                  : 'text-white/30 hover:text-white/60'
                 }`}
               >
-                {React.createElement(panels[key].icon, { size: 16 })}
-                <span className="text-[11px] font-bold uppercase tracking-tight">
-                  {key === 'axonis' ? 'AXONIS' : key === 'mindsafe' ? 'MindSafe AI' : 'GridSonar'}
-                </span>
+                {key === 'axonis' ? 'AXONIS' : key === 'mindsafe' ? 'MindSafe AI' : 'GridSonar'}
               </button>
             ))}
           </div>
