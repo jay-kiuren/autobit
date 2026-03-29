@@ -17,6 +17,8 @@ export const services = [
   businessSystemsData,
   roboticsData,
   mobileData,
-];
+] as const;
 
-export type ServiceData = typeof services[0];
+/** Union of all service records in display order (use in maps over `services`). */
+export type ServiceRecord = (typeof services)[number];
+export type ServiceData = ServiceRecord;

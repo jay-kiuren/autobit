@@ -44,7 +44,7 @@ export const WebAppsArt = ({ active, animKey }: { active: boolean; animKey: numb
       </motion.g>
     ))}
     {/* Line chart — no border rect */}
-    <rect x={66} y={116} width={400} height={140} rx={10} fill="rgba(255,255,255,0.018)"/>
+    <rect x={66} y={116} width={400} height={140} rx={10} fill="rgba(10,10,14,0.95)"/>
     <text x={78} y={132} fontSize={9} fill="rgba(255,255,255,0.28)">Revenue / Month</text>
     <motion.path d="M78,236 C110,210 140,198 172,185 C204,172 236,190 268,172 C300,154 332,158 364,138 C396,118 420,124 452,112"
       stroke="#bf5af2" strokeWidth={2} fill="none" strokeLinecap="round"
@@ -56,7 +56,7 @@ export const WebAppsArt = ({ active, animKey }: { active: boolean; animKey: numb
       <text x={370} y={135} textAnchor="middle" fontSize={10} fill="#fff" fontWeight={700}>₱58.2k</text>
     </motion.g>
     {/* Bar chart — no border rect */}
-    <rect x={476} y={116} width={210} height={140} rx={10} fill="rgba(255,255,255,0.018)"/>
+    <rect x={476} y={116} width={210} height={140} rx={10} fill="rgba(10,10,14,0.95)"/>
     <text x={488} y={132} fontSize={9} fill="rgba(255,255,255,0.28)">Weekly Sessions</text>
     {[42,68,30,88,55,76,60].map((h,i)=>(
       <motion.rect key={i} x={488+i*26} rx={4} width={18}
@@ -65,7 +65,7 @@ export const WebAppsArt = ({ active, animKey }: { active: boolean; animKey: numb
         transition={{duration:0.5,delay:0.4+i*0.06,ease:"easeOut"}}/>
     ))}
     {/* Table — no border */}
-    <rect x={66} y={266} width={620} height={80} rx={10} fill="rgba(255,255,255,0.018)"/>
+    <rect x={66} y={266} width={620} height={80} rx={10} fill="rgba(10,10,14,0.95)"/>
     <text x={78} y={281} fontSize={8} fill="rgba(255,255,255,0.22)" letterSpacing={1}>RECENT TRANSACTIONS</text>
     {[
       {name:"Santos Corp", status:"Paid",    val:"₱45,000"},
@@ -101,16 +101,12 @@ export const WebAppsFullPanel = ({
         justifyContent:"center",padding:"80px 0 60px",zIndex:4,marginBottom:-36,fontFamily:FONT}}>
 
       {/* Section bg stays */}
-      <img src="https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1600&q=80" alt=""
-        style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-          filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
-      {/* Top feather */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-        background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-        pointerEvents:"none",zIndex:6}}/>
-      <div style={{position:"absolute",top:"10%",right:"-8%",width:"60%",height:"80%",
-        background:`radial-gradient(ellipse at 70% 50%,${ACCENT}07 0%,transparent 65%)`,
-        pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",top:"15%",left:"50%",transform:"translateX(-50%)",width:"80%",height:"65%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 50% 55%,${ACCENT}11 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",top:"-8%",right:"-5%",width:"40%",height:"50%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 85% 15%,${ACCENT}0d 0%,transparent 60%)`,zIndex:0}}/>
+
 
       <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
         width:"100%",position:"relative",zIndex:1}}>
@@ -139,8 +135,9 @@ export const WebAppsFullPanel = ({
           viewport={{once:false,amount:0.2}} transition={{duration:0.6,delay:0.1}}
           style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",
             marginBottom:"clamp(32px,4vw,52px)",
-            background:"rgba(255,255,255,0.018)",
-            borderRadius:20,overflow:"hidden"}}>
+            background:"linear-gradient(145deg,rgba(20,20,30,0.94) 0%,rgba(12,12,20,0.97) 100%)",
+            borderRadius:20,overflow:"hidden",
+            outline:"1px solid rgba(255,255,255,0.07)"}}>
           {[
             {value:"284,500", unit:"₱ data points tracked"},
             {value:"< 187",   unit:"ms average load time"},
@@ -165,11 +162,10 @@ export const WebAppsFullPanel = ({
           viewport={{once:false,amount:0.15}} transition={{duration:0.8,delay:0.2,ease:[0.22,1,0.36,1]}}
           style={{
             borderRadius:"clamp(14px,1.5vw,22px)",
-            background:"rgba(255,255,255,0.018)",
+            background:"#0a0a0e",
             overflow:"hidden",
             height:"clamp(220px,30vw,380px)",
             position:"relative",
-            transform:"translateZ(0)",
           }}>
           <WebAppsArt active={active} animKey={animKey}/>
         </motion.div>
@@ -187,7 +183,7 @@ export const WebAppsFullPanel = ({
           </span>
           <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
             style={{background:"#2997ff",color:"#fff",border:"none",cursor:"pointer",
-              padding:"12px 28px",borderRadius:980,fontSize:14,fontWeight:600,
+              padding:"12px 26px",borderRadius:980,fontSize:15,fontWeight:500,
               boxShadow:"0 4px 20px rgba(41,151,255,0.26)",transition:"all 0.22s ease",fontFamily:FONT}}
             onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1)";}}>

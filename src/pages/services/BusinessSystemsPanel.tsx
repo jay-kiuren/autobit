@@ -62,7 +62,7 @@ export const BusinessSystemsArt = ({ active, animKey }: { active: boolean; animK
     ))}
 
     {/* Activity feed */}
-    <rect x={60} y={310} width={580} height={36} rx={8} fill="rgba(255,255,255,0.018)"/>
+    <rect x={60} y={310} width={580} height={36} rx={8} fill="rgba(10,10,14,0.95)"/>
     {[
       {text:"Payroll processed · 34 staff",color:"#30d158",x:72},
       {text:"Stock alert · 12 items low",  color:"#ff9f0a",x:272},
@@ -85,16 +85,12 @@ export const BusinessSystemsFullPanel = ({
       justifyContent:"center",padding:"80px 0 60px",zIndex:5,marginBottom:-36,fontFamily:FONT}}>
 
     {/* Section bg stays */}
-    <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1600&q=80" alt=""
-      style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-        filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
-    {/* Top feather */}
-    <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-      background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-      pointerEvents:"none",zIndex:6}}/>
-    <div style={{position:"absolute",bottom:"5%",left:"-5%",width:"55%",height:"70%",
-      background:`radial-gradient(ellipse at 30% 70%,${ACCENT}05 0%,transparent 65%)`,
-      pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",top:"5%",left:"-5%",width:"55%",height:"75%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 20% 45%,${ACCENT}11 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",bottom:"5%",right:"-5%",width:"45%",height:"50%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 80% 75%,${ACCENT}0d 0%,transparent 60%)`,zIndex:0}}/>
+
 
     <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
       width:"100%",position:"relative",zIndex:1}}>
@@ -106,7 +102,7 @@ export const BusinessSystemsFullPanel = ({
         <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}}
           viewport={{once:false,amount:0.3}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}
           style={{borderRadius:"clamp(14px,1.5vw,22px)",
-            background:"rgba(255,255,255,0.018)",
+            background:"rgba(10,10,14,0.95)",
             overflow:"hidden",height:"clamp(240px,32vw,420px)",position:"relative",
             transform:"translateZ(0)"}}>
           <BusinessSystemsArt active={active} animKey={animKey}/>
@@ -131,9 +127,10 @@ export const BusinessSystemsFullPanel = ({
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:28}}>
             {["Inventory","HR","Finance","Schedule","Reports"].map((m,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:6,
-                background:"rgba(255,255,255,0.05)",
+                background:"rgba(255,255,255,0.07)",
                 borderRadius:980,padding:"5px 12px",
-                fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.7)",fontFamily:FONT}}>
+                fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.75)",fontFamily:FONT,
+                boxShadow:"0 1px 4px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.08)"}}>
                 <div style={{width:5,height:5,borderRadius:"50%",background:"rgba(255,255,255,0.32)"}}/>
                 {m}
               </div>
@@ -148,7 +145,7 @@ export const BusinessSystemsFullPanel = ({
           <div>
             <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
               style={{background:"#2997ff",color:"#fff",border:"none",cursor:"pointer",
-                padding:"13px 30px",borderRadius:980,fontSize:15,fontWeight:700,
+                padding:"12px 26px",borderRadius:980,fontSize:15,fontWeight:500,
                 boxShadow:"0 4px 24px rgba(41,151,255,0.28)",transition:"all 0.22s ease",fontFamily:FONT}}
               onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
               onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1)";}}>
@@ -161,8 +158,9 @@ export const BusinessSystemsFullPanel = ({
       <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}}
         viewport={{once:false,amount:0.2}} transition={{duration:0.6,delay:0.25}}
         style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",
-          background:"rgba(255,255,255,0.018)",
-          borderRadius:16,overflow:"hidden"}}>
+          background:"linear-gradient(145deg,rgba(20,20,30,0.94) 0%,rgba(12,12,20,0.97) 100%)",
+          borderRadius:16,overflow:"hidden",
+          outline:"1px solid rgba(255,255,255,0.07)"}}>
         {[
           {value:"4,820", label:"Items tracked"},
           {value:"34",    label:"Staff managed"},

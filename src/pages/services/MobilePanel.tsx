@@ -119,16 +119,12 @@ export const MobileFullPanel = ({
       justifyContent:"center",padding:"80px 0 80px",zIndex:7,fontFamily:FONT}}>
 
     {/* Section bg stays */}
-    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600&q=80" alt=""
-      style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",
-        filter:"brightness(0.05) saturate(0.2)",pointerEvents:"none"}}/>
-    {/* Top feather */}
-    <div style={{position:"absolute",top:0,left:0,right:0,height:160,
-      background:"linear-gradient(to bottom,#000 0%,transparent 100%)",
-      pointerEvents:"none",zIndex:6}}/>
-    <div style={{position:"absolute",top:"-5%",left:"-5%",width:"50%",height:"65%",
-      background:`radial-gradient(ellipse at 25% 25%,${ACCENT}05 0%,transparent 65%)`,
-      pointerEvents:"none"}}/>
+      {/* Ambient glows */}
+      <div style={{position:"absolute",top:"8%",left:"30%",width:"45%",height:"80%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 50% 45%,${ACCENT}11 0%,transparent 60%)`,zIndex:0}}/>
+      <div style={{position:"absolute",bottom:"0%",right:"-5%",width:"38%",height:"45%",pointerEvents:"none",
+        background:`radial-gradient(ellipse at 82% 82%,${ACCENT}0e 0%,transparent 60%)`,zIndex:0}}/>
+
 
     <div style={{maxWidth:1320,margin:"0 auto",padding:"0 clamp(16px,4vw,48px)",
       width:"100%",position:"relative",zIndex:1}}>
@@ -155,8 +151,9 @@ export const MobileFullPanel = ({
           </p>
           <div style={{display:"flex",gap:10,marginBottom:28,flexWrap:"wrap"}}>
             {[{label:"iOS",sub:"App Store"},{label:"Android",sub:"Play Store"},{label:"Expo",sub:"OTA Updates"}].map((p,i)=>(
-              <div key={i} style={{background:"rgba(255,255,255,0.03)",
-                borderRadius:12,padding:"10px 14px",textAlign:"center",minWidth:72}}>
+              <div key={i} style={{background:"linear-gradient(145deg,rgba(20,20,32,0.93) 0%,rgba(10,10,18,0.97) 100%)",
+                borderRadius:12,padding:"10px 14px",textAlign:"center",minWidth:72,
+                outline:"1px solid rgba(255,255,255,0.08)"}}>
                 <div style={{fontSize:12,fontWeight:700,color:"#f5f5f7",marginBottom:2,fontFamily:FONT}}>{p.label}</div>
                 <div style={{fontSize:9,color:"rgba(255,255,255,0.3)",fontFamily:"'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"}}>{p.sub}</div>
               </div>
@@ -164,7 +161,7 @@ export const MobileFullPanel = ({
           </div>
           <button onClick={()=>window.dispatchEvent(new CustomEvent('open-contact-modal'))}
             style={{background:"#2997ff",color:"#fff",border:"none",cursor:"pointer",
-              padding:"13px 30px",borderRadius:980,fontSize:15,fontWeight:700,
+              padding:"12px 26px",borderRadius:980,fontSize:15,fontWeight:500,
               boxShadow:"0 4px 24px rgba(41,151,255,0.28)",transition:"all 0.22s ease",fontFamily:FONT}}
             onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1.04)";}}
             onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.transform="scale(1)";}}>
@@ -216,8 +213,9 @@ export const MobileFullPanel = ({
             <motion.div key={i}
               initial={{opacity:0,y:12}} whileInView={{opacity:1,y:0}}
               viewport={{once:false}} transition={{delay:0.2+i*0.1,duration:0.5}}
-              style={{padding:"16px 18px",background:"rgba(255,255,255,0.022)",
-                borderRadius:14,borderLeft:"2px solid rgba(255,255,255,0.12)"}}>
+              style={{padding:"16px 18px",background:"linear-gradient(145deg,rgba(20,20,32,0.93) 0%,rgba(10,10,18,0.97) 100%)",
+                borderRadius:14,borderLeft:"2px solid rgba(255,255,255,0.18)",
+                outline:"1px solid rgba(255,255,255,0.06)"}}>
               <div style={{fontSize:13,fontWeight:700,color:"#f5f5f7",marginBottom:4,fontFamily:FONT}}>{f.title}</div>
               <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",lineHeight:1.55}}>{f.desc}</div>
             </motion.div>
@@ -229,8 +227,9 @@ export const MobileFullPanel = ({
       <motion.div initial={{opacity:0}} whileInView={{opacity:1}}
         viewport={{once:false}} transition={{delay:0.3,duration:0.6}}
         style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",
-          background:"rgba(255,255,255,0.018)",
-          borderRadius:16,overflow:"hidden"}}>
+          background:"linear-gradient(145deg,rgba(20,20,30,0.94) 0%,rgba(12,12,20,0.97) 100%)",
+          borderRadius:16,overflow:"hidden",
+          outline:"1px solid rgba(255,255,255,0.07)"}}>
         {[
           {value:"2 stores",label:"iOS + Android from one codebase"},
           {value:"10 days", label:"Fastest delivery in the market"},

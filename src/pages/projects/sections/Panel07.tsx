@@ -36,16 +36,36 @@ const WhySection = () => {
     paddingTop: "100px",
     paddingBottom: "120px",
   }}>
+    {/* Responsive Design Features */}
+    <style>{`
+      .why-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      @media (max-width: 768px) {
+        .why-header {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+        .why-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `}</style>
+
     <div className="section-container">
       <ScrollReveal>
-        <div style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "16px",
-          marginBottom: "32px",
-        }}>
+        <div className="why-header">
           <h2 style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
             fontSize: "clamp(28px,4vw,42px)",
@@ -72,11 +92,7 @@ const WhySection = () => {
         </div>
       </ScrollReveal>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-        gap: "16px",
-      }}>
+      <div className="why-grid">
         {cards.map((card, i) => (
           <ScrollReveal key={i} delay={i * 0.08}>
             <div style={{

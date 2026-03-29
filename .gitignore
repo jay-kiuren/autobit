@@ -8,6 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Keep lockfile as npm only: Cloudflare Pages auto-runs `bun install` if bun.lock exists.
+bun.lock
+bun.lockb
 dist
 dist-ssr
 *.local

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const panels = [
   {
@@ -7,7 +9,6 @@ const panels = [
     title: "Business Dashboard",
     category: "Web Platform",
     accent: "41,151,255",
-    // Replace with your actual image path
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070", 
   },
   {
@@ -40,7 +41,6 @@ const panels = [
   },
 ];
 
-// Rebuilt for Full Screen / No Outline / Apple Design
 const ViewportContent = ({ p }: { p: typeof panels[0] }) => (
   <div style={{ 
     width: "100%", 
@@ -61,7 +61,6 @@ const ViewportContent = ({ p }: { p: typeof panels[0] }) => (
         backgroundPosition: "center",
       }}
     />
-    {/* Subtle overlay to help white text/elements pop if needed */}
     <div style={{ 
       position: "absolute", 
       inset: 0, 
@@ -72,6 +71,7 @@ const ViewportContent = ({ p }: { p: typeof panels[0] }) => (
 );
 
 const AppSection = () => {
+  const { openModal } = useContactModal();
   const [active, setActive] = useState(0);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { amount: 0.3, once: false });
@@ -90,8 +90,23 @@ const AppSection = () => {
       background: "#000",
       paddingTop: "100px", paddingBottom: "80px",
     }}>
+      <style>{`
+        .responsive-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 48px;
+          align-items: center;
+        }
+        @media (min-width: 1024px) {
+          .responsive-grid {
+            grid-template-columns: 300px 1fr;
+            gap: 64px;
+          }
+        }
+      `}</style>
+
       <div className="section-container">
-        <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: "64px", alignItems: "center" }}>
+        <div className="responsive-grid">
 
           {/* Left Content */}
           <motion.div
@@ -133,6 +148,7 @@ const AppSection = () => {
                 <button
                   key={i}
                   onMouseEnter={() => setActive(i)}
+                  onClick={() => setActive(i)}
                   style={{
                     display: "flex", alignItems: "center",
                     background: "none", border: "none", cursor: "pointer",
@@ -161,21 +177,36 @@ const AppSection = () => {
               ))}
             </div>
 
-            <button
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "12px",
-                background: "#fff", color: "#000", border: "none",
-                borderRadius: "999px", padding: "14px 28px",
-                fontSize: "13px", fontWeight: 700, letterSpacing: ".02em", cursor: "pointer",
-              }}
-            >
-              Coming Soon
-              <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "#000", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                  <path d="M2 5h6M5 2l3 3-3 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Adjusted Button Section */}
+            <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+              <button
+                type="button"
+                onClick={openModal}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: "12px",
+                  background: "#2997ff", color: "#fff", border: "none",
+                  borderRadius: "999px", padding: "14px 28px",
+                  fontSize: "14px", fontWeight: 700, letterSpacing: ".02em", cursor: "pointer",
+                }}
+              >
+                Start a project
+              </button>
+              
+              <Link
+                to="/services"
+                style={{
+                  background: "none", border: "none", color: "#2997ff",
+                  fontSize: "14px", fontWeight: 700, letterSpacing: ".02em",
+                  cursor: "pointer", display: "flex", alignItems: "center", gap: "4px",
+                  textDecoration: "none",
+                }}
+              >
+                Learn more
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none">
+                  <path d="M2 5h6M5 2l3 3-3 3" stroke="#2997ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </div>
-            </button>
+              </Link>
+            </div>
           </motion.div>
 
           {/* Right — Refined Full-Screen Viewport Panel */}
@@ -183,9 +214,8 @@ const AppSection = () => {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: "relative", height: "100%", minHeight: "550px" }}
+            style={{ position: "relative", width: "100%", minHeight: "350px", height: "550px" }}
           >
-            {/* Glow Background (Silent Selection) */}
             <div style={{
               position: "absolute", inset: "-60px", borderRadius: "50%",
               background: `rgba(${p.accent},.15)`,
@@ -193,17 +223,15 @@ const AppSection = () => {
               transition: "background 0.8s ease",
             }} />
 
-            {/* Apple-Style Edge-to-Edge Container */}
             <div style={{
               width: "100%", height: "100%",
               background: "#111",
-              borderRadius: "24px", // Modern rounded edge
+              borderRadius: "24px",
               overflow: "hidden",
               position: "relative", zIndex: 1,
               display: "flex", flexDirection: "column",
               boxShadow: "0 50px 100px -20px rgba(0,0,0,0.7)",
             }}>
-              {/* Edge-to-Edge Screen Content (Removed Toolbar & Outline) */}
               <div style={{ flex: 1, position: "relative" }}>
                 <AnimatePresence mode="wait">
                   <motion.div

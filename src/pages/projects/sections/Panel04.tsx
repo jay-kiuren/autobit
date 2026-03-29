@@ -5,7 +5,8 @@ import { useContactModal } from "@/contexts/ContactModalContext";
 
 /**
  * Panel04: AI & Automation Systems
- * Updated with dual CTA in the Agents section.
+ * FEATURE ADDED: Responsive Screen Adopter (Mobile/Laptop compatibility)
+ * This ensures alignment and scaling across all device sizes.
  */
 
 // --- Constants & Data ---
@@ -89,6 +90,26 @@ const CSS = `
     to { opacity: 1; transform: translateY(0); }
   }
   .p4-hide-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Responsive Screen Adopter Classes */
+  .p4-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .p4-container {
+      flex-direction: row;
+      gap: 60px;
+    }
+    .p4-left-col { flex: 0 0 38% !important; }
+    .p4-right-col { flex: 0 0 62% !important; }
+  }
+  @media (max-width: 768px) {
+    .p4-title { font-size: 32px !important; }
+    .p4-stats-bar { flex-direction: column !important; gap: 20px !important; align-items: flex-start !important; }
+    .p4-agent-list { width: 100% !important; }
+  }
 `;
 
 // --- Components ---
@@ -188,7 +209,7 @@ export default function Panel04() {
         width: "100%",
         minHeight: "100vh",
         background: "#050505",
-        padding: "100px 24px",
+        padding: "60px 24px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -205,7 +226,7 @@ export default function Panel04() {
         style={{ width: "100%", maxWidth: "1200px" }}
       >
         {/* --- Header --- */}
-        <div style={{ textAlign: "center", marginBottom: "64px" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
@@ -222,7 +243,7 @@ export default function Panel04() {
             SCALABLE WORKFLOWS
           </motion.div>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
             {["agents", "automation"].map((t, i) => (
               <motion.button
                 key={t}
@@ -259,14 +280,15 @@ export default function Panel04() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ display: "flex", gap: "60px", alignItems: "flex-start" }}
+              className="p4-container"
             >
               {/* Left Column */}
               <motion.div 
                 initial={{ x: -24, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                style={{ flex: "0 0 38%", paddingTop: 0 }}
+                className="p4-left-col"
+                style={{ paddingTop: 0 }}
               >
                 <motion.div
                   initial={{ scale: 0.85 }}
@@ -287,7 +309,7 @@ export default function Panel04() {
                   AI AGENTS
                 </motion.div>
 
-                <h2 style={{ fontFamily: sfDisplay, fontSize: "48px", fontWeight: 600, lineHeight: 1.1, margin: 0, marginBottom: "24px" }}>
+                <h2 className="p4-title" style={{ fontFamily: sfDisplay, fontSize: "48px", fontWeight: 600, lineHeight: 1.1, margin: 0, marginBottom: "24px" }}>
                   <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} style={{ color: "#f5f5f7", display: "block" }}>Custom AI.</motion.span>
                   <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.38 }} style={{ color: "#3d3d3d", display: "block" }}>Works 24/7.</motion.span>
                 </h2>
@@ -302,7 +324,7 @@ export default function Panel04() {
                   agents that learn your business logic.
                 </motion.p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "36px" }}>
+                <div className="p4-agent-list" style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "36px" }}>
                   {AGENTS.map((agent, i) => (
                     <motion.div
                       key={agent.id}
@@ -333,12 +355,11 @@ export default function Panel04() {
                   ))}
                 </div>
 
-                {/* UPDATED CTA SECTION */}
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.55 }}
-                  style={{ display: "flex", alignItems: "baseline", gap: "24px" }}
+                  style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}
                 >
                   <button 
                     type="button"
@@ -385,8 +406,8 @@ export default function Panel04() {
                 initial={{ x: 24, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.28, duration: 0.6 }}
+                className="p4-right-col"
                 style={{
-                  flex: "0 0 62%",
                   background: "#0a0a0b",
                   borderRadius: "20px",
                   display: "flex",
@@ -443,7 +464,7 @@ export default function Panel04() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         style={{
                           alignSelf: m.role === "user" ? "flex-end" : "flex-start",
-                          maxWidth: "80%",
+                          maxWidth: "85%",
                           padding: "12px 16px",
                           borderRadius: "14px",
                           fontSize: "14px",
@@ -488,14 +509,15 @@ export default function Panel04() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ display: "flex", gap: "40px" }}
+              className="p4-container"
             >
               {/* Left Column: Logs */}
               <motion.div 
                 initial={{ x: -16, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                style={{ flex: "0 0 22%", paddingTop: 0 }}
+                className="p4-left-col"
+                style={{ paddingTop: 0 }}
               >
                 <div style={{ color: "#f5f5f7", fontSize: "11px", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "16px", display: "flex", justifyContent: "space-between" }}>
                   <span>QUICK · 4 RUNNING</span>
@@ -527,7 +549,7 @@ export default function Panel04() {
               </motion.div>
 
               {/* Right Column: Graph & Stats */}
-              <div style={{ flex: 1 }}>
+              <div className="p4-right-col">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -583,6 +605,7 @@ export default function Panel04() {
                   initial={{ y: 16, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.65 }}
+                  className="p4-stats-bar"
                   style={{
                     marginTop: "24px",
                     background: "#0a0a0b",
@@ -608,7 +631,7 @@ export default function Panel04() {
                 </motion.div>
 
                 {/* CTA Row */}
-                <div style={{ marginTop: "40px", display: "flex", alignItems: "baseline", gap: "24px" }}>
+                <div style={{ marginTop: "40px", display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={openModal}

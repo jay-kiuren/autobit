@@ -1,0 +1,3 @@
+# Single-page app: serve index.html for all paths so React Router works
+# (Same idea as Netlify _redirects; Cloudflare Pages copies this from `public/`.)
+/*    /index.html   200

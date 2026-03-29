@@ -1,32 +1,37 @@
 export const servicesStyles = `
-  /* ── Base container — fluid at all sizes ── */
+  /* ── Base container ── */
   .svc-c { max-width:1320px; margin:0 auto; padding:0 clamp(16px,4vw,48px); font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif; }
 
   /* ── Grid layouts ── */
   .svc-grid       { display:grid; grid-template-columns:1fr 1.15fr; gap:clamp(24px,4vw,56px); align-items:center; }
   .svc-grid-rev   { display:grid; grid-template-columns:1.15fr 1fr; gap:clamp(24px,4vw,56px); align-items:center; }
 
-  /* ── Heading — fluid typography ── */
+  /* ── Heading ── */
   .svc-heading {
     font-size:clamp(22px,2.8vw,44px);
     font-weight:700; letter-spacing:-0.8px; line-height:1.04;
-    color:#f5f5f7; margin:0 0 16px; white-space:pre-line; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    color:#f5f5f7; margin:0 0 16px; white-space:pre-line;
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
   }
 
-  /* ── Frame card — base ── */
+  /* ── Frame card — transparent, no ghost ── */
   .svc-frame {
     border-radius:clamp(16px,2vw,24px);
-    background:rgba(255,255,255,0.016);
+    background:transparent;
     padding:clamp(22px,3.2vw,44px) clamp(22px,3.2vw,44px) clamp(18px,2.4vw,32px);
     position:relative; overflow:hidden;
   }
 
   /* ── Glass art card ── */
-  .svc-glass { border-radius:20px; padding:1px; }
+  .svc-glass {
+    border-radius:20px;
+    padding:1px;
+    background:linear-gradient(145deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.02) 50%,rgba(255,255,255,0.06) 100%);
+  }
   .svc-glass-inner {
     border-radius:19px;
-    background:linear-gradient(145deg,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.01) 55%,rgba(255,255,255,0.03) 100%);
-    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    background:linear-gradient(145deg,rgba(18,18,28,0.95) 0%,rgba(10,10,16,0.98) 60%,rgba(14,14,22,0.96) 100%);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
     height:clamp(200px,28vw,360px);
     display:flex; align-items:center; justify-content:center;
     position:relative; overflow:hidden;
@@ -34,7 +39,12 @@ export const servicesStyles = `
   }
   .svc-glass-inner::before {
     content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+  }
+  .svc-glass-inner::after {
+    content:''; position:absolute; inset:0; border-radius:19px;
+    background:radial-gradient(ellipse at 25% 15%,rgba(255,255,255,0.04) 0%,transparent 55%);
+    pointer-events:none;
   }
 
   /* ── Overlap fade ── */
@@ -56,26 +66,25 @@ export const servicesStyles = `
     padding:3px 9px; border-radius:20px; margin-bottom:clamp(8px,1vw,12px);
   }
 
-  /* ── CTA buttons ── */
+  /* ── CTA ── */
   .svc-cta {
     background:#2997ff; color:#fff;
-    padding:12px 26px;
-    border-radius:980px; font-size:15px; font-weight:500;
-    text-decoration:none; display:inline-block; transition:background 0.2s ease, transform 0.2s ease; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    padding:12px 26px; border-radius:980px; font-size:15px; font-weight:500;
+    text-decoration:none; display:inline-block; cursor:pointer; border:none;
+    transition:background 0.2s ease, transform 0.2s ease;
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
     white-space:nowrap; letter-spacing:-0.01em;
   }
   .svc-cta:hover { transform:scale(1.02); background:#0077ed; }
 
-  /* ── Description text ── */
+  /* ── Description ── */
   .svc-desc { font-size:clamp(12px,0.95vw,14px); line-height:1.68; color:rgba(255,255,255,0.38); margin:0 0 18px; max-width:420px; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; }
 
-  /* ── Responsive breakpoints ── */
+  /* ── Stat pill ── */
   .cta-stat-pill {
     display:inline-flex; align-items:center; gap:7px;
-    background:rgba(255,255,255,0.05);
-    border-radius:980px; padding:6px 16px;
-    font-size:clamp(11px,0.9vw,13px); color:rgba(255,255,255,0.55); font-weight:500;
-    white-space:nowrap;
+    background:rgba(255,255,255,0.05); border-radius:980px; padding:6px 16px;
+    font-size:clamp(11px,0.9vw,13px); color:rgba(255,255,255,0.55); font-weight:500; white-space:nowrap;
   }
   .cta-stat-dot { width:6px; height:6px; border-radius:50%; background:#30d158; display:inline-block; }
 `;

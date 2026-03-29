@@ -1,6 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { services } from "./data";
+import { services, type ServiceRecord } from "./data";
+import type { ComponentType } from "react";
+
+type FullPanelViewProps = {
+  active: boolean;
+  animKey: number;
+  sectionRef: (el: HTMLDivElement | null) => void;
+};
+
+function hasFullPanel(
+  s: ServiceRecord,
+): s is ServiceRecord & { FullPanel: ComponentType<FullPanelViewProps> } {
+  return typeof s.FullPanel === "function";
+}
 
 interface ServiceSectionsProps {
   activeIndex: number;
@@ -34,8 +47,8 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
       const isReverse = i % 2 === 1;
 
       // ── If the panel has a custom full layout, use it ──────────────────────
-      if ((s as any).FullPanel) {
-        const FullPanel = (s as any).FullPanel;
+      if (hasFullPanel(s)) {
+        const { FullPanel } = s;
         return (
           <FullPanel
             key={s.id}
@@ -83,7 +96,7 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
                   <span className="svc-tag">{s.uniqueTag}</span>
 
                   <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginTop: 8 }}>
-                    <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} className="svc-cta" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Get a quote →</button>
+                    <button onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))} className="svc-cta">Get a quote →</button>
                   </div>
                 </motion.div>
 
@@ -91,9 +104,9 @@ const ServiceSections = ({ activeIndex, animKeys, sectionRefs }: ServiceSections
                   style={{ direction: "ltr", order: isReverse ? 1 : 2 }}
                   initial={artAnim.initial} whileInView={artAnim.animate}
                   viewport={{ once: false, amount: 0.2 }} transition={artAnim.transition}>
-                  <div className="svc-glass" style={{ background: "linear-gradient(135deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.02) 50%,rgba(255,255,255,0.02) 100%)", boxShadow: "0 0 0 1px rgba(255,255,255,0.07),0 20px 52px rgba(0,0,0,0.55)" }}>
+                  <div className="svc-glass" style={{ }}>
                     <div className="svc-glass-inner">
-                      <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: 1, background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)" }} />
+                      
                       <Art active={isActive} animKey={animKeys[i]} />
                     </div>
                   </div>

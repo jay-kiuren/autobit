@@ -69,6 +69,7 @@ const Panel03: React.FC = () => {
   return (
     <section
       ref={sectionRef}
+      className="panel03-section"
       style={{
         position: "relative",
         background: theme.bg,
@@ -76,8 +77,42 @@ const Panel03: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* Responsive Styles Overlay */}
+      <style>{`
+        .panel03-header { 
+          max-width: 1200px; 
+          margin: 0 auto; 
+          padding: 0 48px; 
+          margin-bottom: 64px; 
+        }
+        .iot-card {
+          flex-shrink: 0;
+          width: ${CARD_WIDTH}px;
+          height: 540px;
+          border-radius: 28px;
+          overflow: hidden;
+          position: relative;
+          background: ${theme.cardBg};
+          cursor: default;
+        }
+        
+        @media (max-width: 768px) {
+          .panel03-section { padding: 60px 0 !important; }
+          .panel03-header { padding: 0 24px !important; margin-bottom: 32px !important; }
+          .iot-card { 
+            width: 320px !important; 
+            height: 420px !important; 
+            border-radius: 20px !important; 
+          }
+          .card-title { font-size: 22px !important; }
+          .card-subtitle { font-size: 13px !important; max-width: 100% !important; }
+          .card-content { bottom: 24px !important; left: 24px !important; right: 24px !important; }
+          .card-badge { top: 20px !important; left: 20px !important; }
+        }
+      `}</style>
+
       {/* Header */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px", marginBottom: "64px" }}>
+      <div className="panel03-header">
         <ScrollReveal>
           <p style={{
             fontFamily: fonts.text,
@@ -142,19 +177,7 @@ const Panel03: React.FC = () => {
           }}
         >
           {loopProjects.map((project, i) => (
-            <div
-              key={i}
-              style={{
-                flexShrink: 0,
-                width: `${CARD_WIDTH}px`,
-                height: "540px",
-                borderRadius: "28px",
-                overflow: "hidden",
-                position: "relative",
-                background: theme.cardBg,
-                cursor: "default",
-              }}
-            >
+            <div key={i} className="iot-card">
               <img
                 src={project.image}
                 alt={project.title}
@@ -174,7 +197,7 @@ const Panel03: React.FC = () => {
               }} />
 
               {/* Badge */}
-              <div style={{ position: "absolute", top: "32px", left: "32px" }}>
+              <div className="card-badge" style={{ position: "absolute", top: "32px", left: "32px" }}>
                 <span style={{
                   padding: "6px 14px",
                   borderRadius: "100px",
@@ -190,8 +213,8 @@ const Panel03: React.FC = () => {
               </div>
 
               {/* Bottom info */}
-              <div style={{ position: "absolute", bottom: "40px", left: "40px", right: "40px" }}>
-                <h3 style={{
+              <div className="card-content" style={{ position: "absolute", bottom: "40px", left: "40px", right: "40px" }}>
+                <h3 className="card-title" style={{
                   fontFamily: fonts.display,
                   fontSize: "28px",
                   fontWeight: 700,
@@ -202,8 +225,8 @@ const Panel03: React.FC = () => {
                   {project.title}
                 </h3>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                  <p style={{
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "10px" }}>
+                  <p className="card-subtitle" style={{
                     fontFamily: fonts.text,
                     fontSize: "15px",
                     color: theme.secondary,
@@ -233,7 +256,7 @@ const Panel03: React.FC = () => {
                 </div>
 
                 {/* Start a project + Learn more */}
-                <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
+                <div style={{ display: "flex", gap: "12px", marginTop: "20px", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={openModal}
