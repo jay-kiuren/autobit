@@ -87,4 +87,167 @@ export const servicesStyles = `
     font-size:clamp(11px,0.9vw,13px); color:rgba(255,255,255,0.55); font-weight:500; white-space:nowrap;
   }
   .cta-stat-dot { width:6px; height:6px; border-radius:50%; background:#30d158; display:inline-block; }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — media queries only, no component code touched
+     Targets existing class names + panel IDs with !important to override
+     inline styles set directly on elements inside each panel component.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* ── Tablet (≤ 1024px) ─────────────────────────────────────────────────── */
+  @media (max-width: 1024px) {
+
+    /* ServiceSections default 2-col card grid → single column */
+    .svc-grid,
+    .svc-grid-rev {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+    }
+
+    /* Art card height reduction */
+    .svc-glass-inner {
+      height: clamp(180px, 45vw, 300px) !important;
+    }
+
+    /* Frame padding tighten */
+    .svc-frame {
+      padding: clamp(20px, 3vw, 32px) clamp(16px, 2.5vw, 28px) !important;
+    }
+
+    /* ── Automation panel — collapse 1fr 1fr grid ── */
+    #automation > div > div:first-child {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+    }
+
+    /* ── AI Agents panel — collapse 1fr 1fr grid ── */
+    #ai-agents > div > div:first-child {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+      margin-bottom: 28px !important;
+    }
+
+    /* ── Business Systems panel — collapse 1.1fr 0.9fr grid ── */
+    #systems > div > div:first-child {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+      margin-bottom: 28px !important;
+    }
+
+    /* ── Mobile panel — collapse 1fr auto 1fr phone layout ── */
+    #mobile > div > div:first-child {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+    }
+
+    /* ── Robotics panel — the grid is nested inside a motion.div wrapper ── */
+    #robotics > div > div:first-child > div {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+    }
+
+    /* ── Web Apps panel — keep 3-col stat row, just tighten ── */
+    #web-apps > div > div:nth-child(2) {
+      gap: 1px !important;
+    }
+  }
+
+  /* ── Mobile (≤ 767px) ──────────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+
+    /* Container horizontal padding */
+    .svc-c {
+      padding: 0 16px !important;
+    }
+
+    /* Headings — allow wrapping */
+    .svc-heading {
+      white-space: normal !important;
+      font-size: clamp(22px, 6vw, 36px) !important;
+    }
+
+    /* Description full width */
+    .svc-desc {
+      max-width: 100% !important;
+    }
+
+    /* Art card height on mobile */
+    .svc-glass-inner {
+      height: clamp(160px, 55vw, 240px) !important;
+    }
+
+    /* ── All full panels — reduce vertical padding ── */
+    #automation,
+    #ai-agents,
+    #web-apps,
+    #systems,
+    #mobile,
+    #robotics {
+      min-height: auto !important;
+      padding-top: 56px !important;
+      padding-bottom: 48px !important;
+    }
+
+    /* ── Automation stat strip — 4 cols → 2 cols ── */
+    #automation > div > div:last-child {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* ── AI Agents stat strip — keep 3 cols, they fit ── */
+    #ai-agents > div > div:last-child {
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 1px !important;
+    }
+
+    /* ── Web Apps big stat row — 3 cols → 1 col ── */
+    #web-apps > div > div:nth-child(2) {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* ── Business Systems stat strip — 4 cols → 2 cols ── */
+    #systems > div > div:last-child {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* ── Mobile panel stat strip — already 3 cols, stays ── */
+    #mobile > div > div:last-child {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    /* ── Mobile panel: hide center phone column on very small screens ── */
+    #mobile > div > div:first-child > *:nth-child(2) {
+      display: none !important;
+    }
+
+    /* ── Robotics stat cards — reduce padding ── */
+    #robotics > div > div:first-child > div > div:last-child > div {
+      padding: 12px 14px !important;
+    }
+
+    /* ── CTA section padding ── */
+    .svc-cta {
+      padding: 12px 24px !important;
+      font-size: 14px !important;
+    }
+  }
+
+  /* ── Small mobile (≤ 480px) ────────────────────────────────────────────── */
+  @media (max-width: 480px) {
+
+    /* AI Agents stat strip → 1 col */
+    #ai-agents > div > div:last-child {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Mobile panel stat strip → 1 col */
+    #mobile > div > div:last-child {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Business Systems + Automation stat → 1 col */
+    #automation > div > div:last-child,
+    #systems > div > div:last-child {
+      grid-template-columns: 1fr !important;
+    }
+  }
 `;
